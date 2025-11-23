@@ -1,0 +1,34 @@
+{
+  "tables": [
+    {
+      "name": "IMP_OTHERS",
+      "displayName": "Import Others (Main)",
+      "description": "Main import data table with processed trade information"
+    },
+    {
+      "name": "IMP_OTHERS_1",
+      "displayName": "Import Others (Group 1)",
+      "description": "Import data for customs: INDEL4, INDPC4, INNSA1"
+    },
+    {
+      "name": "IMP_OTHERS_2",
+      "displayName": "Import Others (Group 2)",
+      "description": "Import data for remaining customs offices"
+    },
+    {
+      "name": "IMP_OTHERS_V",
+      "displayName": "Import Others Vishal (Main)",
+      "description": "Vishal variant with consolidated supplier information"
+    },
+    {
+      "name": "IMP_OTHERS_V_1",
+      "displayName": "Import Others Vishal (Group 1)",
+      "description": "Vishal variant for customs: INDEL4, INDPC4, INNSA1"
+    },
+    {
+      "name": "IMP_OTHERS_V_2",
+      "displayName": "Import Others Vishal (Group 2)",
+      "description": "Vishal variant for remaining customs offices"
+    }
+  ]
+}

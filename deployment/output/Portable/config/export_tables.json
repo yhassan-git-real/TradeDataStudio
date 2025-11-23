@@ -1,0 +1,34 @@
+{
+  "tables": [
+    {
+      "name": "EXP_OTHERS",
+      "displayName": "Export Others (Main)",
+      "description": "Main export data table with processed trade information"
+    },
+    {
+      "name": "EXP_OTHERS_1",
+      "displayName": "Export Others (Group 1)",
+      "description": "Export data for customs: INDEL4, INDPC4, INNSA1, INBOM4"
+    },
+    {
+      "name": "EXP_OTHERS_2",
+      "displayName": "Export Others (Group 2)",
+      "description": "Export data for remaining customs offices"
+    },
+    {
+      "name": "EXP_OTHERS_V",
+      "displayName": "Export Others Vishal (Main)",
+      "description": "Vishal variant with consolidated buyer information"
+    },
+    {
+      "name": "EXP_OTHERS_V_1",
+      "displayName": "Export Others Vishal (Group 1)",
+      "description": "Vishal variant for customs: INDEL4, INDPC4, INNSA1, INBOM4"
+    },
+    {
+      "name": "EXP_OTHERS_V_2", 
+      "displayName": "Export Others Vishal (Group 2)",
+      "description": "Vishal variant for remaining customs offices"
+    }
+  ]
+}

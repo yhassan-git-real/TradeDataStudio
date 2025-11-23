@@ -1,0 +1,64 @@
+{
+  "procedures": [
+    {
+      "name": "Others_IMP_10Days",
+      "displayName": "Standard Import Processing",
+      "description": "Processes import data with standard filtering and anonymization",
+      "parameters": [
+        {
+          "name": "@mon",
+          "type": "int",
+          "required": true,
+          "description": "Start period in YYYYMM format"
+        },
+        {
+          "name": "@mon1",
+          "type": "int", 
+          "required": true,
+          "description": "End period in YYYYMM format"
+        }
+      ],
+      "outputTables": ["IMP_OTHERS", "IMP_OTHERS_1", "IMP_OTHERS_2"]
+    },
+    {
+      "name": "Others_IMP_10Days_Kushal",
+      "displayName": "Kushal Import Processing",
+      "description": "Import processing with Kushal-specific anonymization logic",
+      "parameters": [
+        {
+          "name": "@mon",
+          "type": "int",
+          "required": true,
+          "description": "Start period in YYYYMM format"
+        },
+        {
+          "name": "@mon1",
+          "type": "int",
+          "required": true,
+          "description": "End period in YYYYMM format"
+        }
+      ],
+      "outputTables": ["IMP_OTHERS", "IMP_OTHERS_1", "IMP_OTHERS_2"]
+    },
+    {
+      "name": "Others_IMP_10Days_Vishal",
+      "displayName": "Vishal Import Processing",
+      "description": "Import processing with Vishal-specific data consolidation", 
+      "parameters": [
+        {
+          "name": "@mon",
+          "type": "int",
+          "required": true,
+          "description": "Start period in YYYYMM format"
+        },
+        {
+          "name": "@mon1",
+          "type": "int",
+          "required": true,
+          "description": "End period in YYYYMM format"
+        }
+      ],
+      "outputTables": ["IMP_OTHERS_V", "IMP_OTHERS_V_1", "IMP_OTHERS_V_2"]
+    }
+  ]
+}

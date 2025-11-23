@@ -1,0 +1,27 @@
+Unhandled exception. System.ArgumentException: Control with the name 'OutputLocationBox' already registered.
+   at Avalonia.Controls.NameScope.Register(String name, Object element)
+   at TradeDataStudio.Desktop.Views.MainWindow.!XamlIlPopulate(IServiceProvider, MainWindow) in F:\Other_Process\TradeDataStudio\src\TradeDataStudio.Desktop\Views/MainWindow.axaml:line 725
+   at TradeDataStudio.Desktop.Views.MainWindow.!XamlIlPopulateTrampoline(MainWindow)
+   at TradeDataStudio.Desktop.Views.MainWindow.InitializeComponent(Boolean loadXaml, Boolean attachDevTools) in F:\Other_Process\TradeDataStudio\src\TradeDataStudio.Desktop\Avalonia.Generators\Avalonia.Generators.NameGenerator.AvaloniaNameSourceGenerator\TradeDataStudio.Desktop.Views.MainWindow.g.cs:line 52
+   at TradeDataStudio.Desktop.Views.MainWindow..ctor() in F:\Other_Process\TradeDataStudio\src\TradeDataStudio.Desktop\Views\MainWindow.axaml.cs:line 11
+   at TradeDataStudio.Desktop.Views.MainWindow..ctor(MainWindowViewModel viewModel) in F:\Other_Process\TradeDataStudio\src\TradeDataStudio.Desktop\Views\MainWindow.axaml.cs:line 14
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimeConstructorInfo.Invoke(BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at TradeDataStudio.Desktop.App.OnFrameworkInitializationCompleted() in F:\Other_Process\TradeDataStudio\src\TradeDataStudio.Desktop\App.axaml.cs:line 37
+   at Avalonia.AppBuilder.SetupUnsafe()
+   at Avalonia.AppBuilder.Setup()
+   at Avalonia.AppBuilder.SetupWithLifetime(IApplicationLifetime lifetime)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at TradeDataStudio.Desktop.Program.Main(String[] args) in F:\Other_Process\TradeDataStudio\src\TradeDataStudio.Desktop\Program.cs:line 12

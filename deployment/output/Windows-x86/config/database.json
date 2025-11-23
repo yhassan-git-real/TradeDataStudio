@@ -1,0 +1,9 @@
+{
+  "server": "MATRIX\\MATRIX",
+  "database": "RAW_PROCESS",
+  "username": "",
+  "password": "",
+  "useWindowsAuthentication": true,
+  "connectionTimeout": 30,
+  "trustServerCertificate": true
+}

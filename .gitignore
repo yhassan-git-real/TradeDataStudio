@@ -1,0 +1,32 @@
+# Gitignore for .NET projects
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Binaries
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+
+## Packages
+*.nupkg
+*.snupkg
+*.zip
+.package
+package-lock.json
+
+## Rider
+.idea/
+*.iws
+*.iml
+*.ipr
+
+## Other
+*.log
+*.bak
+*.*proj.user
