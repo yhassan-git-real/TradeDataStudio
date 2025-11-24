@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TradeDataStudio.Desktop.ViewModels"
+             x:Class="TradeDataStudio.Desktop.Views.Components.ActionsPanel"
+             x:DataType="vm:MainWindowViewModel">
+    
+    <Border Background="#FFFFFF"
+            BorderBrush="#E1E4E8"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="16"
+            Margin="4,4,4,6"
+            BoxShadow="0 2 8 0 #0000000D">
+        <StackPanel Spacing="8">
+            <TextBlock Text="Actions" 
+                       FontSize="14" 
+                       FontWeight="SemiBold" 
+                       Foreground="#586069"/>
+            <!-- Button bar -->
+            <WrapPanel ItemWidth="140" MinWidth="320">
+                <Button x:Name="ExecuteButton"
+                        Content="Execute" 
+                        Command="{Binding ExecuteCommand}"
+                        ToolTip.Tip="Execute the selected stored procedure (Ctrl+E)"
+                        HotKey="Ctrl+E"
+                        Classes="action-button primary"
+                        Padding="12,8"
+                        MinWidth="130"
+                        Height="32"
+                        CornerRadius="6"
+                        FontSize="12"
+                        FontWeight="Medium"
+                        Margin="0,0,10,8">
+                </Button>
+                <Button x:Name="ExportButton"
+                        Content="Download" 
+                        Command="{Binding ExportCommand}" 
+                        ToolTip.Tip="Download selected table to chosen format (Ctrl+X)"
+                        HotKey="Ctrl+X"
+                        Classes="action-button"
+                        Padding="12,8"
+                        MinWidth="130"
+                        Height="32"
+                        CornerRadius="6"
+                        FontSize="12"
+                        FontWeight="Medium"
+                        Margin="0,0,10,8">
+                </Button>
+                <Button x:Name="StartButton"
+                        Content="Start" 
+                        Command="{Binding StartCommand}"
+                        ToolTip.Tip="Execute procedure and auto-export all output tables (Ctrl+S)"
+                        HotKey="Ctrl+S"
+                        Classes="action-button success"
+                        Padding="12,8"
+                        MinWidth="130"
+                        Height="32"
+                        CornerRadius="6"
+                        FontSize="12"
+                        FontWeight="Medium"
+                        Margin="0,0,10,8">
+                </Button>
+                <Button x:Name="StopButton"
+                        Content="Stop" 
+                        Command="{Binding StopCommand}"
+                        ToolTip.Tip="Cancel current operation (Ctrl+Q)"
+                        HotKey="Ctrl+Q"
+                        Background="#DC2626"
+                        BorderBrush="#B91C1C"
+                        Padding="12,8"
+                        MinWidth="130"
+                        Height="32"
+                        CornerRadius="6"
+                        FontSize="12"
+                        FontWeight="Medium"
+                        Margin="0,0,10,8">
+                </Button>
+                <Button x:Name="ResetButton"
+                        Content="Reset" 
+                        Command="{Binding ResetCommand}"
+                        ToolTip.Tip="Clear all selections and reset form (Ctrl+R)"
+                        HotKey="Ctrl+R"
+                        Classes="action-button neutral"
+                        Padding="12,8"
+                        MinWidth="130"
+                        Height="32"
+                        CornerRadius="6"
+                        FontSize="12"
+                        FontWeight="Medium"
+                        Margin="0,0,10,8">
+                </Button>
+                <Button x:Name="ViewLogsButton"
+                        Content="View Logs" 
+                        Command="{Binding ViewLogsCommand}"
+                        ToolTip.Tip="Open application logs (Ctrl+L)"
+                        HotKey="Ctrl+L"
+                        Classes="action-button neutral"
+                        Padding="12,8"
+                        MinWidth="130"
+                        Height="32"
+                        CornerRadius="6"
+                        FontSize="12"
+                        FontWeight="Medium"
+                        Margin="0,0,10,8">
+                </Button>
+            </WrapPanel>
+        </StackPanel>
+    </Border>
+    
+</UserControl>
