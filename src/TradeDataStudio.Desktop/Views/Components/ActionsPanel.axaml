@@ -3,109 +3,170 @@
              xmlns:vm="using:TradeDataStudio.Desktop.ViewModels"
              x:Class="TradeDataStudio.Desktop.Views.Components.ActionsPanel"
              x:DataType="vm:MainWindowViewModel">
-    
+
     <Border Background="#0F1D35"
             BorderBrush="#2D4366"
             BorderThickness="1"
             CornerRadius="8"
-            Padding="16"
+            Padding="8"
             Margin="4,4,4,6"
             BoxShadow="0 4 12 0 #00000050">
-        <StackPanel Spacing="8">
-            <TextBlock Text="Actions" 
-                       FontSize="14" 
-                       FontWeight="SemiBold" 
-                       Foreground="#94A3B8"/>
-            <!-- Button bar -->
-            <WrapPanel ItemWidth="140" MinWidth="320">
-                <Button x:Name="ExecuteButton"
-                        Content="Execute" 
+        <StackPanel Spacing="6">
+            <!-- Header Section -->
+            <StackPanel Spacing="3">
+                <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <Border Width="24" Height="24" CornerRadius="12" Background="#1E3456" Padding="2">
+                        <TextBlock Text="⏯" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Foreground="#60A5FA" Margin="0"/>
+                    </Border>
+                    <StackPanel>
+                        <TextBlock Text="Actions" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#F1F5F9"/>
+                        <TextBlock Text="Execute operations and manage workflows." 
+                                   FontSize="8" 
+                                   Foreground="#64748B"/>
+                    </StackPanel>
+                </StackPanel>
+                <Border Height="1" Background="#2D4366" Margin="0,0,0,0"/>
+            </StackPanel>
+            
+            <!-- Grid Layout: 2 columns, 3 rows -->
+            <Grid ColumnDefinitions="*,5,*" RowDefinitions="Auto,5,Auto,5,Auto" Margin="0,0,0,0">
+                <!-- Row 1: Execute and Download -->
+                <Button Grid.Row="0" Grid.Column="0"
+                        x:Name="ExecuteButton"
                         Command="{Binding ExecuteCommand}"
                         ToolTip.Tip="Execute the selected stored procedure (Ctrl+E)"
                         HotKey="Ctrl+E"
-                        Classes="action-button primary"
-                        Padding="12,8"
-                        MinWidth="130"
-                        Height="32"
-                        CornerRadius="6"
-                        FontSize="12"
+                        Height="48"
+                        Padding="0"
+                        CornerRadius="5"
+                        Background="#1E40AF"
+                        BorderBrush="#1D4ED8"
+                        BorderThickness="1"
+                        Foreground="#F1F5F9"
+                        FontSize="11"
                         FontWeight="Medium"
-                        Margin="0,0,10,8">
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Execute" VerticalAlignment="Center" FontSize="14" FontWeight="Medium"/>
+                    </StackPanel>
                 </Button>
-                <Button x:Name="ExportButton"
-                        Content="Download" 
-                        Command="{Binding ExportCommand}" 
+                <Button Grid.Row="0" Grid.Column="2"
+                        x:Name="ExportButton"
+                        Command="{Binding ExportCommand}"
                         ToolTip.Tip="Download selected table to chosen format (Ctrl+X)"
                         HotKey="Ctrl+X"
-                        Classes="action-button"
-                        Padding="12,8"
-                        MinWidth="130"
-                        Height="32"
-                        CornerRadius="6"
-                        FontSize="12"
+                        Height="48"
+                        Padding="0"
+                        CornerRadius="5"
+                        Background="#7C3AED"
+                        BorderBrush="#6D28D9"
+                        BorderThickness="1"
+                        Foreground="#F1F5F9"
+                        FontSize="11"
                         FontWeight="Medium"
-                        Margin="0,0,10,8">
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Download" VerticalAlignment="Center" FontSize="14" FontWeight="Medium"/>
+                    </StackPanel>
                 </Button>
-                <Button x:Name="StartButton"
-                        Content="Start" 
+
+                <!-- Row 2: Start and Stop -->
+                <Button Grid.Row="2" Grid.Column="0"
+                        x:Name="StartButton"
                         Command="{Binding StartCommand}"
                         ToolTip.Tip="Execute procedure and auto-export all output tables (Ctrl+S)"
                         HotKey="Ctrl+S"
-                        Classes="action-button success"
-                        Padding="12,8"
-                        MinWidth="130"
-                        Height="32"
-                        CornerRadius="6"
-                        FontSize="12"
+                        Height="48"
+                        Padding="0"
+                        CornerRadius="5"
+                        Background="#059669"
+                        BorderBrush="#047857"
+                        BorderThickness="1"
+                        Foreground="#F1F5F9"
+                        FontSize="11"
                         FontWeight="Medium"
-                        Margin="0,0,10,8">
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Start" VerticalAlignment="Center" FontSize="14" FontWeight="Medium"/>
+                    </StackPanel>
                 </Button>
-                <Button x:Name="StopButton"
-                        Content="Stop" 
+                <Button Grid.Row="2" Grid.Column="2"
+                        x:Name="StopButton"
                         Command="{Binding StopCommand}"
                         ToolTip.Tip="Cancel current operation (Ctrl+Q)"
                         HotKey="Ctrl+Q"
+                        Height="48"
+                        Padding="0"
+                        CornerRadius="5"
                         Background="#DC2626"
                         BorderBrush="#B91C1C"
+                        BorderThickness="1"
                         Foreground="#F1F5F9"
-                        Padding="12,8"
-                        MinWidth="130"
-                        Height="32"
-                        CornerRadius="6"
-                        FontSize="12"
+                        FontSize="11"
                         FontWeight="Medium"
-                        Margin="0,0,10,8">
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Stop" VerticalAlignment="Center" FontSize="14" FontWeight="Medium"/>
+                    </StackPanel>
                 </Button>
-                <Button x:Name="ResetButton"
-                        Content="Reset" 
+
+                <!-- Row 3: Reset and View Logs -->
+                <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Height="1" Background="#2D4366" Margin="0,0,0,0"/>
+                <Button Grid.Row="4" Grid.Column="0"
+                        x:Name="ResetButton"
                         Command="{Binding ResetCommand}"
                         ToolTip.Tip="Clear all selections and reset form (Ctrl+R)"
                         HotKey="Ctrl+R"
-                        Classes="action-button neutral"
-                        Padding="12,8"
-                        MinWidth="130"
-                        Height="32"
-                        CornerRadius="6"
-                        FontSize="12"
+                        Height="48"
+                        Padding="0"
+                        CornerRadius="5"
+                        Background="#0891B2"
+                        BorderBrush="#0E7490"
+                        BorderThickness="1"
+                        Foreground="#F1F5F9"
+                        FontSize="11"
                         FontWeight="Medium"
-                        Margin="0,0,10,8">
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Reset" VerticalAlignment="Center" FontSize="14" FontWeight="Medium"/>
+                    </StackPanel>
                 </Button>
-                <Button x:Name="ViewLogsButton"
-                        Content="View Logs" 
+                <Button Grid.Row="4" Grid.Column="2"
+                        x:Name="ViewLogsButton"
                         Command="{Binding ViewLogsCommand}"
                         ToolTip.Tip="Open application logs (Ctrl+L)"
                         HotKey="Ctrl+L"
-                        Classes="action-button neutral"
-                        Padding="12,8"
-                        MinWidth="130"
-                        Height="32"
-                        CornerRadius="6"
-                        FontSize="12"
+                        Height="48"
+                        Padding="0"
+                        CornerRadius="5"
+                        Background="#EA580C"
+                        BorderBrush="#C2410C"
+                        BorderThickness="1"
+                        Foreground="#F1F5F9"
+                        FontSize="11"
                         FontWeight="Medium"
-                        Margin="0,0,10,8">
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="View Logs" VerticalAlignment="Center" FontSize="14" FontWeight="Medium"/>
+                    </StackPanel>
                 </Button>
-            </WrapPanel>
+            </Grid>
         </StackPanel>
     </Border>
-    
+
 </UserControl>

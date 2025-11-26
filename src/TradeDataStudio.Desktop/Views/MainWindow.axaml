@@ -114,11 +114,14 @@
             
             <ScrollViewer ClipToBounds="False">
                 <StackPanel Margin="12,6">
-                    <!-- Configuration Panel -->
-                    <components:ConfigurationPanel/>
-
-                    <!-- Actions Panel -->
-                    <components:ActionsPanel/>
+                    <!-- Horizontal Grid with Configuration and Actions Cards (70:30 split) -->
+                    <Grid ColumnDefinitions="7*,3*" Margin="0,0,0,8">
+                        <!-- Configuration Card (70%) -->
+                        <components:ConfigurationPanel Grid.Column="0" Margin="0,0,6,0"/>
+                        
+                        <!-- Actions Card (30%) -->
+                        <components:ActionsPanel Grid.Column="1" Margin="6,0,0,0"/>
+                    </Grid>
 
                     <!-- Activity Log Panel -->
                     <components:ActivityLogPanel/>
