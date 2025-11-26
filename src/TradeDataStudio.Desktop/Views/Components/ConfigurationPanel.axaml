@@ -12,9 +12,9 @@
             Margin="4,4,4,8"
             BoxShadow="0 4 12 0 #00000050">
         <StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,8" VerticalAlignment="Center" Spacing="10">
-                <Border Width="34" Height="34" CornerRadius="17" Background="#1E3456" VerticalAlignment="Center">
-                    <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Foreground="#60A5FA"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8" VerticalAlignment="Center" Spacing="12">
+                <Border Width="48" Height="48" CornerRadius="24" Background="#1E3456" VerticalAlignment="Center" Padding="4">
+                    <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="#60A5FA" Margin="0"/>
                 </Border>
                 <StackPanel>
                     <TextBlock Text="Configuration" 

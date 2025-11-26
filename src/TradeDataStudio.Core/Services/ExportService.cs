@@ -333,73 +333,107 @@ namespace TradeDataStudio.Core.Services
             string startPeriod = "",
             string endPeriod = "",
             OperationMode mode = OperationMode.Export,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            Func<string, Task<bool>>? zeroRecordPromptFunc = null)
         {
             var results = new List<ExportResult>();
             int tableIndex = 0;
             
-            foreach (var tableName in tableNames)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                tableIndex++;
-                try
+                foreach (var tableName in tableNames)
                 {
-                    await _loggingService.LogMainAsync($"[{tableIndex}/{tableNames.Count}] Starting export for table: {tableName}");
-                    
-                    DataTable? data = null;
-                    
-                    // Query table data if database service is provided - run in background
-                    if (databaseService != null)
+                    cancellationToken.ThrowIfCancellationRequested();
+                    tableIndex++;
+                    try
                     {
-                        await _loggingService.LogMainAsync($"Querying data from table: {tableName}...");
+                        await _loggingService.LogMainAsync($"[{tableIndex}/{tableNames.Count}] Starting export for table: {tableName}");
                         
-                        // Run data retrieval in background task
-                        data = await Task.Run(async () => await databaseService.QueryTableAsync(tableName));
+                        DataTable? data = null;
                         
-                        await _loggingService.LogMainAsync($"Retrieved {data.Rows.Count:N0} rows from {tableName}");
+                        // Query table data if database service is provided - run in background
+                        if (databaseService != null)
+                        {
+                            await _loggingService.LogMainAsync($"Querying data from table: {tableName}...");
+                            
+                            // Run data retrieval in background task
+                            data = await Task.Run(async () => await databaseService.QueryTableAsync(tableName));
+                            
+                            await _loggingService.LogMainAsync($"Retrieved {data.Rows.Count:N0} rows from {tableName}");
+                            
+                            // Check for zero records and prompt user if needed
+                            if (data.Rows.Count == 0 && zeroRecordPromptFunc != null)
+                            {
+                                await _loggingService.LogMainAsync($"Table {tableName} has zero records. Prompting user...");
+                                bool generateReport = await zeroRecordPromptFunc(tableName);
+                                
+                                if (!generateReport)
+                                {
+                                    // User chose to skip
+                                    await _loggingService.LogMainAsync($"Skipping table {tableName} (user choice)");
+                                    results.Add(new ExportResult
+                                    {
+                                        Success = true,
+                                        Message = "Skipped (zero records)",
+                                        Format = format,
+                                        RecordsExported = 0,
+                                        FileName = $"{tableName}_skipped"
+                                    });
+                                    continue; // Skip to next table
+                                }
+                                // If generateReport is true, continue with export below
+                            }
+                        }
+                        else
+                        {
+                            // Create empty data table as fallback
+                            data = new DataTable(tableName);
+                            await _loggingService.LogMainAsync($"No database service provided for table {tableName}, creating empty export");
+                        }
+                        
+                        var result = format switch
+                        {
+                            ExportFormat.Excel => await ExportToExcelAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
+                            ExportFormat.CSV => await ExportToCsvAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
+                            ExportFormat.TXT => await ExportToTextAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
+                            _ => new ExportResult { Success = false, Message = $"Unsupported format: {format}" }
+                        };
+                        
+                        results.Add(result);
+                        
+                        // Aggressive memory cleanup after each table export
+                        if (data != null)
+                        {
+                            data.Clear();
+                            data.Dispose();
+                        }
+                        
+                        // Force garbage collection between tables
+                        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+                        GC.WaitForPendingFinalizers();
+                        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+                        
+                        await _loggingService.LogMainAsync($"[{tableIndex}/{tableNames.Count}] Completed export for {tableName}, memory cleaned");
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        // Create empty data table as fallback
-                        data = new DataTable(tableName);
-                        await _loggingService.LogMainAsync($"No database service provided for table {tableName}, creating empty export");
+                        await _loggingService.LogErrorAsync($"Failed to export table {tableName}: {ex.Message}", ex);
+                        results.Add(new ExportResult
+                        {
+                            Success = false,
+                            Message = ex.Message,
+                            Format = format,
+                            Exception = ex
+                        });
                     }
-                    
-                    var result = format switch
-                    {
-                        ExportFormat.Excel => await ExportToExcelAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
-                        ExportFormat.CSV => await ExportToCsvAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
-                        ExportFormat.TXT => await ExportToTextAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
-                        _ => new ExportResult { Success = false, Message = $"Unsupported format: {format}" }
-                    };
-                    
-                    results.Add(result);
-                    
-                    // Aggressive memory cleanup after each table export
-                    if (data != null)
-                    {
-                        data.Clear();
-                        data.Dispose();
-                    }
-                    
-                    // Force garbage collection between tables
-                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-                    GC.WaitForPendingFinalizers();
-                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-                    
-                    await _loggingService.LogMainAsync($"[{tableIndex}/{tableNames.Count}] Completed export for {tableName}, memory cleaned");
                 }
-                catch (Exception ex)
-                {
-                    await _loggingService.LogErrorAsync($"Failed to export table {tableName}: {ex.Message}", ex);
-                    results.Add(new ExportResult
-                    {
-                        Success = false,
-                        Message = ex.Message,
-                        Format = format,
-                        Exception = ex
-                    });
-                }
+            }
+            finally
+            {
+                // Ensure any database connections are properly released
+                // Force final cleanup
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
             
             return results;

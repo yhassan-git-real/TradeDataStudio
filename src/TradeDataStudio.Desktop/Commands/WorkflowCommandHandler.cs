@@ -109,7 +109,9 @@ public class WorkflowCommandHandler
             }
             else
             {
+                setCurrentOperationStatus("");
                 setStatusMessage($"Execution failed: {result.Message}");
+                logActivity("OPERATION TERMINATED: Execution failed", "⚠");
             }
         }
         catch (OperationCanceledException)
@@ -122,7 +124,7 @@ public class WorkflowCommandHandler
         {
             setCurrentOperationStatus("");
             setStatusMessage("Execution failed with exception");
-            logActivity($"Exception: {ex.Message}", "⚠");
+            logActivity($"OPERATION TERMINATED: {ex.Message}", "⚠");
         }
         finally
         {
@@ -188,6 +190,7 @@ public class WorkflowCommandHandler
         {
             setCurrentOperationStatus("");
             setStatusMessage("Export blocked: Data exceeds Excel limit. Use CSV format.");
+            logActivity("OPERATION TERMINATED: Excel limit exceeded", "⚠");
             showError("Excel Row Limit Exceeded", ex.Message, new List<string>
             {
                 "Switch to CSV format (supports unlimited rows)",
@@ -197,13 +200,18 @@ public class WorkflowCommandHandler
         }
         catch (Exception ex)
         {
+            setCurrentOperationStatus("");
             setStatusMessage("Export failed with exception");
-            logActivity($"Export exception: {ex.Message}", "⚠");
+            logActivity($"OPERATION TERMINATED: {ex.Message}", "⚠");
         }
         finally
         {
             setOperationInProgress(false);
             setProgressValue(0);
+            
+            // Dispose cancellation token to ensure Stop button is hidden
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
         }
     }
 

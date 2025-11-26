@@ -86,6 +86,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 _operationMode.IsExportMode = value;
                 OnPropertyChanged(nameof(IsExportMode));
                 OnPropertyChanged(nameof(CurrentMode));
+                OnOperationModeChanged();
                 // Mode change will trigger through event handler
             }
         }
@@ -101,6 +102,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 _operationMode.IsImportMode = value;
                 OnPropertyChanged(nameof(IsImportMode));
                 OnPropertyChanged(nameof(CurrentMode));
+                OnOperationModeChanged();
                 // Mode change will trigger through event handler
             }
         }
@@ -207,6 +209,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand BrowseOutputLocationCommand => _workflowCommands.BrowseOutputLocationCommand;
     public ICommand ShowTableSelectionPopupCommand => _workflowCommands.ShowTableSelectionPopupCommand;
     public ICommand CloseTableSelectionPopupCommand => _workflowCommands.CloseTableSelectionPopupCommand;
+    public ICommand ClearActivityLogsCommand => _activityLog.ClearActivityLogsCommand;
     
     // Menu Commands
     public ICommand ExitCommand => _menuCommands.ExitCommand;
@@ -237,6 +240,9 @@ public partial class MainWindowViewModel : ViewModelBase
         _operationMode = new OperationModeViewModel(configurationService, loggingService);
         _activityLog = new ActivityLogViewModel();
         _tableSelection = new TableSelectionViewModel(configurationService, loggingService);
+        
+        // Hook into table selection changes to update footer status
+        _tableSelection.SelectionChanged += (s, e) => UpdateFooterStatusMessage();
 
         // Wire up property change notifications from ConnectionStatusViewModel
         _connectionStatus.PropertyChanged += (s, e) =>
@@ -336,6 +342,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
             var modeText = IsExportMode ? "Export" : "Import";
             StatusMessage = $"Switched to {modeText} mode";
+            OnOperationModeChanged();
             RefreshCommandStates();
         }
         catch (Exception ex)
@@ -376,6 +383,15 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         return !IsOperationInProgress && 
                (SelectedOutputTable != null || _tableSelection.GetSelectedTables().Any());
+    }
+    
+    /// <summary>
+    /// Called when operation mode changes (Export <-> Import).
+    /// Updates footer status message to reflect the new mode.
+    /// </summary>
+    private void OnOperationModeChanged()
+    {
+        UpdateFooterStatusMessage();
     }
 
     private async Task ExecuteStoredProcedureAsync(bool isCalledFromWorkflow = false)
@@ -527,10 +543,32 @@ public partial class MainWindowViewModel : ViewModelBase
         IsTableSelectionPopupOpen = false;
         Console.WriteLine($"  IsTableSelectionPopupOpen is now: {IsTableSelectionPopupOpen}");
         
-        var selectedCount = _tableSelection.GetSelectedTables().Count;
-        Console.WriteLine($"  Selected tables count: {selectedCount}");
-        StatusMessage = $"Selected {selectedCount} tables for export";
+        UpdateFooterStatusMessage();
         Console.WriteLine($"=== CloseTableSelectionPopup COMPLETED ===\n");
+    }
+
+    /// <summary>
+    /// Updates the footer status message based on current table selection.
+    /// Shows specific table name for single selection, "Selected X tables" for multiple selections.
+    /// Includes operation type (export/import).
+    /// </summary>
+    private void UpdateFooterStatusMessage()
+    {
+        var selectedTables = _tableSelection.GetSelectedTables();
+        var operationMode = IsExportMode ? "export" : "import";
+        
+        if (selectedTables.Count == 0)
+        {
+            StatusMessage = "Ready";
+        }
+        else if (selectedTables.Count == 1)
+        {
+            StatusMessage = $"Selected: {selectedTables[0].DisplayName} for {operationMode}";
+        }
+        else
+        {
+            StatusMessage = $"Selected {selectedTables.Count} tables for {operationMode}";
+        }
     }
 
     private async Task BrowseOutputLocationAsync()

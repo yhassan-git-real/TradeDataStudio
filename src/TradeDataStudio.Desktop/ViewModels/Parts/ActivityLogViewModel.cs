@@ -1,7 +1,9 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using TradeDataStudio.Core.Models;
 using TradeDataStudio.Desktop.Models;
 
@@ -16,6 +18,13 @@ public partial class ActivityLogViewModel : ObservableObject
     private string _recentActivity = "Application started. Ready for operation.";
 
     public ObservableCollection<ActivityLog> ActivityLogs { get; } = new();
+
+    public ICommand ClearActivityLogsCommand { get; }
+
+    public ActivityLogViewModel()
+    {
+        ClearActivityLogsCommand = new RelayCommand(Clear);
+    }
 
     /// <summary>
     /// Adds a new activity log entry with timestamp and formatting.
@@ -67,6 +76,6 @@ public partial class ActivityLogViewModel : ObservableObject
     public void Clear()
     {
         ActivityLogs.Clear();
-        RecentActivity = "Application started. Ready for operation.";
+        RecentActivity = "Activity log cleared. Ready for operation.";
     }
 }
