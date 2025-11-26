@@ -72,7 +72,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _currentOperationStatus = "";
 
-    // Exposed collections for XAML bindings
+    [ObservableProperty]
+    private string _selectTablesButtonText = "Select Tables...";
+
+    [ObservableProperty]
+    private string _selectTablesButtonTooltip = "Click to select which output tables to include in the export";
+
+    // ... existing code ...
     public ObservableCollection<string> AvailableExportFormats { get; } = new() { "Excel", "CSV", "TXT" };
 
     // Delegated properties (expose sub-viewmodel properties for XAML bindings)
@@ -287,7 +293,11 @@ public partial class MainWindowViewModel : ViewModelBase
         // Wire up event handlers for sub-viewmodels
         _operationMode.ModeChanged += async (s, e) => await OnModeChangedAsync();
         _operationMode.StoredProcedureChanged += async (s, e) => await OnStoredProcedureChangedAsync();
-        _tableSelection.SelectionChanged += (s, e) => RefreshCommandStates();
+        _tableSelection.SelectionChanged += (s, e) => 
+        {
+            RefreshCommandStates();
+            UpdateSelectTablesButtonState();
+        };
 
         // Initialize with real data via DI - only if services are available (not design time)
         if (_configurationService != null && _loggingService != null)
@@ -568,6 +578,33 @@ public partial class MainWindowViewModel : ViewModelBase
         else
         {
             StatusMessage = $"Selected {selectedTables.Count} tables for {operationMode}";
+        }
+    }
+
+    /// <summary>
+    /// Updates the Select Tables button text and tooltip based on current table selection.
+    /// Button text changes from "Select Tables..." to "Table Selected" (singular) or "Tables Selected" (plural).
+    /// Tooltip displays the names of all selected tables.
+    /// </summary>
+    private void UpdateSelectTablesButtonState()
+    {
+        var selectedTables = _tableSelection.GetSelectedTables();
+        
+        if (selectedTables.Count == 0)
+        {
+            SelectTablesButtonText = "Select Tables...";
+            SelectTablesButtonTooltip = "Click to select which output tables to include in the export";
+        }
+        else if (selectedTables.Count == 1)
+        {
+            SelectTablesButtonText = "Table Selected";
+            SelectTablesButtonTooltip = $"Selected table: {selectedTables[0].DisplayName}";
+        }
+        else
+        {
+            SelectTablesButtonText = "Tables Selected";
+            var tableNames = string.Join(", ", selectedTables.Select(t => t.DisplayName));
+            SelectTablesButtonTooltip = $"Selected tables: {tableNames}";
         }
     }
 

@@ -8,252 +8,186 @@
             BorderBrush="#2D4366"
             BorderThickness="1"
             CornerRadius="8"
-            Padding="18"
-            Margin="4,4,4,8"
+            Padding="10"
+            Margin="4"
             BoxShadow="0 4 12 0 #00000050">
-        <StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,8" VerticalAlignment="Center" Spacing="12">
-                <Border Width="48" Height="48" CornerRadius="24" Background="#1E3456" VerticalAlignment="Center" Padding="4">
-                    <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="#60A5FA" Margin="0"/>
+        <StackPanel Spacing="8">
+            <!-- Header - Reduced Size -->
+            <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Center" Spacing="6">
+                <Border Width="24" Height="24" CornerRadius="12" Background="#1E3456" VerticalAlignment="Center" Padding="2">
+                    <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="#60A5FA" Margin="0"/>
                 </Border>
                 <StackPanel>
                     <TextBlock Text="Configuration" 
-                               FontSize="18" 
+                               FontSize="14" 
                                FontWeight="SemiBold" 
                                Foreground="#F1F5F9"/>
                     <TextBlock Text="Set up the operation, output, and export details." 
-                               FontSize="12" 
+                               FontSize="9" 
                                Foreground="#94A3B8"/>
                 </StackPanel>
             </StackPanel>
-            <Border Height="1" Background="#2D4366" Margin="0,0,0,16"/>
+            <Border Height="1" Background="#2D4366" Margin="0,0,0,4"/>
             
-            <!-- Compact, colorful card grid -->
-            <StackPanel>
-                <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
-                    <Grid.Styles>
-                        <Style Selector="Border.form-card">
-                            <Setter Property="Margin" Value="0,0,12,12"/>
-                        </Style>
-                    </Grid.Styles>
-                    <!-- Operation -->
-                    <Border Classes="form-card" ZIndex="10" Grid.Column="0" Grid.Row="0">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Border Classes="icon-pill" Background="#1E3456">
-                                    <TextBlock Text="⇅" Classes="icon-glyph"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="Operation Mode" Classes="input-label"/>
-                                    <TextBlock Text="Choose how the procedure should run." Classes="input-hint"/>
-                                </StackPanel>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="16">
-                                <RadioButton x:Name="ExportModeRadio"
-                                             Content="Export"
-                                             Margin="0"
-                                             IsChecked="{Binding IsExportMode}"
-                                             GroupName="OperationMode"
-                                             FontSize="13"/>
-                                <RadioButton x:Name="ImportModeRadio"
-                                             Content="Import"
-                                             Margin="0"
-                                             IsChecked="{Binding IsImportMode}"
-                                             GroupName="OperationMode"
-                                             FontSize="13"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+            <!-- Operation Mode -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Operation Mode" FontSize="11" Foreground="#E2E8F0" Margin="0,0,0,2"/>
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <RadioButton x:Name="ExportModeRadio"
+                                 Content="Export"
+                                 Margin="0"
+                                 IsChecked="{Binding IsExportMode}"
+                                 GroupName="OperationMode"
+                                 FontSize="11"/>
+                    <RadioButton x:Name="ImportModeRadio"
+                                 Content="Import"
+                                 Margin="0"
+                                 IsChecked="{Binding IsImportMode}"
+                                 GroupName="OperationMode"
+                                 FontSize="11"/>
+                </StackPanel>
+            </StackPanel>
 
-                    <!-- Stored Procedure -->
-                    <Border Classes="form-card" ZIndex="100" Grid.Column="1" Grid.Row="0">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Border Classes="icon-pill" Background="#7C2D12">
-                                    <TextBlock Text="⚙" Classes="icon-glyph" Foreground="#F87171"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="Stored Procedure" Classes="input-label"/>
-                                    <TextBlock Text="Sorted alphabetically for quicker scanning." Classes="input-hint"/>
-                                    <TextBlock FontSize="10" Foreground="#10B981" Margin="0,4,0,0">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="Loaded: {0} procedures">
-                                                <Binding Path="AvailableStoredProcedures.Count"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </StackPanel>
-                            </StackPanel>
-                            <ComboBox x:Name="StoredProcedureDropdown"
-                                      ItemsSource="{Binding AvailableStoredProcedures}"
-                                      SelectedItem="{Binding SelectedStoredProcedure}"
-                                      PlaceholderText="Select procedure..."
-                                      FontSize="13"
-                                      Margin="0"
-                                      HorizontalAlignment="Stretch"
-                                      MaxDropDownHeight="300"
-                                      IsEnabled="True"
-                                      ToolTip.Tip="Choose the stored procedure to execute">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding DisplayName}" FontSize="13"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </StackPanel>
-                    </Border>
+            <!-- Row 2: Stored Procedure, Output Tables, and File Format -->
+            <Grid ColumnDefinitions="0.85*,12,0.85*,12,0.85*">
+                <!-- Stored Procedure -->
+                <StackPanel Grid.Column="0" Spacing="3">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="Stored Procedure" 
+                                   FontSize="10" 
+                                   Foreground="#94A3B8"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTip.Tip="Stored Procedure - Select the stored procedure to execute"/>
+                    </StackPanel>
+                    <ComboBox x:Name="StoredProcedureDropdown"
+                              ItemsSource="{Binding AvailableStoredProcedures}"
+                              SelectedItem="{Binding SelectedStoredProcedure}"
+                              PlaceholderText="Select stored procedure..."
+                              FontSize="11"
+                              Height="38"
+                              Padding="8,6"
+                              Margin="0"
+                              HorizontalAlignment="Stretch"
+                              VerticalContentAlignment="Center"
+                              MaxDropDownHeight="300"
+                              IsEnabled="True"
+                              ToolTip.Tip="Choose the stored procedure to execute">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}" FontSize="10" TextTrimming="CharacterEllipsis" Padding="4,2"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
 
-                    <!-- Output Tables -->
-                    <Border Classes="form-card" ZIndex="50" Grid.Column="2" Grid.Row="0">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Border Classes="icon-pill" Background="#312E81">
-                                    <TextBlock Text="🗂" Classes="icon-glyph" Foreground="#A5B4FC"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="Output Tables" Classes="input-label"/>
-                                    <TextBlock Text="Pick one or multiple tables from the popup." Classes="input-hint"/>
-                                </StackPanel>
-                            </StackPanel>
-                            <Button x:Name="SelectTablesButton"
-                                    Content="Select Tables..."
-                                    Margin="0"
-                                    Command="{Binding ShowTableSelectionPopupCommand}"
-                                    FontSize="13"
-                                    MinWidth="140"
-                                    HorizontalAlignment="Left"
-                                    ToolTip.Tip="Click to select tables to export"/>
-                        </StackPanel>
-                    </Border>
+                <!-- Output Tables -->
+                <StackPanel Grid.Column="2" Spacing="3">
+                    <TextBlock Text="Output Tables" FontSize="10" Foreground="#94A3B8"/>
+                    <Button x:Name="SelectTablesButton"
+                            Content="{Binding SelectTablesButtonText}"
+                            Margin="0"
+                            Command="{Binding ShowTableSelectionPopupCommand}"
+                            FontSize="11"
+                            Height="38"
+                            Padding="8,6"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            ToolTip.Tip="{Binding SelectTablesButtonTooltip}"/>
+                </StackPanel>
 
-                    <!-- File Format -->
-                    <Border Classes="form-card" ZIndex="90" Grid.Column="3" Grid.Row="0">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Border Classes="icon-pill" Background="#064E3B">
-                                    <TextBlock Text="🧾" Classes="icon-glyph" Foreground="#34D399"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="File Format" Classes="input-label"/>
-                                    <TextBlock Text="Applies to all selected exports." Classes="input-hint"/>
-                                </StackPanel>
-                            </StackPanel>
-                            <ComboBox x:Name="FormatDropdown"
-                                      ItemsSource="{Binding AvailableExportFormats}"
-                                      SelectedItem="{Binding SelectedExportFormat}"
-                                      FontSize="13"
-                                      Width="200"
-                                      Margin="0"
-                                      HorizontalAlignment="Left"
-                                      ToolTip.Tip="Choose export format"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                <!-- File Format -->
+                <StackPanel Grid.Column="4" Spacing="3">
+                    <TextBlock Text="File Format" FontSize="10" Foreground="#94A3B8"/>
+                    <ComboBox x:Name="FormatDropdown"
+                              ItemsSource="{Binding AvailableExportFormats}"
+                              SelectedItem="{Binding SelectedExportFormat}"
+                              PlaceholderText="Choose export format..."
+                              FontSize="11"
+                              Height="38"
+                              Padding="8,6"
+                              VerticalContentAlignment="Center"
+                              Margin="0"
+                              HorizontalAlignment="Stretch"
+                              ToolTip.Tip="Select the output file format for export"/>
+                </StackPanel>
+            </Grid>
 
-                <Grid Margin="0" ColumnDefinitions="Auto,Auto" RowDefinitions="Auto">
-                    <!-- Parameters -->
-                    <Border Classes="form-card form-card-wide" ZIndex="5" Grid.Column="0" Grid.Row="0">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Border Classes="icon-pill" Background="#1E3A8A">
-                                    <TextBlock Text="📅" Classes="icon-glyph" Foreground="#93C5FD"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="Parameters" Classes="input-label"/>
-                                    <TextBlock Text="Enter start and end periods (YYYYMM)." Classes="input-hint"/>
-                                </StackPanel>
-                            </StackPanel>
-                            <Grid ColumnDefinitions="200,24,200">
-                                <StackPanel Grid.Column="0" Spacing="4">
-                                    <TextBlock Text="Start Period" FontSize="12" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                                    <TextBox x:Name="StartPeriodBox"
-                                             Text="{Binding StartPeriod}"
-                                             Watermark="YYYYMM"
-                                             FontSize="13"
-                                             Width="200"
-                                             Margin="0"
-                                             ToolTip.Tip="Enter start period (e.g., 202411 for November 2024)"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="2" Spacing="4">
-                                    <TextBlock Text="End Period" FontSize="12" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                                    <TextBox x:Name="EndPeriodBox"
-                                             Text="{Binding EndPeriod}"
-                                             Watermark="YYYYMM"
-                                             FontSize="13"
-                                             Width="200"
-                                             Margin="0"
-                                             ToolTip.Tip="Enter end period (e.g., 202411 for November 2024)"/>
-                                </StackPanel>
-                            </Grid>
-                            <TextBlock Text="Format: YYYYMM (e.g., 202411 for November 2024)" Classes="input-hint"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Output Location (Export Mode) -->
-                    <Border Classes="form-card form-card-wide" IsVisible="{Binding IsExportMode}" ZIndex="5" Grid.Column="1" Grid.Row="0">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Border Classes="icon-pill" Background="#78350F">
-                                    <TextBlock Text="📁" Classes="icon-glyph" Foreground="#FCD34D"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="Output Location" Classes="input-label"/>
-                                    <TextBlock Text="Choose a destination or use the default export path." Classes="input-hint"/>
-                                </StackPanel>
-                            </StackPanel>
-                            <CheckBox Content="Use custom output location"
-                                      IsChecked="{Binding UseCustomLocation}"
-                                      FontSize="13"/>
-                            <Grid IsVisible="{Binding UseCustomLocation}" ColumnDefinitions="340,Auto">
-                                <TextBox Grid.Column="0"
-                                         Text="{Binding CustomOutputLocation}"
-                                         Watermark="Enter folder path..."
-                                         FontSize="13"
-                                         Margin="0,0,12,0"/>
-                                <Button Grid.Column="1"
-                                        Content="Browse"
-                                        Margin="0"
-                                        Command="{Binding BrowseOutputLocationCommand}"
-                                        FontSize="13"
-                                        MinWidth="90"
-                                        ToolTip.Tip="Browse for output folder"/>
-                            </Grid>
-                            <TextBlock Text="Default: exports/export" Classes="input-hint" IsVisible="{Binding !UseCustomLocation}"/>
-                        </StackPanel>
-                    </Border>
+            <!-- Row 3: Parameters and Output Location -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Parameters" FontSize="11" Foreground="#E2E8F0" Margin="0,4,0,2"/>
+                <Grid ColumnDefinitions="0.85*,12,0.85*,12,0.85*">
+                    <!-- Start Period -->
+                    <StackPanel Grid.Column="0" Spacing="3">
+                        <TextBlock Text="Start Period" FontSize="10" Foreground="#94A3B8"/>
+                        <TextBox x:Name="StartPeriodBox"
+                                 Text="{Binding StartPeriod}"
+                                 Watermark="YYYYMMDD (e.g., 20241127)"
+                                 FontSize="11"
+                                 Height="32"
+                                 Padding="8,6"
+                                 VerticalContentAlignment="Center"
+                                 Margin="0"
+                                 ToolTip.Tip="Enter start date in YYYYMMDD format (e.g., 20241127)"/>
+                    </StackPanel>
                     
-                    <!-- Output Location (Import Mode) -->
-                    <Border Classes="form-card form-card-wide" IsVisible="{Binding IsImportMode}" ZIndex="5" Grid.Column="1" Grid.Row="0">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Border Classes="icon-pill" Background="#78350F">
-                                    <TextBlock Text="📁" Classes="icon-glyph" Foreground="#FCD34D"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="Output Location" Classes="input-label"/>
-                                    <TextBlock Text="Choose a destination or use the default export path." Classes="input-hint"/>
-                                </StackPanel>
-                            </StackPanel>
-                            <CheckBox Content="Use custom output location"
+                    <!-- End Period -->
+                    <StackPanel Grid.Column="2" Spacing="3">
+                        <TextBlock Text="End Period" FontSize="10" Foreground="#94A3B8"/>
+                        <TextBox x:Name="EndPeriodBox"
+                                 Text="{Binding EndPeriod}"
+                                 Watermark="YYYYMMDD (e.g., 20241127)"
+                                 FontSize="11"
+                                 Height="32"
+                                 Padding="8,6"
+                                 VerticalContentAlignment="Center"
+                                 Margin="0"
+                                 ToolTip.Tip="Enter end date in YYYYMMDD format (e.g., 20241127)"/>
+                    </StackPanel>
+
+                    <!-- Output Location -->
+                    <StackPanel Grid.Column="4" Spacing="3">
+                        <TextBlock Text="Output Location" FontSize="10" Foreground="#94A3B8"/>
+                        <!-- Checkbox and Browse Button Row -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <CheckBox Grid.Column="0"
+                                      Content="Use Custom Output Location"
                                       IsChecked="{Binding UseCustomLocation}"
-                                      FontSize="13"/>
-                            <Grid IsVisible="{Binding UseCustomLocation}" ColumnDefinitions="340,Auto">
-                                <TextBox Grid.Column="0"
-                                         Text="{Binding CustomOutputLocation}"
-                                         Watermark="Enter folder path..."
-                                         FontSize="13"
-                                         Margin="0,0,12,0"/>
-                                <Button Grid.Column="1"
-                                        Content="Browse"
-                                        Margin="0"
-                                        Command="{Binding BrowseOutputLocationCommand}"
-                                        FontSize="13"
-                                        MinWidth="90"
-                                        ToolTip.Tip="Browse for output folder"/>
-                            </Grid>
-                            <TextBlock Text="Default: exports/export" Classes="input-hint" IsVisible="{Binding !UseCustomLocation}"/>
-                        </StackPanel>
-                    </Border>
+                                      FontSize="10"
+                                      Margin="0"
+                                      VerticalAlignment="Center"
+                                      ToolTip.Tip="Check to specify a custom output location"/>
+                            <Button Grid.Column="1"
+                                    Command="{Binding BrowseOutputLocationCommand}"
+                                    Height="32"
+                                    Padding="6,0"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalContentAlignment="Center"
+                                    Margin="8,0,0,0"
+                                    ToolTip.Tip="Browse for output folder">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="📁" FontSize="14" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Browse" FontSize="10" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <!-- Info text when custom location is not enabled -->
+                        <TextBlock Text="Default: exports/export (from JSON configuration)"
+                                   FontSize="9"
+                                   Foreground="#64748B"
+                                   IsVisible="{Binding !UseCustomLocation}"
+                                   Margin="0,2,0,0"/>
+                        <!-- Custom textbox when enabled -->
+                        <TextBox x:Name="CustomOutputLocationBox"
+                                 Text="{Binding CustomOutputLocation}"
+                                 Watermark="Custom output path (e.g., C:\exports\data)"
+                                 FontSize="11"
+                                 Height="32"
+                                 Padding="8,6"
+                                 VerticalContentAlignment="Center"
+                                 Margin="0"
+                                 IsVisible="{Binding UseCustomLocation}"
+                                 ToolTip.Tip="Enter custom output path (e.g., C:\\exports\\data)"/>
+                    </StackPanel>
                 </Grid>
             </StackPanel>
         </StackPanel>
