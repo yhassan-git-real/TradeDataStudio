@@ -28,7 +28,7 @@ public interface IExportService
     Task<ExportResult> ExportToExcelAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1);
     Task<ExportResult> ExportToCsvAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1);
     Task<ExportResult> ExportToTextAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1);
-    Task<List<ExportResult>> ExportAllTablesAsync(List<string> tableNames, ExportFormat format, string outputDirectory, IDatabaseService? databaseService = null, string startPeriod = "", string endPeriod = "", OperationMode mode = OperationMode.Export, CancellationToken cancellationToken = default);
+    Task<List<ExportResult>> ExportAllTablesAsync(List<string> tableNames, ExportFormat format, string outputDirectory, IDatabaseService? databaseService = null, string startPeriod = "", string endPeriod = "", OperationMode mode = OperationMode.Export, CancellationToken cancellationToken = default, Func<string, Task<bool>>? zeroRecordPromptFunc = null);
     string GenerateFileName(string tableName, ExportFormat format, OperationMode mode, string startPeriod = "", string endPeriod = "", int tableSequence = 1);
 }
 

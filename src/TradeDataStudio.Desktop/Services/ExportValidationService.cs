@@ -85,6 +85,37 @@ public class ExportValidationService
         
         return new ExportValidationResult { IsValid = true };
     }
+
+    /// <summary>
+    /// Validates if a table has records. Returns validation result with record count.
+    /// </summary>
+    public async Task<TableRecordValidationResult> ValidateTableRecordCountAsync(
+        string tableName,
+        OperationMode currentMode)
+    {
+        try
+        {
+            var rowCount = await _databaseService.GetTableRecordCountAsync(tableName);
+            
+            return new TableRecordValidationResult
+            {
+                TableName = tableName,
+                RecordCount = rowCount,
+                HasRecords = rowCount > 0
+            };
+        }
+        catch (Exception ex)
+        {
+            await _loggingService.LogErrorAsync($"Failed to get record count for {tableName}", ex, currentMode);
+            return new TableRecordValidationResult
+            {
+                TableName = tableName,
+                RecordCount = -1,
+                HasRecords = true, // Assume has records if check fails to avoid blocking
+                ErrorMessage = ex.Message
+            };
+        }
+    }
 }
 
 /// <summary>
@@ -96,4 +127,15 @@ public class ExportValidationResult
     public string ErrorMessage { get; set; } = string.Empty;
     public List<string> TableIssues { get; set; } = new();
     public List<string> Suggestions { get; set; } = new();
+}
+
+/// <summary>
+/// Result of table record count validation.
+/// </summary>
+public class TableRecordValidationResult
+{
+    public string TableName { get; set; } = string.Empty;
+    public int RecordCount { get; set; }
+    public bool HasRecords { get; set; }
+    public string ErrorMessage { get; set; } = string.Empty;
 }

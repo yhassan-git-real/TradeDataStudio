@@ -21,6 +21,7 @@ public class WorkflowOrchestrator
     private readonly ILoggingService _loggingService;
     private readonly OutputPathResolver _pathResolver;
     private readonly ExportValidationService _validationService;
+    private readonly DialogService _dialogService;
 
     public WorkflowOrchestrator(
         IDatabaseService databaseService,
@@ -34,6 +35,7 @@ public class WorkflowOrchestrator
         _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
         _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
         _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
+        _dialogService = new DialogService();
     }
 
     /// <summary>
@@ -118,7 +120,8 @@ public class WorkflowOrchestrator
             startPeriod,
             endPeriod,
             currentMode,
-            cancellationToken);
+            cancellationToken,
+            async (tableName) => await _dialogService.ShowZeroRecordPromptAsync(tableName));
         
         var successCount = results.Count(r => r.Success);
         var totalRecords = results.Where(r => r.Success).Sum(r => r.RecordsExported);
@@ -133,6 +136,15 @@ public class WorkflowOrchestrator
                     ? "Export failed: Data too large for Excel (>1M rows). Try CSV format or filter data."
                     : $"Export failed: {failed.Message}";
                 logActivity(errorMsg, "⚠");
+            }
+            
+            // If all exports failed, throw exception to trigger cleanup
+            if (successCount == 0)
+            {
+                var errorMessage = failedExports.Count == 1 
+                    ? failedExports[0].Message 
+                    : $"{failedExports.Count} table(s) failed to export";
+                throw new InvalidOperationException(errorMessage);
             }
         }
         
