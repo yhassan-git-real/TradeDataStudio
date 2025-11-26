@@ -238,6 +238,19 @@ public partial class MainWindowViewModel : ViewModelBase
         _activityLog = new ActivityLogViewModel();
         _tableSelection = new TableSelectionViewModel(configurationService, loggingService);
 
+        // Wire up property change notifications from ConnectionStatusViewModel
+        _connectionStatus.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(ConnectionStatusViewModel.ConnectionStatus))
+                OnPropertyChanged(nameof(ConnectionStatus));
+            else if (e.PropertyName == nameof(ConnectionStatusViewModel.ConnectedServer))
+                OnPropertyChanged(nameof(ConnectedServer));
+            else if (e.PropertyName == nameof(ConnectionStatusViewModel.ConnectedDatabase))
+                OnPropertyChanged(nameof(ConnectedDatabase));
+            else if (e.PropertyName == nameof(ConnectionStatusViewModel.ConnectedUser))
+                OnPropertyChanged(nameof(ConnectedUser));
+        };
+
         // Initialize services
         _pathResolver = new OutputPathResolver(configurationService);
         _validationService = new ExportValidationService(databaseService, loggingService);
@@ -283,10 +296,21 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             await _loggingService.LogMainAsync("Starting MainWindowViewModel initialization...");
             
+            // Load stored procedures and tables
             await _operationMode.LoadStoredProceduresAsync();
             await _tableSelection.LoadOutputTablesAsync(CurrentMode);
+            
+            // Automatically test database connection on startup
+            await _loggingService.LogMainAsync("Testing database connection on startup...");
             await _connectionStatus.UpdateConnectionStatusAsync();
             
+            // Notify UI of connection status updates
+            OnPropertyChanged(nameof(ConnectionStatus));
+            OnPropertyChanged(nameof(ConnectedServer));
+            OnPropertyChanged(nameof(ConnectedDatabase));
+            OnPropertyChanged(nameof(ConnectedUser));
+            
+            // Load default operation mode
             var appSettings = await _configurationService.GetApplicationSettingsAsync();
             IsExportMode = appSettings.DefaultMode == OperationMode.Export;
             IsImportMode = !IsExportMode;

@@ -15,25 +15,26 @@
                     <TextBlock Text="{Binding ConnectionStatus}" 
                                FontSize="12" 
                                FontWeight="Medium" 
+                               Foreground="#E2E8F0"
                                VerticalAlignment="Center"/>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4" 
                            IsVisible="{Binding ConnectedServer.Length}">
-                    <TextBlock Text="Server:" FontSize="11" Foreground="#64748B"/>
-                    <TextBlock Text="{Binding ConnectedServer}" FontSize="11" FontWeight="Medium"/>
+                    <TextBlock Text="Server:" FontSize="11" Foreground="#94A3B8"/>
+                    <TextBlock Text="{Binding ConnectedServer}" FontSize="11" FontWeight="Medium" Foreground="#E2E8F0"/>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4"
                            IsVisible="{Binding ConnectedDatabase.Length}">
-                    <TextBlock Text="DB:" FontSize="11" Foreground="#64748B"/>
-                    <TextBlock Text="{Binding ConnectedDatabase}" FontSize="11" FontWeight="Medium"/>
+                    <TextBlock Text="DB:" FontSize="11" Foreground="#94A3B8"/>
+                    <TextBlock Text="{Binding ConnectedDatabase}" FontSize="11" FontWeight="Medium" Foreground="#E2E8F0"/>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4"
                            IsVisible="{Binding ConnectedUser.Length}">
-                    <TextBlock Text="User:" FontSize="11" Foreground="#64748B"/>
-                    <TextBlock Text="{Binding ConnectedUser}" FontSize="11" FontWeight="Medium"/>
+                    <TextBlock Text="User:" FontSize="11" Foreground="#94A3B8"/>
+                    <TextBlock Text="{Binding ConnectedUser}" FontSize="11" FontWeight="Medium" Foreground="#E2E8F0"/>
                 </StackPanel>
             </StackPanel>
             
@@ -43,25 +44,25 @@
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Center"
                        FontSize="12"
-                       Foreground="#6C757D"/>
+                       Foreground="#94A3B8"/>
                        
             <!-- Right: App Info, Version and Status -->
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="12" Margin="20,8">
                 <!-- Application Status -->
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <Ellipse Width="8" Height="8" Fill="#10B981" VerticalAlignment="Center"/>
-                    <TextBlock Text="Ready" FontSize="12" Foreground="#374151" FontWeight="Medium" VerticalAlignment="Center"/>
+                    <TextBlock Text="Ready" FontSize="12" Foreground="#E2E8F0" FontWeight="Medium" VerticalAlignment="Center"/>
                 </StackPanel>
                 
                 <!-- Version Badge -->
-                <Border Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1" CornerRadius="6" Padding="8,4">
-                    <TextBlock Text="v1.0.0" FontSize="11" FontWeight="SemiBold" Foreground="#059669"/>
+                <Border Background="#064E3B" BorderBrush="#10B981" BorderThickness="1" CornerRadius="6" Padding="8,4">
+                    <TextBlock Text="v1.0.0" FontSize="11" FontWeight="SemiBold" Foreground="#10B981"/>
                 </Border>
                 
                 <!-- Application Name -->
                 <TextBlock Text="TradeData Studio" 
                           FontSize="11" 
-                          Foreground="#64748B" 
+                          Foreground="#94A3B8" 
                           FontWeight="Medium"
                           VerticalAlignment="Center"/>
             </StackPanel>

@@ -16,36 +16,37 @@
         MaxHeight="450"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
-        Background="#F8FAFC">
+        Background="#0A1628">
 
     <Window.Styles>
         <Style Selector="Border.card">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="Background" Value="#162642"/>
+            <Setter Property="BorderBrush" Value="#2D4366"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="Padding" Value="12"/>
-            <Setter Property="BoxShadow" Value="0 2 4 0 #0F172A08"/>
+            <Setter Property="BoxShadow" Value="0 4 8 0 #00000040"/>
         </Style>
         
         <Style Selector="TextBlock.header">
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#F1F5F9"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
         
         <Style Selector="TextBlock.label">
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="FontSize" Value="11"/>
-            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
         
         <Style Selector="TextBox.input">
             <Setter Property="Padding" Value="8"/>
-            <Setter Property="BorderBrush" Value="#CBD5E1"/>
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#2D4366"/>
+            <Setter Property="Background" Value="#1E3456"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="12"/>
@@ -57,8 +58,15 @@
         </Style>
         
         <Style Selector="Button.primary">
-            <Setter Property="Background" Value="#3B82F6"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                        <GradientStop Color="#2563EB" Offset="0"/>
+                        <GradientStop Color="#1E40AF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="#F1F5F9"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -68,13 +76,20 @@
         </Style>
         
         <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                        <GradientStop Color="#1E40AF" Offset="0"/>
+                        <GradientStop Color="#1E3A8A" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
         </Style>
         
         <Style Selector="Button.secondary">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="#64748B"/>
-            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="Background" Value="#1E3456"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="BorderBrush" Value="#2D4366"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -84,8 +99,15 @@
         </Style>
         
         <Style Selector="Button.success">
-            <Setter Property="Background" Value="#059669"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                        <GradientStop Color="#10B981" Offset="0"/>
+                        <GradientStop Color="#059669" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="#F1F5F9"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -95,10 +117,27 @@
         </Style>
         
         <Style Selector="CheckBox.compact">
-            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="Margin" Value="0,4"/>
+        </Style>
+        
+        <!-- Status Message Styles -->
+        <Style Selector="Border.status-message">
+            <Setter Property="Background" Value="#1E3456"/>
+            <Setter Property="BorderBrush" Value="#3B82F6"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+        
+        <Style Selector="TextBlock.status-text">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="LineHeight" Value="18"/>
         </Style>
     </Window.Styles>
 
@@ -114,7 +153,7 @@
             <TextBlock Text="Database Settings" 
                        FontSize="16" 
                        FontWeight="Bold" 
-                       Foreground="#0F172A"/>
+                       Foreground="#F1F5F9"/>
         </StackPanel>
 
         <!-- Main Content -->
@@ -149,8 +188,9 @@
                                                Increment="5"
                                                ShowButtonSpinner="True"
                                                FormatString="0 seconds"
-                                               Background="White"
-                                               BorderBrush="#CBD5E1"
+                                               Background="#1E3456"
+                                               BorderBrush="#2D4366"
+                                               Foreground="#E2E8F0"
                                                CornerRadius="4"
                                                Height="32"
                                                FontSize="12"/>
@@ -181,7 +221,7 @@
                                 <TextBlock FontSize="14"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
-                                          Foreground="#64748B"
+                                          Foreground="#94A3B8"
                                           Text="{Binding AuthenticationChevron}"/>
                             </Button>
                         </Grid>
@@ -230,16 +270,10 @@
                                 Content="Test Connection"/>
                         
                         <!-- Status Message -->
-                        <Border Background="#F8FAFC" 
-                                BorderBrush="#E2E8F0" 
-                                BorderThickness="1" 
-                                CornerRadius="4" 
-                                Padding="8"
+                        <Border Classes="status-message"
                                 IsVisible="{Binding StatusMessage.Length}">
-                            <TextBlock Text="{Binding StatusMessage}" 
-                                       TextWrapping="Wrap"
-                                       FontSize="11"
-                                       LineHeight="16"/>
+                            <TextBlock Classes="status-text"
+                                       Text="{Binding StatusMessage}"/>
                         </Border>
                     </StackPanel>
                 </Border>
@@ -247,16 +281,19 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Compact Action Buttons -->
-        <Grid Grid.Row="2" ColumnDefinitions="1*,8,1*">
-            <Button Grid.Column="0" 
+        <!-- Action Buttons -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto" Margin="0,12,0,0">
+            <Button Grid.Column="1" 
                     Content="Cancel" 
                     Command="{Binding CancelCommand}"
-                    Classes="secondary"/>
+                    Classes="secondary"
+                    MinWidth="110"
+                    Margin="0,0,12,0"/>
             <Button Grid.Column="2"
                     Content="Save Settings" 
                     Command="{Binding SaveCommand}"
-                    Classes="success"/>
+                    Classes="success"
+                    MinWidth="130"/>
         </Grid>
     </Grid>
 </Window>

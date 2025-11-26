@@ -4,18 +4,18 @@
              x:Class="TradeDataStudio.Desktop.Views.Components.ActionsPanel"
              x:DataType="vm:MainWindowViewModel">
     
-    <Border Background="#FFFFFF"
-            BorderBrush="#E1E4E8"
+    <Border Background="#0F1D35"
+            BorderBrush="#2D4366"
             BorderThickness="1"
             CornerRadius="8"
             Padding="16"
             Margin="4,4,4,6"
-            BoxShadow="0 2 8 0 #0000000D">
+            BoxShadow="0 4 12 0 #00000050">
         <StackPanel Spacing="8">
             <TextBlock Text="Actions" 
                        FontSize="14" 
                        FontWeight="SemiBold" 
-                       Foreground="#586069"/>
+                       Foreground="#94A3B8"/>
             <!-- Button bar -->
             <WrapPanel ItemWidth="140" MinWidth="320">
                 <Button x:Name="ExecuteButton"
@@ -67,6 +67,7 @@
                         HotKey="Ctrl+Q"
                         Background="#DC2626"
                         BorderBrush="#B91C1C"
+                        Foreground="#F1F5F9"
                         Padding="12,8"
                         MinWidth="130"
                         Height="32"

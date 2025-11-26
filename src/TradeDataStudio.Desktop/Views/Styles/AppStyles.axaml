@@ -5,45 +5,45 @@
     <Style Selector="TextBlock">
         <Setter Property="Margin" Value="8,5,12,5"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Foreground" Value="#E2E8F0"/>
     </Style>
     <Style Selector="TextBlock.input-label">
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#1F2933"/>
+        <Setter Property="Foreground" Value="#F1F5F9"/>
         <Setter Property="Margin" Value="0,0,0,8"/>
     </Style>
     <Style Selector="TextBlock.input-hint">
         <Setter Property="FontSize" Value="11"/>
-        <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="Foreground" Value="#A8B8D1"/>
         <Setter Property="Margin" Value="0,6,0,0"/>
     </Style>
     <Style Selector="TextBlock.section-header">
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#2C3E50"/>
+        <Setter Property="Foreground" Value="#F1F5F9"/>
         <Setter Property="Margin" Value="0,0,0,8"/>
     </Style>
     <Style Selector="TextBlock.app-title">
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="#1A202C"/>
+        <Setter Property="Foreground" Value="#F1F5F9"/>
     </Style>
     <Style Selector="TextBlock.app-subtitle">
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="#64748B"/>
+        <Setter Property="Foreground" Value="#94A3B8"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.version-badge">
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#059669"/>
+        <Setter Property="Foreground" Value="#10B981"/>
     </Style>
     <Style Selector="TextBlock.icon-glyph">
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Foreground" Value="#1E3A8A"/>
+        <Setter Property="Foreground" Value="#60A5FA"/>
         <Setter Property="Margin" Value="0"/>
     </Style>
     
@@ -51,98 +51,121 @@
     <Style Selector="ComboBox">
         <Setter Property="Margin" Value="8"/>
         <Setter Property="MinWidth" Value="220"/>
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="BorderBrush" Value="#E1E5E9"/>
+        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Foreground" Value="#E2E8F0"/>
     </Style>
     <Style Selector="ComboBox:pointerover">
-        <Setter Property="Background" Value="#F8F9FA"/>
-        <Setter Property="BorderBrush" Value="#CED4DA"/>
+        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="BorderBrush" Value="#3B82F6"/>
     </Style>
     <Style Selector="ComboBox:focus">
-        <Setter Property="BorderBrush" Value="#86B7FE"/>
+        <Setter Property="BorderBrush" Value="#3B82F6"/>
+        <Setter Property="Background" Value="#1E3456"/>
     </Style>
     
     <!-- ComboBoxItem Styling -->
     <Style Selector="ComboBoxItem">
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Background" Value="#162642"/>
+        <Setter Property="Foreground" Value="#E2E8F0"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="ComboBoxItem:pointerover">
-        <Setter Property="Background" Value="#F8F9FA"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Foreground" Value="#F1F5F9"/>
     </Style>
     <Style Selector="ComboBoxItem:selected">
-        <Setter Property="Background" Value="#E7F3FF"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Background" Value="#2563EB"/>
+        <Setter Property="Foreground" Value="#F1F5F9"/>
     </Style>
     <Style Selector="ComboBoxItem:selected:pointerover">
-        <Setter Property="Background" Value="#D1ECFF"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Background" Value="#3B82F6"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
     </Style>
     
     <!-- TextBox Styling -->
     <Style Selector="TextBox">
         <Setter Property="Margin" Value="8"/>
         <Setter Property="MinWidth" Value="180"/>
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="BorderBrush" Value="#E1E5E9"/>
+        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="CaretBrush" Value="#60A5FA"/>
+        <Setter Property="SelectionBrush" Value="#2563EB"/>
     </Style>
     <Style Selector="TextBox:focus">
-        <Setter Property="BorderBrush" Value="#86B7FE"/>
+        <Setter Property="BorderBrush" Value="#3B82F6"/>
+    </Style>
+    <Style Selector="TextBox:pointerover">
+        <Setter Property="BorderBrush" Value="#3B82F6"/>
     </Style>
     
     <!-- RadioButton Styling -->
     <Style Selector="RadioButton">
         <Setter Property="Margin" Value="8"/>
-        <Setter Property="Foreground" Value="#495057"/>
+        <Setter Property="Foreground" Value="#E2E8F0"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="FontSize" Value="14"/>
     </Style>
     <Style Selector="RadioButton:pointerover">
-        <Setter Property="Foreground" Value="#667EEA"/>
+        <Setter Property="Foreground" Value="#60A5FA"/>
     </Style>
     <Style Selector="RadioButton:checked">
-        <Setter Property="Foreground" Value="#667EEA"/>
+        <Setter Property="Foreground" Value="#3B82F6"/>
+    </Style>
+    
+    <!-- CheckBox Styling -->
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="CheckBox:pointerover">
+        <Setter Property="Foreground" Value="#60A5FA"/>
+    </Style>
+    <Style Selector="CheckBox:checked">
+        <Setter Property="Foreground" Value="#3B82F6"/>
     </Style>
     
     <!-- Tooltip Styling -->
     <Style Selector="ToolTip">
-        <Setter Property="Background" Value="#2C3E50"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="#0F1D35"/>
+        <Setter Property="Foreground" Value="#E2E8F0"/>
         <Setter Property="Padding" Value="8,6"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="MaxWidth" Value="300"/>
+        <Setter Property="BorderBrush" Value="#2D4366"/>
+        <Setter Property="BorderThickness" Value="1"/>
     </Style>
     
     <!-- Border Styling -->
     <Style Selector="Border.section">
         <Setter Property="Margin" Value="8"/>
         <Setter Property="Padding" Value="12"/>
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="BorderBrush" Value="#E1E5E9"/>
+        <Setter Property="Background" Value="#162642"/>
+        <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
     </Style>
     <Style Selector="Border.version-badge">
-        <Setter Property="Background" Value="#D1FAE5"/>
+        <Setter Property="Background" Value="#064E3B"/>
         <Setter Property="Padding" Value="8,3"/>
         <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="BorderBrush" Value="#10B981"/>
+        <Setter Property="BorderThickness" Value="1"/>
     </Style>
     <Style Selector="Border.footer">
-        <Setter Property="Background" Value="#F8F9FA"/>
-        <Setter Property="BorderBrush" Value="#E1E5E9"/>
+        <Setter Property="Background" Value="#0F1D35"/>
+        <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="BorderThickness" Value="0,1,0,0"/>
         <Setter Property="Height" Value="50"/>
     </Style>
@@ -150,10 +173,29 @@
         <Setter Property="Width" Value="32"/>
         <Setter Property="Height" Value="32"/>
         <Setter Property="CornerRadius" Value="16"/>
-        <Setter Property="Background" Value="#E0F2FE"/>
+        <Setter Property="Background" Value="#1E3456"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Padding" Value="0"/>
+    </Style>
+    
+    <!-- Menu Styling -->
+    <Style Selector="Menu">
+        <Setter Property="Background" Value="#0F1D35"/>
+        <Setter Property="Foreground" Value="#E2E8F0"/>
+    </Style>
+    
+    <Style Selector="MenuItem">
+        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+    
+    <Style Selector="MenuItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1E3456"/>
+    </Style>
+    
+    <Style Selector="MenuItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1E3456"/>
     </Style>
     
 </Styles>
