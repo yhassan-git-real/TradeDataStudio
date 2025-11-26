@@ -8,15 +8,15 @@
             Background="#CC000000"
             ZIndex="1000">
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Border Background="#F8FAFC"
+            <Border Background="#0F1D35"
                     CornerRadius="8"
-                    BorderBrush="#E2E8F0"
+                    BorderBrush="#2D4366"
                     BorderThickness="1"
                     Padding="20"
                     MinWidth="450"
                     MaxWidth="550"
                     MaxHeight="400"
-                    BoxShadow="0 4 12 0 #0F172A20">
+                    BoxShadow="0 8 24 0 #00000080">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -32,10 +32,10 @@
                             <TextBlock Text="Select Output Tables" 
                                        FontSize="18" 
                                        FontWeight="Bold" 
-                                       Foreground="#2C3E50"/>
+                                       Foreground="#F1F5F9"/>
                             <TextBlock Text="{Binding SelectedStoredProcedure.DisplayName, StringFormat='Tables for: {0}'}" 
                                        FontSize="12" 
-                                       Foreground="#7F8C8D"/>
+                                       Foreground="#94A3B8"/>
                         </StackPanel>
                     </StackPanel>
                     
@@ -44,15 +44,15 @@
                                Text="Select the tables you want to export. Only tables associated with the selected stored procedure are shown."
                                TextWrapping="Wrap"
                                FontSize="12"
-                               Foreground="#6C757D"
+                               Foreground="#94A3B8"
                                Margin="0,0,0,16"/>
                     
                     <!-- Table List -->
                     <Border Grid.Row="2" 
                             CornerRadius="8" 
-                            BorderBrush="#E1E5E9" 
+                            BorderBrush="#2D4366" 
                             BorderThickness="1" 
-                            Background="#FAFBFC">
+                            Background="#162642">
                         <ScrollViewer MaxHeight="250">
                             <ItemsControl ItemsSource="{Binding AvailableOutputTables}">
                                 <ItemsControl.ItemTemplate>
@@ -62,7 +62,7 @@
                                                 Margin="4,2">
                                             <Border.Styles>
                                                 <Style Selector="Border:pointerover">
-                                                    <Setter Property="Background" Value="#F0F8FF"/>
+                                                    <Setter Property="Background" Value="#1E3456"/>
                                                     <Setter Property="CornerRadius" Value="6"/>
                                                 </Style>
                                             </Border.Styles>
