@@ -109,18 +109,8 @@
             <components:FooterBar/>
         </Border>
         
-        <!-- Main Content with Gradient Background -->
-        <Border>
-            <Border.Background>
-                <VisualBrush TileMode="Tile" SourceRect="0,0,50,50" DestinationRect="0,0,50,50" Stretch="None">
-                    <VisualBrush.Visual>
-                        <Canvas Width="50" Height="50" Background="#FFFFFF">
-                            <Rectangle Width="50" Height="1" Fill="#3B82F60D" Canvas.Top="0"/>
-                            <Rectangle Width="1" Height="50" Fill="#3B82F60D" Canvas.Left="0"/>
-                        </Canvas>
-                    </VisualBrush.Visual>
-                </VisualBrush>
-            </Border.Background>
+        <!-- Main Content -->
+        <Border Background="#FFFFFF">
             
             <ScrollViewer ClipToBounds="False">
                 <StackPanel Margin="12,6">
