@@ -91,7 +91,8 @@ public class WorkflowOrchestrator
         string customOutputLocation,
         Action<double> updateProgress,
         Action<string, string> logActivity,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        bool isDirectDownload = true)
     {
         // Validate Excel exports
         if (format == ExportFormat.Excel)
@@ -121,7 +122,8 @@ public class WorkflowOrchestrator
             endPeriod,
             currentMode,
             cancellationToken,
-            async (tableName) => await _dialogService.ShowZeroRecordPromptAsync(tableName));
+            async (tableName) => await _dialogService.ShowZeroRecordPromptAsync(tableName),
+            isDirectDownload);
         
         var successCount = results.Count(r => r.Success);
         var totalRecords = results.Where(r => r.Success).Sum(r => r.RecordsExported);
@@ -227,7 +229,8 @@ public class WorkflowOrchestrator
                 
                 workflowResult.ExportResults = await ExportDataAsync(
                     tablesToExport, format, startPeriod, endPeriod, currentMode,
-                    useCustomLocation, customOutputLocation, updateProgress, logActivity, cancellationToken);
+                    useCustomLocation, customOutputLocation, updateProgress, logActivity, cancellationToken,
+                    isDirectDownload: false);
                 
                 var successCount = workflowResult.ExportResults.Count(r => r.Success);
                 var totalExportedRecords = workflowResult.ExportResults.Where(r => r.Success).Sum(r => r.RecordsExported);

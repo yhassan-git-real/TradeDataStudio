@@ -22,7 +22,7 @@
         <StyleInclude Source="/Views/Styles/AppStyles.axaml"/>
         <StyleInclude Source="/Views/Styles/ButtonStyles.axaml"/>
         <StyleInclude Source="/Views/Styles/FormStyles.axaml"/>
-
+        <StyleInclude Source="/Views/Styles/AnimationStyles.axaml"/>
     </Window.Styles>
 
     <Grid>

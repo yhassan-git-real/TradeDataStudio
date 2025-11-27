@@ -7,9 +7,9 @@
         <Setter Property="MinWidth" Value="100"/>
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#2563EB" Offset="0"/>
-                    <GradientStop Color="#1E40AF" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E40AF" Offset="0"/>
+                    <GradientStop Color="#2563EB" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
@@ -21,18 +21,25 @@
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button:pointerover">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#1E40AF" Offset="0"/>
-                    <GradientStop Color="#1E3A8A" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E3A8A" Offset="0"/>
+                    <GradientStop Color="#1E40AF" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#1E3A8A"/>
-        <Setter Property="RenderTransform" Value="scale(1.02)"/>
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
     <Style Selector="Button:pressed">
         <Setter Property="RenderTransform" Value="scale(0.98)"/>
@@ -42,72 +49,96 @@
     <Style Selector="Button.primary-button">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#10B981" Offset="0"/>
-                    <GradientStop Color="#059669" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#059669" Offset="0"/>
+                    <GradientStop Color="#10B981" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#059669"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.primary-button:pointerover">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#059669" Offset="0"/>
-                    <GradientStop Color="#047857" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#047857" Offset="0"/>
+                    <GradientStop Color="#059669" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#047857"/>
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
     
     <!-- Secondary Button -->
     <Style Selector="Button.secondary-button">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#475569" Offset="0"/>
-                    <GradientStop Color="#334155" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#334155" Offset="0"/>
+                    <GradientStop Color="#475569" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#334155"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.secondary-button:pointerover">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#334155" Offset="0"/>
-                    <GradientStop Color="#1E293B" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E293B" Offset="0"/>
+                    <GradientStop Color="#334155" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#1E293B"/>
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
     
     <!-- Success Button -->
     <Style Selector="Button.success-button">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#06B6D4" Offset="0"/>
-                    <GradientStop Color="#0891B2" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#0891B2" Offset="0"/>
+                    <GradientStop Color="#06B6D4" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#0891B2"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.success-button:pointerover">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#0891B2" Offset="0"/>
-                    <GradientStop Color="#0E7490" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#0E7490" Offset="0"/>
+                    <GradientStop Color="#0891B2" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#0E7490"/>
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
     
     <!-- Action Button Base -->
@@ -131,62 +162,101 @@
     <Style Selector="Button.action-button.primary">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#2563EB" Offset="0"/>
-                    <GradientStop Color="#1E40AF" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E40AF" Offset="0"/>
+                    <GradientStop Color="#2563EB" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#1E40AF"/>
         <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.action-button.primary:pointerover">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#1E40AF" Offset="0"/>
-                    <GradientStop Color="#1E3A8A" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E3A8A" Offset="0"/>
+                    <GradientStop Color="#1E40AF" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#1E3A8A"/>
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
     
     <!-- Action Button Success -->
     <Style Selector="Button.action-button.success">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#10B981" Offset="0"/>
-                    <GradientStop Color="#059669" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#059669" Offset="0"/>
+                    <GradientStop Color="#10B981" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#059669"/>
         <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.action-button.success:pointerover">
         <Setter Property="Background">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#059669" Offset="0"/>
-                    <GradientStop Color="#047857" Offset="1"/>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#047857" Offset="0"/>
+                    <GradientStop Color="#059669" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush" Value="#047857"/>
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
     
     <!-- Action Button Neutral -->
     <Style Selector="Button.action-button.neutral">
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E3456" Offset="0"/>
+                    <GradientStop Color="#2D4366" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                <BrushTransition Property="Foreground" Duration="0:0:0.25"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.action-button.neutral:pointerover">
-        <Setter Property="Background" Value="#2D4366"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#2D4366" Offset="0"/>
+                    <GradientStop Color="#3B82F6" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderBrush" Value="#3B82F6"/>
         <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
     
 </Styles>

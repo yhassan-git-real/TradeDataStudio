@@ -11,6 +11,7 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="/Views/Styles/AnimationStyles.axaml"/>
         
         <!-- Global Theme Resources -->
         <Style>
@@ -37,6 +38,30 @@
                 <SolidColorBrush x:Key="DefaultBorder">#2D4366</SolidColorBrush>
                 <SolidColorBrush x:Key="FocusBorder">#3B82F6</SolidColorBrush>
                 <SolidColorBrush x:Key="DisabledColor">#475569</SolidColorBrush>
+                
+                <!-- Dual-Tone Gradient Brushes -->
+                <!-- Background Gradients -->
+                <LinearGradientBrush x:Key="BackgroundGradientDark" StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#0A1628" Offset="0"/>
+                    <GradientStop Color="#0F1D35" Offset="1"/>
+                </LinearGradientBrush>
+                <LinearGradientBrush x:Key="BackgroundGradientMed" StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#0F1D35" Offset="0"/>
+                    <GradientStop Color="#162642" Offset="1"/>
+                </LinearGradientBrush>
+                <LinearGradientBrush x:Key="CardGradientDual" StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#162642" Offset="0"/>
+                    <GradientStop Color="#1E3456" Offset="1"/>
+                </LinearGradientBrush>
+                <!-- Accent Gradients -->
+                <LinearGradientBrush x:Key="BlueAccentGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E40AF" Offset="0"/>
+                    <GradientStop Color="#2563EB" Offset="1"/>
+                </LinearGradientBrush>
+                <LinearGradientBrush x:Key="BlueAccentGradientLight" StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#2563EB" Offset="0"/>
+                    <GradientStop Color="#3B82F6" Offset="1"/>
+                </LinearGradientBrush>
             </Style.Resources>
         </Style>
         
@@ -44,6 +69,12 @@
         <Style Selector="ComboBoxItem">
             <Setter Property="Background" Value="#162642"/>
             <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
         </Style>
         <Style Selector="ComboBoxItem:pointerover">
             <Setter Property="Background" Value="#1E3456"/>

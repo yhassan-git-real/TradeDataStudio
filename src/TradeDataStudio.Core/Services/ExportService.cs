@@ -51,12 +51,13 @@ namespace TradeDataStudio.Core.Services
             OperationMode mode = OperationMode.Export,
             string startPeriod = "",
             string endPeriod = "",
-            int tableSequence = 1)
+            int tableSequence = 1,
+            bool isDirectDownload = false)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
-                var fileName = GenerateFileName(tableName, ExportFormat.Excel, mode, startPeriod, endPeriod, tableSequence);
+                var fileName = GenerateFileName(tableName, ExportFormat.Excel, mode, startPeriod, endPeriod, tableSequence, isDirectDownload);
                 var fullPath = Path.Combine(outputPath, fileName);
                 
                 Directory.CreateDirectory(outputPath);
@@ -166,12 +167,13 @@ namespace TradeDataStudio.Core.Services
             OperationMode mode = OperationMode.Export,
             string startPeriod = "",
             string endPeriod = "",
-            int tableSequence = 1)
+            int tableSequence = 1,
+            bool isDirectDownload = false)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
-                var fileName = GenerateFileName(tableName, ExportFormat.CSV, mode, startPeriod, endPeriod, tableSequence);
+                var fileName = GenerateFileName(tableName, ExportFormat.CSV, mode, startPeriod, endPeriod, tableSequence, isDirectDownload);
                 var fullPath = Path.Combine(outputPath, fileName);
                 
                 Directory.CreateDirectory(outputPath);
@@ -246,12 +248,13 @@ namespace TradeDataStudio.Core.Services
             OperationMode mode = OperationMode.Export,
             string startPeriod = "",
             string endPeriod = "",
-            int tableSequence = 1)
+            int tableSequence = 1,
+            bool isDirectDownload = false)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
-                var fileName = GenerateFileName(tableName, ExportFormat.TXT, mode, startPeriod, endPeriod, tableSequence);
+                var fileName = GenerateFileName(tableName, ExportFormat.TXT, mode, startPeriod, endPeriod, tableSequence, isDirectDownload);
                 var fullPath = Path.Combine(outputPath, fileName);
                 
                 Directory.CreateDirectory(outputPath);
@@ -316,7 +319,8 @@ namespace TradeDataStudio.Core.Services
             string endPeriod = "",
             OperationMode mode = OperationMode.Export,
             CancellationToken cancellationToken = default,
-            Func<string, Task<bool>>? zeroRecordPromptFunc = null)
+            Func<string, Task<bool>>? zeroRecordPromptFunc = null,
+            bool isDirectDownload = false)
         {
             var results = new List<ExportResult>();
             int tableIndex = 0;
@@ -377,9 +381,9 @@ namespace TradeDataStudio.Core.Services
                         
                         var result = format switch
                         {
-                            ExportFormat.Excel => await ExportToExcelAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
-                            ExportFormat.CSV => await ExportToCsvAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
-                            ExportFormat.TXT => await ExportToTextAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex),
+                            ExportFormat.Excel => await ExportToExcelAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload),
+                            ExportFormat.CSV => await ExportToCsvAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload),
+                            ExportFormat.TXT => await ExportToTextAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload),
                             _ => new ExportResult { Success = false, Message = $"Unsupported format: {format}" }
                         };
                         
@@ -418,9 +422,8 @@ namespace TradeDataStudio.Core.Services
             return results;
         }
 
-        public string GenerateFileName(string tableName, ExportFormat format, OperationMode mode, string startPeriod = "", string endPeriod = "", int tableSequence = 1)
+        public string GenerateFileName(string tableName, ExportFormat format, OperationMode mode, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false)
         {
-            var modePrefix = mode == OperationMode.Export ? "EX" : "IM";
             var extension = format switch
             {
                 ExportFormat.Excel => "xlsx",
@@ -430,6 +433,16 @@ namespace TradeDataStudio.Core.Services
                 ExportFormat.XML => "xml",
                 _ => "dat"
             };
+            
+            // Direct downloads use tablename_timestamp format
+            if (isDirectDownload)
+            {
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                return $"{tableName}_{timestamp}.{extension}";
+            }
+            
+            // Batch operations use the existing format
+            var modePrefix = mode == OperationMode.Export ? "EX" : "IM";
             
             // Generate period string from parameters (e.g., JAN25_01-20)
             string periodStr = "";

@@ -51,20 +51,47 @@
     <Style Selector="ComboBox">
         <Setter Property="Margin" Value="8"/>
         <Setter Property="MinWidth" Value="220"/>
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#162642" Offset="0"/>
+                    <GradientStop Color="#1E3456" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="ComboBox:pointerover">
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E3456" Offset="0"/>
+                    <GradientStop Color="#2D4366" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderBrush" Value="#3B82F6"/>
     </Style>
     <Style Selector="ComboBox:focus">
         <Setter Property="BorderBrush" Value="#3B82F6"/>
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E3456" Offset="0"/>
+                    <GradientStop Color="#2D4366" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
     </Style>
     
     <!-- ComboBoxItem Styling -->
@@ -92,7 +119,14 @@
     <Style Selector="TextBox">
         <Setter Property="Margin" Value="8"/>
         <Setter Property="MinWidth" Value="180"/>
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#162642" Offset="0"/>
+                    <GradientStop Color="#1E3456" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
@@ -100,9 +134,23 @@
         <Setter Property="Foreground" Value="#E2E8F0"/>
         <Setter Property="CaretBrush" Value="#60A5FA"/>
         <Setter Property="SelectionBrush" Value="#2563EB"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="TextBox:focus">
         <Setter Property="BorderBrush" Value="#3B82F6"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E3456" Offset="0"/>
+                    <GradientStop Color="#2D4366" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
     </Style>
     <Style Selector="TextBox:pointerover">
         <Setter Property="BorderBrush" Value="#3B82F6"/>
@@ -151,10 +199,23 @@
     <Style Selector="Border.section">
         <Setter Property="Margin" Value="8"/>
         <Setter Property="Padding" Value="12"/>
-        <Setter Property="Background" Value="#162642"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#162642" Offset="0"/>
+                    <GradientStop Color="#1E3456" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderBrush" Value="#2D4366"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Border.version-badge">
         <Setter Property="Background" Value="#064E3B"/>
@@ -173,10 +234,22 @@
         <Setter Property="Width" Value="32"/>
         <Setter Property="Height" Value="32"/>
         <Setter Property="CornerRadius" Value="16"/>
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#1E3456" Offset="0"/>
+                    <GradientStop Color="#2D4366" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Padding" Value="0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
     </Style>
     
     <!-- Menu Styling -->
