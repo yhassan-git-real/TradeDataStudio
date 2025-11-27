@@ -122,3 +122,10 @@ public class ExportResult
     public string Message { get; set; } = string.Empty;
     public Exception? Exception { get; set; }
 }
+
+public class StoredProcedureValidationResult
+{
+    public bool IsValid { get; set; }
+    public string? ErrorMessage { get; set; }
+    public string ProcedureName { get; set; } = string.Empty;
+}

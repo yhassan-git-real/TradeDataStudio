@@ -14,6 +14,7 @@ public partial class OperationModeViewModel : ObservableObject
 {
     private readonly IConfigurationService _configurationService;
     private readonly ILoggingService _loggingService;
+    private readonly IStoredProcedureValidator _procedureValidator;
 
     [ObservableProperty]
     private bool _isExportMode = true;
@@ -24,6 +25,12 @@ public partial class OperationModeViewModel : ObservableObject
     [ObservableProperty]
     private StoredProcedureDefinition? _selectedStoredProcedure;
 
+    [ObservableProperty]
+    private bool _isStoredProcedureValidationError = false;
+
+    [ObservableProperty]
+    private string _storedProcedureValidationErrorMessage = string.Empty;
+
     public ObservableCollection<StoredProcedureDefinition> AvailableStoredProcedures { get; } = new();
 
     public OperationMode CurrentMode => IsExportMode ? OperationMode.Export : OperationMode.Import;
@@ -33,10 +40,12 @@ public partial class OperationModeViewModel : ObservableObject
 
     public OperationModeViewModel(
         IConfigurationService configurationService,
-        ILoggingService loggingService)
+        ILoggingService loggingService,
+        IStoredProcedureValidator procedureValidator)
     {
         _configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
         _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+        _procedureValidator = procedureValidator ?? throw new ArgumentNullException(nameof(procedureValidator));
     }
 
     /// <summary>
@@ -97,5 +106,59 @@ public partial class OperationModeViewModel : ObservableObject
         StoredProcedureChanged?.Invoke(this, EventArgs.Empty);
         Console.WriteLine($"    Event invoked. Subscriber count: {StoredProcedureChanged?.GetInvocationList().Length ?? 0}");
         Console.WriteLine($"*** OperationModeViewModel.OnSelectedStoredProcedureChanged COMPLETED ***\n");
+    }
+
+    /// <summary>
+    /// Validates the selected stored procedure asynchronously.
+    /// Updates validation error state if procedure doesn't exist.
+    /// </summary>
+    public async Task ValidateSelectedProcedureAsync()
+    {
+        try
+        {
+            // Clear validation if no procedure selected
+            if (SelectedStoredProcedure == null)
+            {
+                ClearValidationError();
+                return;
+            }
+
+            // Validate the selected procedure
+            var validationResult = await _procedureValidator.ValidateStoredProcedureAsync(
+                SelectedStoredProcedure.Name);
+
+            if (!validationResult.IsValid)
+            {
+                SetValidationError(validationResult.ErrorMessage ?? "Stored procedure validation failed");
+            }
+            else
+            {
+                ClearValidationError();
+            }
+        }
+        catch (Exception ex)
+        {
+            var errorMsg = "Error validating stored procedure";
+            SetValidationError(errorMsg);
+            await _loggingService.LogErrorAsync($"{errorMsg}: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Clears validation error state.
+    /// </summary>
+    public void ClearValidationError()
+    {
+        IsStoredProcedureValidationError = false;
+        StoredProcedureValidationErrorMessage = string.Empty;
+    }
+
+    /// <summary>
+    /// Sets validation error state with error message.
+    /// </summary>
+    private void SetValidationError(string errorMessage)
+    {
+        IsStoredProcedureValidationError = true;
+        StoredProcedureValidationErrorMessage = errorMessage;
     }
 }

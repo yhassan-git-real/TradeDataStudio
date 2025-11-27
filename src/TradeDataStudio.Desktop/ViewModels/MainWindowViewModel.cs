@@ -204,6 +204,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public OperationMode CurrentMode => _operationMode.CurrentMode;
 
+    public bool IsStoredProcedureValidationError => _operationMode.IsStoredProcedureValidationError;
+    public string StoredProcedureValidationErrorMessage => _operationMode.StoredProcedureValidationErrorMessage;
+
     // Commands (exposed from command handlers)
     public ICommand ExecuteCommand => _workflowCommands.ExecuteCommand;
     public ICommand ExportCommand => _workflowCommands.ExportCommand;
@@ -226,7 +229,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand ShowAboutCommand => _menuCommands.ShowAboutCommand;
 
     // Parameterless constructor for XAML designer
-    public MainWindowViewModel() : this(null!, null!, null!, null!)
+    public MainWindowViewModel() : this(null!, null!, null!, null!, null!)
     {
     }
 
@@ -234,7 +237,8 @@ public partial class MainWindowViewModel : ViewModelBase
         IConfigurationService configurationService,
         IDatabaseService databaseService,
         IExportService exportService,
-        ILoggingService loggingService)
+        ILoggingService loggingService,
+        IStoredProcedureValidator procedureValidator)
     {
         _configurationService = configurationService;
         _databaseService = databaseService;
@@ -243,7 +247,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         // Initialize sub-viewmodels
         _connectionStatus = new ConnectionStatusViewModel(configurationService, databaseService);
-        _operationMode = new OperationModeViewModel(configurationService, loggingService);
+        _operationMode = new OperationModeViewModel(configurationService, loggingService, procedureValidator);
         _activityLog = new ActivityLogViewModel();
         _tableSelection = new TableSelectionViewModel(configurationService, loggingService);
         
@@ -261,6 +265,15 @@ public partial class MainWindowViewModel : ViewModelBase
                 OnPropertyChanged(nameof(ConnectedDatabase));
             else if (e.PropertyName == nameof(ConnectionStatusViewModel.ConnectedUser))
                 OnPropertyChanged(nameof(ConnectedUser));
+        };
+
+        // Wire up property change notifications from OperationModeViewModel
+        _operationMode.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(OperationModeViewModel.IsStoredProcedureValidationError))
+                OnPropertyChanged(nameof(IsStoredProcedureValidationError));
+            else if (e.PropertyName == nameof(OperationModeViewModel.StoredProcedureValidationErrorMessage))
+                OnPropertyChanged(nameof(StoredProcedureValidationErrorMessage));
         };
 
         // Initialize services
@@ -366,6 +379,20 @@ public partial class MainWindowViewModel : ViewModelBase
         Console.WriteLine($"\n=== OnStoredProcedureChangedAsync TRIGGERED ===");
         Console.WriteLine($"  SelectedStoredProcedure: {SelectedStoredProcedure?.DisplayName ?? "NULL"}");
         Console.WriteLine($"  CurrentMode: {CurrentMode}");
+        
+        // Validate the selected stored procedure
+        Console.WriteLine($"  Validating stored procedure...");
+        await _operationMode.ValidateSelectedProcedureAsync();
+        
+        if (_operationMode.IsStoredProcedureValidationError)
+        {
+            Console.WriteLine($"  ❌ Validation failed: {_operationMode.StoredProcedureValidationErrorMessage}");
+            OnPropertyChanged(nameof(IsExportMode)); // Trigger UI update for validation display
+            RefreshCommandStates();
+            return;
+        }
+        
+        Console.WriteLine($"  ✅ Validation passed");
         Console.WriteLine($"  Calling FilterOutputTablesForSelectedProcedureAsync...");
         
         await _tableSelection.FilterOutputTablesForSelectedProcedureAsync(
@@ -385,6 +412,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         return !IsOperationInProgress && 
                SelectedStoredProcedure != null && 
+               !_operationMode.IsStoredProcedureValidationError &&
                !string.IsNullOrWhiteSpace(StartPeriod) && 
                !string.IsNullOrWhiteSpace(EndPeriod);
     }
