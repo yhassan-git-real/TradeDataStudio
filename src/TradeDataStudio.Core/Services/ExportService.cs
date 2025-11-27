@@ -52,11 +52,14 @@ namespace TradeDataStudio.Core.Services
             string startPeriod = "",
             string endPeriod = "",
             int tableSequence = 1,
-            bool isDirectDownload = false)
+            bool isDirectDownload = false,
+            CancellationToken cancellationToken = default)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var fileName = GenerateFileName(tableName, ExportFormat.Excel, mode, startPeriod, endPeriod, tableSequence, isDirectDownload);
                 var fullPath = Path.Combine(outputPath, fileName);
                 
@@ -81,11 +84,15 @@ namespace TradeDataStudio.Core.Services
                 // Run export in background task to prevent UI blocking
                 await Task.Run(async () =>
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    
                     using var package = new ExcelPackage();
                     var worksheet = package.Workbook.Worksheets.Add(tableName);
 
                     // Use EPPlus LoadFromDataTable for bulk insertion (60-80% faster than cell-by-cell)
                     worksheet.Cells["A1"].LoadFromDataTable(data, true);
+                    
+                    cancellationToken.ThrowIfCancellationRequested();
                     
                     // Format header row
                     using (var headerRange = worksheet.Cells[1, 1, 1, data.Columns.Count])
@@ -93,6 +100,8 @@ namespace TradeDataStudio.Core.Services
                         headerRange.Style.Font.Bold = true;
                         headerRange.Style.Font.Size = 11;
                     }
+                    
+                    cancellationToken.ThrowIfCancellationRequested();
                     
                     // Apply column-level formatting based on data types (much faster than per-cell)
                     for (int col = 0; col < data.Columns.Count; col++)
@@ -117,6 +126,8 @@ namespace TradeDataStudio.Core.Services
                             }
                         }
                     }
+                    
+                    cancellationToken.ThrowIfCancellationRequested();
                     
                     // Log progress for large datasets (throttled to every 25% completion)
                     if (totalRows > 100000)
@@ -146,6 +157,18 @@ namespace TradeDataStudio.Core.Services
                 await _loggingService.LogSuccessAsync($"Excel export completed: {fileName} ({data.Rows.Count:N0} rows, {fileInfo.Length / 1024.0 / 1024.0:F2} MB, {stopwatch.Elapsed.TotalSeconds:F2}s)", OperationMode.Export);
                 return result;
             }
+            catch (OperationCanceledException)
+            {
+                stopwatch.Stop();
+                await _loggingService.LogMainAsync($"Excel export for {tableName} cancelled by user after {stopwatch.Elapsed.TotalSeconds:F2}s");
+                return new ExportResult
+                {
+                    Success = false,
+                    Message = "Export cancelled by user",
+                    Format = ExportFormat.Excel,
+                    Exception = new OperationCanceledException()
+                };
+            }
             catch (Exception ex)
             {
                 stopwatch.Stop();
@@ -168,11 +191,14 @@ namespace TradeDataStudio.Core.Services
             string startPeriod = "",
             string endPeriod = "",
             int tableSequence = 1,
-            bool isDirectDownload = false)
+            bool isDirectDownload = false,
+            CancellationToken cancellationToken = default)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var fileName = GenerateFileName(tableName, ExportFormat.CSV, mode, startPeriod, endPeriod, tableSequence, isDirectDownload);
                 var fullPath = Path.Combine(outputPath, fileName);
                 
@@ -197,15 +223,23 @@ namespace TradeDataStudio.Core.Services
                 }
                 await csv.NextRecordAsync();
 
-                // Write data rows
+                // Write data rows with cancellation checks every 10000 rows
+                int rowCount = 0;
                 foreach (DataRow row in data.Rows)
                 {
+                    // Check cancellation periodically to avoid excessive overhead
+                    if (rowCount % 10000 == 0)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+
                     for (int i = 0; i < data.Columns.Count; i++)
                     {
                         var value = row[i] == DBNull.Value ? string.Empty : row[i]?.ToString() ?? string.Empty;
                         csv.WriteField(value);
                     }
                     await csv.NextRecordAsync();
+                    rowCount++;
                 }
 
                 await csv.FlushAsync();
@@ -226,6 +260,18 @@ namespace TradeDataStudio.Core.Services
 
                 await _loggingService.LogSuccessAsync($"CSV export completed: {fileName}", OperationMode.Export);
                 return result;
+            }
+            catch (OperationCanceledException)
+            {
+                stopwatch.Stop();
+                await _loggingService.LogMainAsync($"CSV export for {tableName} cancelled by user after {stopwatch.Elapsed.TotalSeconds:F2}s");
+                return new ExportResult
+                {
+                    Success = false,
+                    Message = "Export cancelled by user",
+                    Format = ExportFormat.CSV,
+                    Exception = new OperationCanceledException()
+                };
             }
             catch (Exception ex)
             {
@@ -249,11 +295,14 @@ namespace TradeDataStudio.Core.Services
             string startPeriod = "",
             string endPeriod = "",
             int tableSequence = 1,
-            bool isDirectDownload = false)
+            bool isDirectDownload = false,
+            CancellationToken cancellationToken = default)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var fileName = GenerateFileName(tableName, ExportFormat.TXT, mode, startPeriod, endPeriod, tableSequence, isDirectDownload);
                 var fullPath = Path.Combine(outputPath, fileName);
                 
@@ -265,9 +314,16 @@ namespace TradeDataStudio.Core.Services
                 var headers = data.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
                 sb.AppendLine(string.Join("\t", headers));
                 
-                // Add data rows
+                // Add data rows with cancellation checks every 10000 rows
+                int rowCount = 0;
                 foreach (DataRow row in data.Rows)
                 {
+                    // Check cancellation periodically to avoid excessive overhead
+                    if (rowCount % 10000 == 0)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+
                     var values = new List<string>();
                     for (int i = 0; i < data.Columns.Count; i++)
                     {
@@ -275,6 +331,7 @@ namespace TradeDataStudio.Core.Services
                         values.Add(value);
                     }
                     sb.AppendLine(string.Join("\t", values));
+                    rowCount++;
                 }
 
                 await File.WriteAllTextAsync(fullPath, sb.ToString(), Encoding.UTF8);
@@ -295,6 +352,18 @@ namespace TradeDataStudio.Core.Services
 
                 await _loggingService.LogSuccessAsync($"Text export completed: {fileName}", OperationMode.Export);
                 return result;
+            }
+            catch (OperationCanceledException)
+            {
+                stopwatch.Stop();
+                await _loggingService.LogMainAsync($"Text export for {tableName} cancelled by user after {stopwatch.Elapsed.TotalSeconds:F2}s");
+                return new ExportResult
+                {
+                    Success = false,
+                    Message = "Export cancelled by user",
+                    Format = ExportFormat.TXT,
+                    Exception = new OperationCanceledException()
+                };
             }
             catch (Exception ex)
             {
@@ -345,7 +414,7 @@ namespace TradeDataStudio.Core.Services
                             await _loggingService.LogMainAsync($"Querying data from table: {tableName}...");
                             
                             // Query data - DatabaseService handles streaming internally
-                            data = await databaseService.QueryTableAsync(tableName);
+                            data = await databaseService.QueryTableAsync(tableName, cancellationToken);
                             
                             await _loggingService.LogMainAsync($"Retrieved {data.Rows.Count:N0} rows from {tableName}");
                             
@@ -381,9 +450,9 @@ namespace TradeDataStudio.Core.Services
                         
                         var result = format switch
                         {
-                            ExportFormat.Excel => await ExportToExcelAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload),
-                            ExportFormat.CSV => await ExportToCsvAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload),
-                            ExportFormat.TXT => await ExportToTextAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload),
+                            ExportFormat.Excel => await ExportToExcelAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload, cancellationToken),
+                            ExportFormat.CSV => await ExportToCsvAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload, cancellationToken),
+                            ExportFormat.TXT => await ExportToTextAsync(tableName, outputDirectory, data, mode, startPeriod, endPeriod, tableIndex, isDirectDownload, cancellationToken),
                             _ => new ExportResult { Success = false, Message = $"Unsupported format: {format}" }
                         };
                         
@@ -413,10 +482,11 @@ namespace TradeDataStudio.Core.Services
                     }
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                // Ensure any database connections are properly released
-                // Let runtime manage garbage collection naturally
+                // Propagate cancellation exception so caller can handle it
+                await _loggingService.LogMainAsync($"Export operation cancelled by user");
+                throw;
             }
             
             return results;

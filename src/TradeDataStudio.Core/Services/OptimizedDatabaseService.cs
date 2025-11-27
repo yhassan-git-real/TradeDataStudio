@@ -85,14 +85,15 @@ namespace TradeDataStudio.Core.Services
         /// <summary>
         /// Execute stored procedure with connection pooling and performance monitoring
         /// </summary>
-        public async Task<ExecutionResult> ExecuteStoredProcedureAsync(string procedureName, Dictionary<string, object> parameters)
+        public async Task<ExecutionResult> ExecuteStoredProcedureAsync(string procedureName, Dictionary<string, object> parameters, CancellationToken cancellationToken = default)
         {
             var stopwatch = Stopwatch.StartNew();
             SqlConnection? connection = null;
             
             try
             {
-                await _connectionSemaphore.WaitAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+                await _connectionSemaphore.WaitAsync(cancellationToken);
                 
                 connection = await GetPooledConnectionAsync();
                 
@@ -111,7 +112,8 @@ namespace TradeDataStudio.Core.Services
 
                 await _loggingService.LogMainAsync($"Executing {procedureName} with optimized connection pooling");
                 
-                var recordsAffected = await command.ExecuteNonQueryAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+                var recordsAffected = await command.ExecuteNonQueryAsync(cancellationToken);
                 stopwatch.Stop();
 
                 var result = new ExecutionResult
@@ -124,6 +126,18 @@ namespace TradeDataStudio.Core.Services
 
                 await _loggingService.LogSuccessAsync($"SP execution completed in {stopwatch.Elapsed.TotalMilliseconds:F0}ms", OperationMode.Export);
                 return result;
+            }
+            catch (OperationCanceledException)
+            {
+                stopwatch.Stop();
+                await _loggingService.LogMainAsync($"Stored procedure '{procedureName}' cancelled by user after {stopwatch.Elapsed.TotalSeconds:F2}s");
+                return new ExecutionResult
+                {
+                    Success = false,
+                    Message = "Operation cancelled by user",
+                    ExecutionTime = stopwatch.Elapsed,
+                    Exception = new OperationCanceledException()
+                };
             }
             catch (Exception ex)
             {
@@ -151,14 +165,15 @@ namespace TradeDataStudio.Core.Services
         /// <summary>
         /// Query table with memory-efficient streaming for large datasets
         /// </summary>
-        public async Task<DataTable> QueryTableAsync(string tableName)
+        public async Task<DataTable> QueryTableAsync(string tableName, CancellationToken cancellationToken = default)
         {
             var stopwatch = Stopwatch.StartNew();
             SqlConnection? connection = null;
             
             try
             {
-                await _connectionSemaphore.WaitAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+                await _connectionSemaphore.WaitAsync(cancellationToken);
                 connection = await GetPooledConnectionAsync();
 
                 // Use streaming for better memory efficiency
@@ -171,7 +186,8 @@ namespace TradeDataStudio.Core.Services
 
                 var dataTable = new DataTable(tableName);
                 
-                using var reader = await command.ExecuteReaderAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+                using var reader = await command.ExecuteReaderAsync(CommandBehavior.Default, cancellationToken);
                 
                 // Load schema first
                 dataTable.Load(reader);
@@ -181,6 +197,12 @@ namespace TradeDataStudio.Core.Services
                 await _loggingService.LogMainAsync($"Query completed: {dataTable.Rows.Count} rows in {stopwatch.Elapsed.TotalMilliseconds:F0}ms");
                 
                 return dataTable;
+            }
+            catch (OperationCanceledException)
+            {
+                stopwatch.Stop();
+                await _loggingService.LogMainAsync($"Query for table {tableName} cancelled by user after {stopwatch.Elapsed.TotalSeconds:F2}s");
+                throw;
             }
             catch (Exception ex)
             {

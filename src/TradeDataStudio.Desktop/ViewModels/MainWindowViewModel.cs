@@ -491,12 +491,16 @@ public partial class MainWindowViewModel : ViewModelBase
             
             UpdateRecentActivity($"START: {SelectedStoredProcedure.DisplayName} | {tablesToExport.Count} table(s) selected", "🚀");
             
+            // Create a cancellation token source for the workflow and pass it via _workflowCommands
+            var cancellationTokenSource = new CancellationTokenSource();
+            _workflowCommands.SetWorkflowCancellationTokenSource(cancellationTokenSource);
+            
             var result = await _workflowOrchestrator.ExecuteWorkflowAsync(
                 SelectedStoredProcedure, tablesToExport, format, StartPeriod, EndPeriod,
                 CurrentMode, UseCustomLocation, CustomOutputLocation,
                 v => ProgressValue = v,
                 (msg, icon) => UpdateRecentActivity(msg, icon),
-                CancellationToken.None);
+                cancellationTokenSource.Token);
 
             CurrentOperationStatus = "";
             
@@ -508,6 +512,12 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 StatusMessage = $"Workflow failed: {result.ErrorMessage}";
             }
+        }
+        catch (OperationCanceledException)
+        {
+            CurrentOperationStatus = "";
+            StatusMessage = "⏹️ Workflow cancelled by user";
+            UpdateRecentActivity("Workflow cancelled by user", "⏹");
         }
         catch (Exception ex)
         {

@@ -143,11 +143,13 @@ namespace TradeDataStudio.Core.Services
             };
         }
 
-        public async Task<ExecutionResult> ExecuteStoredProcedureAsync(string procedureName, Dictionary<string, object> parameters)
+        public async Task<ExecutionResult> ExecuteStoredProcedureAsync(string procedureName, Dictionary<string, object> parameters, CancellationToken cancellationToken = default)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var dbConfig = await _configService.GetDatabaseConfigurationAsync();
                 using var connection = new SqlConnection(dbConfig.ConnectionString);
                 using var command = new SqlCommand(procedureName, connection)
@@ -165,8 +167,10 @@ namespace TradeDataStudio.Core.Services
                     command.Parameters.AddWithValue(paramName, param.Value ?? DBNull.Value);
                 }
 
-                await connection.OpenAsync();
-                var recordsAffected = await command.ExecuteNonQueryAsync();
+                await connection.OpenAsync(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                var recordsAffected = await command.ExecuteNonQueryAsync(cancellationToken);
                 stopwatch.Stop();
 
                 var result = new ExecutionResult
@@ -179,6 +183,18 @@ namespace TradeDataStudio.Core.Services
 
                 await _loggingService.LogSuccessAsync($"Stored procedure '{procedureName}' executed successfully. {recordsAffected} records affected.", OperationMode.Export);
                 return result;
+            }
+            catch (OperationCanceledException)
+            {
+                stopwatch.Stop();
+                await _loggingService.LogMainAsync($"Stored procedure '{procedureName}' cancelled by user after {stopwatch.Elapsed.TotalSeconds:F2}s");
+                return new ExecutionResult
+                {
+                    Success = false,
+                    Message = "Operation cancelled by user",
+                    ExecutionTime = stopwatch.Elapsed,
+                    Exception = new OperationCanceledException()
+                };
             }
             catch (Exception ex)
             {
@@ -194,11 +210,13 @@ namespace TradeDataStudio.Core.Services
             }
         }
 
-        public async Task<DataTable> QueryTableAsync(string tableName)
+        public async Task<DataTable> QueryTableAsync(string tableName, CancellationToken cancellationToken = default)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 await _loggingService.LogMainAsync($"Querying table: {tableName}...");
                 
                 var dbConfig = await _configService.GetDatabaseConfigurationAsync();
@@ -210,13 +228,15 @@ namespace TradeDataStudio.Core.Services
                 };
 
                 var dataTable = new DataTable(tableName);
-                await connection.OpenAsync();
+                await connection.OpenAsync(cancellationToken);
+                
+                cancellationToken.ThrowIfCancellationRequested();
                 
                 await _loggingService.LogMainAsync($"Connection opened, fetching data from {tableName}...");
                 
                 // Use SqlDataReader with CommandBehavior.SequentialAccess for better memory efficiency
                 // This allows streaming of large data without loading everything into memory at once
-                using var reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+                using var reader = await command.ExecuteReaderAsync(CommandBehavior.Default, cancellationToken);
                 
                 // Load schema first for faster DataTable initialization
                 dataTable.Load(reader);
@@ -225,6 +245,12 @@ namespace TradeDataStudio.Core.Services
                 await _loggingService.LogMainAsync($"Query completed: {dataTable.Rows.Count:N0} rows retrieved from {tableName} in {stopwatch.Elapsed.TotalSeconds:F2}s");
                 
                 return dataTable;
+            }
+            catch (OperationCanceledException)
+            {
+                stopwatch.Stop();
+                await _loggingService.LogMainAsync($"Query for table {tableName} cancelled by user after {stopwatch.Elapsed.TotalSeconds:F2}s");
+                throw;
             }
             catch (Exception ex)
             {

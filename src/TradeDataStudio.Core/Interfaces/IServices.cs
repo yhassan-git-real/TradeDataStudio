@@ -17,17 +17,17 @@ public interface IDatabaseService
 {
     Task<bool> TestConnectionAsync();
     Task<ConnectionTestResult> TestConnectionDetailedAsync();
-    Task<ExecutionResult> ExecuteStoredProcedureAsync(string procedureName, Dictionary<string, object> parameters);
-    Task<DataTable> QueryTableAsync(string tableName);
+    Task<ExecutionResult> ExecuteStoredProcedureAsync(string procedureName, Dictionary<string, object> parameters, CancellationToken cancellationToken = default);
+    Task<DataTable> QueryTableAsync(string tableName, CancellationToken cancellationToken = default);
     Task<List<string>> GetAvailableTablesAsync(OperationMode mode);
     Task<int> GetTableRecordCountAsync(string tableName);
 }
 
 public interface IExportService
 {
-    Task<ExportResult> ExportToExcelAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false);
-    Task<ExportResult> ExportToCsvAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false);
-    Task<ExportResult> ExportToTextAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false);
+    Task<ExportResult> ExportToExcelAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false, CancellationToken cancellationToken = default);
+    Task<ExportResult> ExportToCsvAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false, CancellationToken cancellationToken = default);
+    Task<ExportResult> ExportToTextAsync(string tableName, string outputPath, DataTable data, OperationMode mode = OperationMode.Export, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false, CancellationToken cancellationToken = default);
     Task<List<ExportResult>> ExportAllTablesAsync(List<string> tableNames, ExportFormat format, string outputDirectory, IDatabaseService? databaseService = null, string startPeriod = "", string endPeriod = "", OperationMode mode = OperationMode.Export, CancellationToken cancellationToken = default, Func<string, Task<bool>>? zeroRecordPromptFunc = null, bool isDirectDownload = false);
     string GenerateFileName(string tableName, ExportFormat format, OperationMode mode, string startPeriod = "", string endPeriod = "", int tableSequence = 1, bool isDirectDownload = false);
 }

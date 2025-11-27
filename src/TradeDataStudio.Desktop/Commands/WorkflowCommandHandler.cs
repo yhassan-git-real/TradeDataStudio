@@ -198,6 +198,12 @@ public class WorkflowCommandHandler
                 "Split export into multiple smaller date ranges"
             });
         }
+        catch (OperationCanceledException)
+        {
+            setCurrentOperationStatus("");
+            setStatusMessage("⏹️ Export cancelled by user");
+            logActivity("STOPPED: User cancelled export", "⏹");
+        }
         catch (Exception ex)
         {
             setCurrentOperationStatus("");
@@ -291,6 +297,12 @@ public class WorkflowCommandHandler
             setCustomOutputLocation(defaultPath);
             setStatusMessage("Error with folder picker, using configured default location");
         }
+    }
+
+    public void SetWorkflowCancellationTokenSource(CancellationTokenSource workflowTokenSource)
+    {
+        // Set the workflow token source so Stop button can cancel it
+        _cancellationTokenSource = workflowTokenSource;
     }
 
     public void StopOperation(Action<string> setStatusMessage, Action<string, string> logActivity)

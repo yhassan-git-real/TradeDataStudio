@@ -60,7 +60,7 @@ public class WorkflowOrchestrator
         updateProgress(25);
 
         var result = await _databaseService.ExecuteStoredProcedureAsync(
-            storedProcedure.Name, parameters);
+            storedProcedure.Name, parameters, cancellationToken);
 
         updateProgress(100);
 
