@@ -126,6 +126,18 @@ public class WorkflowOrchestrator
         var successCount = results.Count(r => r.Success);
         var totalRecords = results.Where(r => r.Success).Sum(r => r.RecordsExported);
         
+        // Log individual export results with timing
+        foreach (var result in results)
+        {
+            if (result.Success)
+            {
+                var durationStr = result.ElapsedTime.TotalSeconds < 1 
+                    ? $"{result.ElapsedTime.TotalMilliseconds:F0}ms" 
+                    : $"{result.ElapsedTime.TotalSeconds:F2}s";
+                logActivity($"Exported {result.FileName}: {result.RecordsExported:N0} records in {durationStr}", "✓");
+            }
+        }
+        
         // Log errors
         var failedExports = results.Where(r => !r.Success).ToList();
         if (failedExports.Any())

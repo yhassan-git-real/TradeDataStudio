@@ -159,6 +159,7 @@ namespace TradeDataStudio.Core.Services
                     FileSize = fileInfo.Length,
                     RecordsExported = data.Rows.Count,
                     Format = ExportFormat.Excel,
+                    ElapsedTime = stopwatch.Elapsed,
                     Message = $"Successfully exported {data.Rows.Count:N0} records to Excel in {stopwatch.Elapsed.TotalSeconds:F2}s"
                 };
 
@@ -238,6 +239,7 @@ namespace TradeDataStudio.Core.Services
                     FileSize = fileInfo.Length,
                     RecordsExported = data.Rows.Count,
                     Format = ExportFormat.CSV,
+                    ElapsedTime = stopwatch.Elapsed,
                     Message = $"Successfully exported {data.Rows.Count} records to CSV"
                 };
 
@@ -305,6 +307,7 @@ namespace TradeDataStudio.Core.Services
                     FileSize = fileInfo.Length,
                     RecordsExported = data.Rows.Count,
                     Format = ExportFormat.TXT,
+                    ElapsedTime = stopwatch.Elapsed,
                     Message = $"Successfully exported {data.Rows.Count} records to Text"
                 };
 

@@ -120,6 +120,7 @@ public class ExportResult
     public int RecordsExported { get; set; }
     public ExportFormat Format { get; set; }
     public string Message { get; set; } = string.Empty;
+    public TimeSpan ElapsedTime { get; set; }
     public Exception? Exception { get; set; }
 }
 
