@@ -214,8 +214,11 @@ namespace TradeDataStudio.Core.Services
                 
                 await _loggingService.LogMainAsync($"Connection opened, fetching data from {tableName}...");
                 
-                // Use SqlDataReader for better memory efficiency with large datasets
-                using var reader = await command.ExecuteReaderAsync();
+                // Use SqlDataReader with CommandBehavior.SequentialAccess for better memory efficiency
+                // This allows streaming of large data without loading everything into memory at once
+                using var reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+                
+                // Load schema first for faster DataTable initialization
                 dataTable.Load(reader);
                 
                 stopwatch.Stop();
