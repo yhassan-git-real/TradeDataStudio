@@ -59,7 +59,33 @@
                                    TextTrimming="CharacterEllipsis"
                                    ToolTip.Tip="Stored Procedure - Select the stored procedure to execute"/>
                     </StackPanel>
-                    <ComboBox x:Name="StoredProcedureDropdown"
+                    <!-- ComboBox with conditional red border -->
+                    <Border BorderBrush="#EF4444"
+                            BorderThickness="2"
+                            CornerRadius="4"
+                            IsVisible="{Binding IsStoredProcedureValidationError}">
+                        <ComboBox x:Name="StoredProcedureDropdown"
+                                  ItemsSource="{Binding AvailableStoredProcedures}"
+                                  SelectedItem="{Binding SelectedStoredProcedure}"
+                                  PlaceholderText="Select stored procedure..."
+                                  FontSize="11"
+                                  Height="38"
+                                  Padding="8,6"
+                                  Margin="0"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalContentAlignment="Center"
+                                  MaxDropDownHeight="300"
+                                  IsEnabled="True"
+                                  ToolTip.Tip="Choose the stored procedure to execute">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DisplayName}" FontSize="10" TextTrimming="CharacterEllipsis" Padding="4,2"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Border>
+                    <!-- ComboBox without red border when valid -->
+                    <ComboBox x:Name="StoredProcedureDropdownValid"
                               ItemsSource="{Binding AvailableStoredProcedures}"
                               SelectedItem="{Binding SelectedStoredProcedure}"
                               PlaceholderText="Select stored procedure..."
@@ -71,13 +97,21 @@
                               VerticalContentAlignment="Center"
                               MaxDropDownHeight="300"
                               IsEnabled="True"
-                              ToolTip.Tip="Choose the stored procedure to execute">
+                              ToolTip.Tip="Choose the stored procedure to execute"
+                              IsVisible="{Binding !IsStoredProcedureValidationError}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding DisplayName}" FontSize="10" TextTrimming="CharacterEllipsis" Padding="4,2"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                    <!-- Validation Error Message -->
+                    <TextBlock Text="{Binding StoredProcedureValidationErrorMessage}"
+                               FontSize="9"
+                               Foreground="#EF4444"
+                               TextWrapping="Wrap"
+                               IsVisible="{Binding IsStoredProcedureValidationError}"
+                               Margin="0,4,0,0"/>
                 </StackPanel>
 
                 <!-- Output Tables -->

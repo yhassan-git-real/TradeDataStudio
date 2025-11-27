@@ -71,6 +71,7 @@ public partial class App : Application
                 services.AddSingleton<IConfigurationService, TradeDataStudio.Core.Services.ConfigurationService>();
                 services.AddTransient<IDatabaseService, DatabaseService>();
                 services.AddTransient<IExportService, ExportService>();
+                services.AddTransient<IStoredProcedureValidator, StoredProcedureValidator>();
 
                 // Register ViewModels
                 services.AddTransient<MainWindowViewModel>();

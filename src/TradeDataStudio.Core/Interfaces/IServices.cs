@@ -49,6 +49,11 @@ public interface IValidationService
     ValidationResult ValidateDatabaseConfiguration(DatabaseConfiguration config);
 }
 
+public interface IStoredProcedureValidator
+{
+    Task<StoredProcedureValidationResult> ValidateStoredProcedureAsync(string storedProcedureName);
+}
+
 public enum LogLevel
 {
     Information,
