@@ -69,7 +69,7 @@ public partial class App : Application
                 // Register core services
                 services.AddSingleton<ILoggingService, LoggingService>();
                 services.AddSingleton<IConfigurationService, TradeDataStudio.Core.Services.ConfigurationService>();
-                services.AddTransient<IDatabaseService, OptimizedDatabaseService>();
+                services.AddTransient<IDatabaseService, DatabaseService>();
                 services.AddTransient<IExportService, ExportService>();
                 services.AddTransient<IStoredProcedureValidator, StoredProcedureValidator>();
 

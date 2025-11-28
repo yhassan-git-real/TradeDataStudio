@@ -17,7 +17,7 @@ namespace TradeDataStudio.Core.Services
     /// - Memory-efficient data streaming
     /// - Query optimization hints
     /// </summary>
-    public class OptimizedDatabaseService : IDatabaseService
+    public class DatabaseService : IDatabaseService
     {
         private readonly IConfigurationService _configService;
         private readonly ILoggingService _loggingService;
@@ -29,7 +29,7 @@ namespace TradeDataStudio.Core.Services
         private const int DefaultCommandTimeout = 300; // 5 minutes
         private const int BatchSize = 10000; // Records per batch
 
-        public OptimizedDatabaseService(IConfigurationService configService, ILoggingService loggingService)
+        public DatabaseService(IConfigurationService configService, ILoggingService loggingService)
         {
             _configService = configService ?? throw new ArgumentNullException(nameof(configService));
             _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
