@@ -87,6 +87,8 @@ public class WorkflowCommandHandler
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource();
+            // Notify that Stop button can now be executed
+            NotifyStopCommandStateChanged();
         }
         
         var cancellationToken = _cancellationTokenSource?.Token ?? CancellationToken.None;
@@ -159,6 +161,8 @@ public class WorkflowCommandHandler
     {
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = new CancellationTokenSource();
+        // Notify that Stop button can now be executed
+        NotifyStopCommandStateChanged();
 
         try
         {
@@ -303,6 +307,18 @@ public class WorkflowCommandHandler
     {
         // Set the workflow token source so Stop button can cancel it
         _cancellationTokenSource = workflowTokenSource;
+    }
+
+    /// <summary>
+    /// Notifies the Stop command that its CanExecute state may have changed.
+    /// This ensures the Stop button is enabled when a new operation begins.
+    /// </summary>
+    public void NotifyStopCommandStateChanged()
+    {
+        if (StopCommand is RelayCommand stopCmd)
+        {
+            stopCmd.NotifyCanExecuteChanged();
+        }
     }
 
     public void StopOperation(Action<string> setStatusMessage, Action<string, string> logActivity)

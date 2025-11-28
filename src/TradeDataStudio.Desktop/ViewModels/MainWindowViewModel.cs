@@ -495,6 +495,9 @@ public partial class MainWindowViewModel : ViewModelBase
             var cancellationTokenSource = new CancellationTokenSource();
             _workflowCommands.SetWorkflowCancellationTokenSource(cancellationTokenSource);
             
+            // Immediately notify the Stop command that it can now be executed
+            _workflowCommands.NotifyStopCommandStateChanged();
+            
             var result = await _workflowOrchestrator.ExecuteWorkflowAsync(
                 SelectedStoredProcedure, tablesToExport, format, StartPeriod, EndPeriod,
                 CurrentMode, UseCustomLocation, CustomOutputLocation,
