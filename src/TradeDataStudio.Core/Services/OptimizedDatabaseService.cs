@@ -39,8 +39,41 @@ namespace TradeDataStudio.Core.Services
 
         public async Task<bool> TestConnectionAsync()
         {
-            var result = await TestConnectionDetailedAsync();
-            return result.Success;
+            try
+            {
+                var dbConfig = await _configService.GetDatabaseConfigurationAsync();
+                
+                // Validate configuration first (from DatabaseService)
+                if (string.IsNullOrWhiteSpace(dbConfig.Server))
+                {
+                    await _loggingService.LogErrorAsync("Database server is not configured", null);
+                    return false;
+                }
+                
+                if (string.IsNullOrWhiteSpace(dbConfig.Database))
+                {
+                    await _loggingService.LogErrorAsync("Database name is not configured", null);
+                    return false;
+                }
+                
+                var connectionString = dbConfig.ConnectionString;
+                await _loggingService.LogMainAsync($"Testing connection with: Server={dbConfig.Server}, Database={dbConfig.Database}, WindowsAuth={dbConfig.UseWindowsAuthentication}");
+                
+                using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+                await _loggingService.LogMainAsync("Database connection test successful");
+                return true;
+            }
+            catch (SqlException sqlEx)
+            {
+                await _loggingService.LogErrorAsync($"SQL connection failed: {sqlEx.Message} (Number: {sqlEx.Number})", sqlEx);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                await _loggingService.LogErrorAsync($"Database connection test failed: {ex.Message}", ex);
+                return false;
+            }
         }
 
         public async Task<ConnectionTestResult> TestConnectionDetailedAsync()
@@ -49,7 +82,34 @@ namespace TradeDataStudio.Core.Services
             try
             {
                 var dbConfig = await _configService.GetDatabaseConfigurationAsync();
+                
+                // Validate configuration first (from DatabaseService)
+                if (string.IsNullOrWhiteSpace(dbConfig.Server))
+                {
+                    stopwatch.Stop();
+                    return new ConnectionTestResult
+                    {
+                        Success = false,
+                        Message = "Server name is required",
+                        ErrorDetails = "Database server configuration is missing",
+                        TestDuration = stopwatch.Elapsed
+                    };
+                }
+                
+                if (string.IsNullOrWhiteSpace(dbConfig.Database))
+                {
+                    stopwatch.Stop();
+                    return new ConnectionTestResult
+                    {
+                        Success = false,
+                        Message = "Database name is required",
+                        ErrorDetails = "Database name configuration is missing",
+                        TestDuration = stopwatch.Elapsed
+                    };
+                }
+                
                 var connectionString = dbConfig.ConnectionString;
+                await _loggingService.LogMainAsync($"Testing connection with: Server={dbConfig.Server}, Database={dbConfig.Database}, WindowsAuth={dbConfig.UseWindowsAuthentication}");
                 
                 using var connection = new SqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -60,22 +120,37 @@ namespace TradeDataStudio.Core.Services
                 
                 stopwatch.Stop();
                 
+                await _loggingService.LogMainAsync("Database connection test successful");
                 return new ConnectionTestResult
                 {
                     Success = true,
-                    Message = "Connection successful",
+                    Message = $"Successfully connected to {dbConfig.Server}\\{dbConfig.Database}",
+                    TestDuration = stopwatch.Elapsed
+                };
+            }
+            catch (SqlException sqlEx)
+            {
+                stopwatch.Stop();
+                var errorMessage = GetFriendlyErrorMessageFromSqlException(sqlEx);
+                await _loggingService.LogErrorAsync($"SQL connection failed: {sqlEx.Message} (Number: {sqlEx.Number})", sqlEx);
+                return new ConnectionTestResult
+                {
+                    Success = false,
+                    Message = errorMessage,
+                    ErrorDetails = sqlEx.Message,
+                    SqlErrorNumber = sqlEx.Number,
                     TestDuration = stopwatch.Elapsed
                 };
             }
             catch (Exception ex)
             {
                 stopwatch.Stop();
-                await _loggingService.LogErrorAsync($"Connection test failed: {ex.Message}", ex);
+                await _loggingService.LogErrorAsync($"Database connection test failed: {ex.Message}", ex);
                 
                 return new ConnectionTestResult
                 {
                     Success = false,
-                    Message = GetFriendlyErrorMessage(ex),
+                    Message = "Connection failed",
                     ErrorDetails = ex.Message,
                     TestDuration = stopwatch.Elapsed
                 };
@@ -142,7 +217,7 @@ namespace TradeDataStudio.Core.Services
             catch (Exception ex)
             {
                 stopwatch.Stop();
-                await _loggingService.LogErrorAsync($"Failed to execute stored procedure '{procedureName}': {ex.Message}", ex);
+                await _loggingService.LogErrorAsync($"Failed to execute stored procedure '{procedureName}': {ex.Message}", ex, OperationMode.Export);
                 
                 return new ExecutionResult
                 {
@@ -291,12 +366,12 @@ namespace TradeDataStudio.Core.Services
             return connection;
         }
 
-        private async Task ReturnConnectionToPoolAsync(SqlConnection connection)
+        private Task ReturnConnectionToPoolAsync(SqlConnection connection)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Dispose();
-                return;
+                return Task.CompletedTask;
             }
             
             lock (_poolLock)
@@ -304,12 +379,13 @@ namespace TradeDataStudio.Core.Services
                 if (_connectionPool.Count < MaxPoolSize)
                 {
                     _connectionPool[connection.ConnectionString] = connection;
-                    return;
+                    return Task.CompletedTask;
                 }
             }
             
             // Pool is full, dispose the connection
             connection.Dispose();
+            return Task.CompletedTask;
         }
 
         #endregion
@@ -346,13 +422,18 @@ namespace TradeDataStudio.Core.Services
         {
             return sqlEx.Number switch
             {
-                2 => "Cannot connect to the database server. Please check the server name.",
-                4060 => "The specified database does not exist or access is denied.",
-                18456 => "Login failed. Please check your credentials.",
-                -2 => "Connection timeout. The database server is busy or unreachable.",
-                53 => "Network path not found. Please verify the server name.",
-                _ => $"SQL Server error (Code {sqlEx.Number}): {sqlEx.Message}"
+                2 => "Server not found. Please check the server name and ensure it's accessible.",
+                4060 => "Database not found. Please verify the database name is correct.",
+                18456 => "Login failed. Please check your credentials or Windows authentication settings.",
+                -2 => "Connection timeout. The server may be busy or unreachable.",
+                53 => "Network path not found. Please check server name and network connectivity.",
+                _ => $"Database connection error: {sqlEx.Message}"
             };
+        }
+
+        private static string GetFriendlyErrorMessageFromSqlException(SqlException sqlEx)
+        {
+            return GetSqlErrorMessage(sqlEx);
         }
 
         #endregion
