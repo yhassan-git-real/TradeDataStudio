@@ -113,9 +113,15 @@
                         Foreground="#F1F5F9"
                         FontSize="11"
                         FontWeight="Medium"
+                        Opacity="{Binding StopButtonOpacity}"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Setter Property="Background" Value="#DC2626"/>
+                        </Style>
+                    </Button.Styles>
                     <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Text="Stop" VerticalAlignment="Center" FontSize="14" FontWeight="Medium"/>
                     </StackPanel>

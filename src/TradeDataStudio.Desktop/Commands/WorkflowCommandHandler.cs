@@ -137,6 +137,8 @@ public class WorkflowCommandHandler
             {
                 _cancellationTokenSource?.Dispose();
                 _cancellationTokenSource = null;
+                // Notify that Stop button is no longer executable
+                NotifyStopCommandStateChanged();
             }
         }
     }
@@ -222,6 +224,8 @@ public class WorkflowCommandHandler
             // Dispose cancellation token to ensure Stop button is hidden
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
+            // Notify that Stop button is no longer executable
+            NotifyStopCommandStateChanged();
         }
     }
 

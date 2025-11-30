@@ -84,7 +84,7 @@
                                 Spacing="12" 
                                 Margin="0,16,0,0">
                         <Button Content="Cancel"
-                                Command="{Binding CloseTableSelectionPopupCommand}"
+                                Command="{Binding CancelTableSelectionCommand}"
                                 Classes="secondary-button"
                                 MinWidth="100"/>
                         <Button Content="✓ Done"

@@ -184,6 +184,8 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool IsStoredProcedureValidationError => _operationMode.IsStoredProcedureValidationError;
     public string StoredProcedureValidationErrorMessage => _operationMode.StoredProcedureValidationErrorMessage;
 
+    public double StopButtonOpacity => IsOperationInProgress ? 1.0 : 0.5;
+
     // Commands (exposed from command handlers)
     public ICommand ExecuteCommand => _workflowCommands.ExecuteCommand;
     public ICommand ExportCommand => _workflowCommands.ExportCommand;
@@ -195,6 +197,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand BrowseOutputLocationCommand => _workflowCommands.BrowseOutputLocationCommand;
     public ICommand ShowTableSelectionPopupCommand => _workflowCommands.ShowTableSelectionPopupCommand;
     public ICommand CloseTableSelectionPopupCommand => _workflowCommands.CloseTableSelectionPopupCommand;
+    public ICommand CancelTableSelectionCommand { get; }
     public ICommand ClearActivityLogsCommand => _activityLog.ClearActivityLogsCommand;
     
     // Menu Commands
@@ -279,6 +282,8 @@ public partial class MainWindowViewModel : ViewModelBase
             () => ShowTableSelectionPopup(),
             () => CloseTableSelectionPopup(),
             () => RefreshCommandStates());
+        
+        CancelTableSelectionCommand = new RelayCommand(() => CancelTableSelection());
 
         // Wire up event handlers for sub-viewmodels
         _operationMode.ModeChanged += async (s, e) => await OnModeChangedAsync();
@@ -371,7 +376,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
     partial void OnStartPeriodChanged(string value) => RefreshCommandStates();
     partial void OnEndPeriodChanged(string value) => RefreshCommandStates();
-    partial void OnIsOperationInProgressChanged(bool value) => RefreshCommandStates();
+    partial void OnIsOperationInProgressChanged(bool value)
+    {
+        RefreshCommandStates();
+        OnPropertyChanged(nameof(StopButtonOpacity));
+    }
+    
+    // ... existing code ...
 
     private bool CanExecute()
     {
@@ -496,6 +507,7 @@ public partial class MainWindowViewModel : ViewModelBase
         finally
         {
             IsOperationInProgress = false;
+            _workflowCommands.NotifyStopCommandStateChanged();
         }
     }
 
@@ -536,6 +548,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void CloseTableSelectionPopup()
     {
+        IsTableSelectionPopupOpen = false;
+        UpdateFooterStatusMessage();
+    }
+    
+    private void CancelTableSelection()
+    {
+        _tableSelection.ClearSelection();
         IsTableSelectionPopupOpen = false;
         UpdateFooterStatusMessage();
     }
