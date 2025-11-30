@@ -109,7 +109,7 @@ public partial class SettingsViewModel : ViewModelBase
 
             if (result.Success)
             {
-                StatusMessage = $"✅ {result.Message} (in {result.TestDuration.TotalMilliseconds:F0}ms)";
+                StatusMessage = $"✅ {result.Message} (in {result.TestDuration.TotalSeconds:F2}s)";
             }
             else
             {

@@ -35,10 +35,10 @@ public interface IExportService
 public interface ILoggingService
 {
     Task LogMainAsync(string message, LogLevel level = LogLevel.Information);
-    Task LogSuccessAsync(string message, OperationMode mode, Dictionary<string, object>? metadata = null);
     Task LogErrorAsync(string message, Exception? exception = null, OperationMode? mode = null);
     Task LogExecutionAsync(string storedProcedure, Dictionary<string, object> parameters, ExecutionResult result, OperationMode mode);
     Task LogExportAsync(ExportResult exportResult, OperationMode mode);
+    Task LogExecutionSeparatorAsync();
 }
 
 public interface IValidationService

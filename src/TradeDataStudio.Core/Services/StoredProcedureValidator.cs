@@ -71,6 +71,7 @@ namespace TradeDataStudio.Core.Services
 
                 if (procedureExists)
                 {
+                    await _loggingService.LogExecutionSeparatorAsync();
                     await _loggingService.LogMainAsync(
                         $"Stored procedure '{storedProcedureName}' validated successfully in database '{dbConfig.Database}'.");
                     return new StoredProcedureValidationResult

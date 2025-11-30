@@ -68,6 +68,8 @@ public class WorkflowOrchestrator
         {
             logActivity($"SUCCESS: {storedProcedure.DisplayName} | {result.RecordsAffected:N0} records | {result.ExecutionTime.TotalSeconds:F1}s", "✓");
             await _loggingService.LogExecutionAsync(storedProcedure.Name, parameters, result, currentMode);
+            // Add separator after successful SP execution
+            await _loggingService.LogExecutionSeparatorAsync();
         }
         else
         {
@@ -177,6 +179,8 @@ public class WorkflowOrchestrator
         foreach (var result in results)
         {
             await _loggingService.LogExportAsync(result, currentMode);
+            // Add separator after each export completion
+            await _loggingService.LogExecutionSeparatorAsync();
         }
 
         return results;
@@ -202,6 +206,9 @@ public class WorkflowOrchestrator
 
         try
         {
+            // Add separator before starting new workflow
+            await _loggingService.LogExecutionSeparatorAsync();
+            
             await _loggingService.LogMainAsync($"[{currentMode}] Workflow started for procedure: {storedProcedure.Name}");
             
             cancellationToken.ThrowIfCancellationRequested();
@@ -240,6 +247,8 @@ public class WorkflowOrchestrator
                 logActivity($"Files: {exportedFiles}", "  ");
                 
                 await _loggingService.LogMainAsync($"[{currentMode}] Workflow completed: {successCount}/{workflowResult.ExportResults.Count} tables exported to {outputPath}");
+                // Add separator after workflow completion
+                await _loggingService.LogExecutionSeparatorAsync();
                 
                 workflowResult.Success = successCount > 0;
             }

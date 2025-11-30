@@ -199,7 +199,6 @@ namespace TradeDataStudio.Core.Services
                     ExecutionTime = stopwatch.Elapsed
                 };
 
-                await _loggingService.LogSuccessAsync($"SP execution completed in {stopwatch.Elapsed.TotalMilliseconds:F0}ms", OperationMode.Export);
                 return result;
             }
             catch (OperationCanceledException)
@@ -269,7 +268,7 @@ namespace TradeDataStudio.Core.Services
                 
                 stopwatch.Stop();
                 
-                await _loggingService.LogMainAsync($"Query completed: {dataTable.Rows.Count} rows in {stopwatch.Elapsed.TotalMilliseconds:F0}ms");
+                await _loggingService.LogMainAsync($"Query completed: {dataTable.Rows.Count} rows in {stopwatch.Elapsed.TotalSeconds:F2}s");
                 
                 return dataTable;
             }

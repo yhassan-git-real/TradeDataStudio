@@ -148,7 +148,6 @@ namespace TradeDataStudio.Core.Services
                     Message = $"Successfully exported {data.Rows.Count:N0} records to Excel in {stopwatch.Elapsed.TotalSeconds:F2}s"
                 };
 
-                await _loggingService.LogSuccessAsync($"Excel export completed: {fileName} ({data.Rows.Count:N0} rows, {fileInfo.Length / 1024.0 / 1024.0:F2} MB, {stopwatch.Elapsed.TotalSeconds:F2}s)", OperationMode.Export);
                 return result;
             }
             catch (OperationCanceledException)
@@ -252,7 +251,6 @@ namespace TradeDataStudio.Core.Services
                     Message = $"Successfully exported {data.Rows.Count} records to CSV"
                 };
 
-                await _loggingService.LogSuccessAsync($"CSV export completed: {fileName}", OperationMode.Export);
                 return result;
             }
             catch (OperationCanceledException)
@@ -344,7 +342,6 @@ namespace TradeDataStudio.Core.Services
                     Message = $"Successfully exported {data.Rows.Count} records to Text"
                 };
 
-                await _loggingService.LogSuccessAsync($"Text export completed: {fileName}", OperationMode.Export);
                 return result;
             }
             catch (OperationCanceledException)
@@ -385,11 +382,20 @@ namespace TradeDataStudio.Core.Services
             Func<string, Task<bool>>? zeroRecordPromptFunc = null,
             bool isDirectDownload = false)
         {
+            // Generate correlation ID for this export batch operation
+            var correlationId = CorrelationIdGenerator.GenerateNewCorrelationId("EXPORT");
+            
             var results = new List<ExportResult>();
             int tableIndex = 0;
             
             try
             {
+                // Log phase header with visual separators
+                await _loggingService.LogPhaseAsync("WORKFLOW EXECUTION");
+                await _loggingService.LogSummaryAsync("Operation Mode", mode.ToString());
+                await _loggingService.LogSummaryAsync("Export Format", format.ToString());
+                await _loggingService.LogSummaryAsync("Tables to Export", tableNames.Count.ToString());
+                
                 // Process tables sequentially to avoid excessive memory usage
                 // For production: could implement semaphore-controlled parallel processing
                 foreach (var tableName in tableNames)
@@ -398,19 +404,30 @@ namespace TradeDataStudio.Core.Services
                     tableIndex++;
                     try
                     {
-                        await _loggingService.LogMainAsync($"[{tableIndex}/{tableNames.Count}] Starting export for table: {tableName}");
+                        // Subphase header
+                        if (tableIndex == 1)
+                        {
+                            await _loggingService.LogEmptyLineAsync();
+                            await _loggingService.LogSubphaseAsync("DATA EXPORT");
+                        }
+                        
+                        await _loggingService.LogBatchOperationAsync(tableIndex, tableNames.Count, tableName);
                         
                         DataTable? data = null;
+                        var tableStartTime = DateTime.UtcNow;
                         
                         // Query table data if database service is provided
                         if (databaseService != null)
                         {
-                            await _loggingService.LogMainAsync($"Querying data from table: {tableName}...");
+                            var queryStartTime = DateTime.UtcNow;
                             
                             // Query data - DatabaseService handles streaming internally
                             data = await databaseService.QueryTableAsync(tableName, cancellationToken);
                             
-                            await _loggingService.LogMainAsync($"Retrieved {data.Rows.Count:N0} rows from {tableName}");
+                            var queryDuration = LogMessageTemplates.FormatDuration(DateTime.UtcNow - queryStartTime);
+                            await _loggingService.LogHierarchyItemAsync(
+                                $"Query: {queryDuration} → {LogMessageTemplates.FormatNumber(data.Rows.Count)} records loaded", 
+                                isLast: false);
                             
                             // Check for zero records and prompt user if needed
                             if (data.Rows.Count == 0 && zeroRecordPromptFunc != null)
@@ -452,6 +469,20 @@ namespace TradeDataStudio.Core.Services
                         
                         results.Add(result);
                         
+                        // Log export result
+                        if (result.Success)
+                        {
+                            var exportDuration = LogMessageTemplates.FormatDuration(DateTime.UtcNow - tableStartTime);
+                            var fileSize = LogMessageTemplates.FormatFileSize(result.FileSize);
+                            await _loggingService.LogHierarchyItemAsync(
+                                $"Export: {exportDuration} → {result.FileName} ({fileSize})",
+                                isLast: tableIndex == tableNames.Count);
+                        }
+                        else
+                        {
+                            await _loggingService.LogMainAsync($"Export failed for {tableName}: {result.Message}");
+                        }
+                        
                         // Clean up DataTable resources
                         if (data != null)
                         {
@@ -460,8 +491,6 @@ namespace TradeDataStudio.Core.Services
                         }
                         
                         // Allow natural garbage collection (removing forced GC for 5-10% performance improvement)
-                        
-                        await _loggingService.LogMainAsync($"[{tableIndex}/{tableNames.Count}] Completed export for {tableName}");
                     }
                     catch (Exception ex)
                     {
@@ -475,12 +504,32 @@ namespace TradeDataStudio.Core.Services
                         });
                     }
                 }
+                
+                // Log completion with summary
+                await _loggingService.LogEmptyLineAsync();
+                await _loggingService.LogCompletionAsync("WORKFLOW COMPLETE");
+                await _loggingService.LogMainAsync(LogFormattingHelpers.MinorSeparator);
+                
+                var successCount = results.Count(r => r.Success);
+                var totalRecords = results.Sum(r => r.RecordsExported);
+                var totalSize = LogMessageTemplates.FormatFileSize(results.Sum(r => r.FileSize));
+                
+                await _loggingService.LogSummaryAsync("✓ Results", $"{successCount}/{tableNames.Count} tables exported");
+                await _loggingService.LogSummaryAsync("✓ Total Records", $"{LogMessageTemplates.FormatNumber(totalRecords)} ({totalSize})");
+                await _loggingService.LogSummaryAsync("✓ Output Directory", outputDirectory);
+                await _loggingService.LogMainAsync(LogFormattingHelpers.MajorSeparator);
             }
             catch (OperationCanceledException)
             {
                 // Propagate cancellation exception so caller can handle it
+                CorrelationIdGenerator.CompleteCorrelationId(correlationId, false);
                 await _loggingService.LogMainAsync($"Export operation cancelled by user");
                 throw;
+            }
+            finally
+            {
+                // Mark correlation ID as completed
+                CorrelationIdGenerator.CompleteCorrelationId(correlationId, results.All(r => r.Success));
             }
             
             return results;
