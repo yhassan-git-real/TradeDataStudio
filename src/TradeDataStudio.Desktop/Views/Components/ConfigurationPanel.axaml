@@ -23,15 +23,15 @@
                                FontWeight="SemiBold" 
                                Foreground="#F1F5F9"/>
                     <TextBlock Text="Set up the operation, output, and export details." 
-                               FontSize="10" 
-                               Foreground="#CBD5E1"/>
+                               FontSize="9" 
+                               Foreground="#94A3B8"/>
                 </StackPanel>
             </StackPanel>
             <Border Height="1" Background="#2D4366" Margin="0,0,0,4"/>
             
             <!-- Operation Mode -->
             <StackPanel Spacing="4">
-                <TextBlock Text="Operation Mode" FontSize="12" FontWeight="SemiBold" Foreground="#F1F5F9" Margin="0,0,0,2"/>
+                <TextBlock Text="Operation Mode" FontSize="11" Foreground="#E2E8F0" Margin="0,0,0,2"/>
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <RadioButton x:Name="ExportModeRadio"
                                  Content="Export"
@@ -54,9 +54,8 @@
                 <StackPanel Grid.Column="0" Spacing="3">
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <TextBlock Text="Stored Procedure" 
-                                   FontSize="11" 
-                                   FontWeight="SemiBold"
-                                   Foreground="#E2E8F0"
+                                   FontSize="10" 
+                                   Foreground="#94A3B8"
                                    TextTrimming="CharacterEllipsis"
                                    ToolTip.Tip="Stored Procedure - Select the stored procedure to execute"/>
                     </StackPanel>
@@ -117,7 +116,7 @@
 
                 <!-- Output Tables -->
                 <StackPanel Grid.Column="2" Spacing="3">
-                    <TextBlock Text="Output Tables" FontSize="11" FontWeight="SemiBold" Foreground="#E2E8F0"/>
+                    <TextBlock Text="Output Tables" FontSize="10" Foreground="#94A3B8"/>
                     <Button x:Name="SelectTablesButton"
                             Content="{Binding SelectTablesButtonText}"
                             Margin="0"
@@ -132,7 +131,7 @@
 
                 <!-- File Format -->
                 <StackPanel Grid.Column="4" Spacing="3">
-                    <TextBlock Text="File Format" FontSize="11" FontWeight="SemiBold" Foreground="#E2E8F0"/>
+                    <TextBlock Text="File Format" FontSize="10" Foreground="#94A3B8"/>
                     <ComboBox x:Name="FormatDropdown"
                               ItemsSource="{Binding AvailableExportFormats}"
                               SelectedItem="{Binding SelectedExportFormat}"
@@ -149,11 +148,11 @@
 
             <!-- Row 3: Parameters and Output Location -->
             <StackPanel Spacing="4">
-                <TextBlock Text="Parameters" FontSize="12" FontWeight="SemiBold" Foreground="#F1F5F9" Margin="0,4,0,2"/>
+                <TextBlock Text="Parameters" FontSize="11" Foreground="#E2E8F0" Margin="0,4,0,2"/>
                 <Grid ColumnDefinitions="0.85*,12,0.85*,12,0.85*">
                     <!-- Start Period -->
                     <StackPanel Grid.Column="0" Spacing="3">
-                        <TextBlock Text="Start Period" FontSize="11" FontWeight="SemiBold" Foreground="#E2E8F0"/>
+                        <TextBlock Text="Start Period" FontSize="10" Foreground="#94A3B8"/>
                         <TextBox x:Name="StartPeriodBox"
                                  Text="{Binding StartPeriod}"
                                  Watermark="YYYYMMDD (e.g., 20241127)"
@@ -167,7 +166,7 @@
                     
                     <!-- End Period -->
                     <StackPanel Grid.Column="2" Spacing="3">
-                        <TextBlock Text="End Period" FontSize="11" FontWeight="SemiBold" Foreground="#E2E8F0"/>
+                        <TextBlock Text="End Period" FontSize="10" Foreground="#94A3B8"/>
                         <TextBox x:Name="EndPeriodBox"
                                  Text="{Binding EndPeriod}"
                                  Watermark="YYYYMMDD (e.g., 20241127)"
@@ -181,7 +180,7 @@
 
                     <!-- Output Location -->
                     <StackPanel Grid.Column="4" Spacing="3">
-                        <TextBlock Text="Output Location" FontSize="11" FontWeight="SemiBold" Foreground="#E2E8F0"/>
+                        <TextBlock Text="Output Location" FontSize="10" Foreground="#94A3B8"/>
                         <!-- Checkbox and Browse Button Row -->
                         <Grid ColumnDefinitions="*,Auto">
                             <CheckBox Grid.Column="0"
@@ -208,7 +207,7 @@
                         <!-- Info text when custom location is not enabled -->
                         <TextBlock Text="Default: exports/export (from JSON configuration)"
                                    FontSize="9"
-                                   Foreground="#94A3B8"
+                                   Foreground="#64748B"
                                    IsVisible="{Binding !UseCustomLocation}"
                                    Margin="0,2,0,0"/>
                         <!-- Custom textbox when enabled -->
