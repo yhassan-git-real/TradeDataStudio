@@ -20,12 +20,12 @@
                     </Border>
                     <StackPanel>
                         <TextBlock Text="Actions" 
-                                   FontSize="12" 
+                                   FontSize="14" 
                                    FontWeight="SemiBold" 
                                    Foreground="#F1F5F9"/>
                         <TextBlock Text="Execute operations and manage workflows." 
-                                   FontSize="8" 
-                                   Foreground="#64748B"/>
+                                   FontSize="10" 
+                                   Foreground="#CBD5E1"/>
                     </StackPanel>
                 </StackPanel>
                 <Border Height="1" Background="#2D4366" Margin="0,0,0,0"/>
