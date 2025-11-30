@@ -29,7 +29,6 @@ namespace TradeDataStudio.Core.Services
             // Read log directory from appsettings.json
             var logDirectory = GetLogDirectoryFromConfig();
             Directory.CreateDirectory(logDirectory);
-            Console.WriteLine($"[LoggingService] Log directory: {logDirectory}");
 
             // Main log file target
             var mainLogFile = new NLog.Targets.FileTarget("mainLogFile")
@@ -69,10 +68,14 @@ namespace TradeDataStudio.Core.Services
             config.AddTarget(successLogFile);
             config.AddTarget(errorLogFile);
 
-            // Configure rules
-            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, mainLogFile, "MainLogger");
-            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Info, successLogFile, "SuccessLogger");
-            config.AddRule(NLog.LogLevel.Error, NLog.LogLevel.Fatal, errorLogFile, "ErrorLogger");
+            // Configure rules: Log all messages to main log
+            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, mainLogFile);
+            
+            // Route Info-level (success) messages to success.log in addition to main.log
+            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Info, successLogFile);
+            
+            // Route Error-level messages to error.log in addition to main.log
+            config.AddRule(NLog.LogLevel.Error, NLog.LogLevel.Fatal, errorLogFile);
 
             LogManager.Configuration = config;
         }
@@ -109,8 +112,6 @@ namespace TradeDataStudio.Core.Services
                                 {
                                     logDir = logDir.Replace("/", Path.DirectorySeparatorChar.ToString());
                                 }
-                                
-                                Console.WriteLine($"[LoggingService] Using configured log path: {logDir}");
                                 return logDir;
                             }
                         }
@@ -119,12 +120,11 @@ namespace TradeDataStudio.Core.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[LoggingService] Error reading config: {ex.Message}");
+                // Configuration reading error - will fallback to default
             }
             
             // Fallback to default
             var fallbackPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
-            Console.WriteLine($"[LoggingService] Using fallback log path: {fallbackPath}");
             return fallbackPath;
         }
 
@@ -154,87 +154,75 @@ namespace TradeDataStudio.Core.Services
             return null;
         }
 
-        public async Task LogMainAsync(string message, Interfaces.LogLevel level = Interfaces.LogLevel.Information)
+        public Task LogMainAsync(string message, Interfaces.LogLevel level = Interfaces.LogLevel.Information)
         {
-            await Task.Run(() =>
+            var nlogLevel = level switch
             {
-                var nlogLevel = level switch
-                {
-                    Interfaces.LogLevel.Information => NLog.LogLevel.Info,
-                    Interfaces.LogLevel.Warning => NLog.LogLevel.Warn,
-                    Interfaces.LogLevel.Error => NLog.LogLevel.Error,
-                    Interfaces.LogLevel.Success => NLog.LogLevel.Info,
-                    _ => NLog.LogLevel.Info
-                };
+                Interfaces.LogLevel.Information => NLog.LogLevel.Info,
+                Interfaces.LogLevel.Warning => NLog.LogLevel.Warn,
+                Interfaces.LogLevel.Error => NLog.LogLevel.Error,
+                Interfaces.LogLevel.Success => NLog.LogLevel.Info,
+                _ => NLog.LogLevel.Info
+            };
 
-                _mainLogger.Log(nlogLevel, message);
-            });
+            _mainLogger.Log(nlogLevel, message);
+            return Task.CompletedTask;
         }
 
-        public async Task LogSuccessAsync(string message, OperationMode mode, Dictionary<string, object>? metadata = null)
+        public Task LogSuccessAsync(string message, OperationMode mode, Dictionary<string, object>? metadata = null)
         {
-            await Task.Run(() =>
+            var logMessage = $"[{mode}] {message}";
+            if (metadata != null && metadata.Count > 0)
             {
-                var logMessage = $"[{mode}] {message}";
-                if (metadata != null && metadata.Count > 0)
-                {
-                    var metaString = string.Join(", ", metadata.Select(kv => $"{kv.Key}={kv.Value}"));
-                    logMessage += $" | {metaString}";
-                }
-                
-                _mainLogger.Info(logMessage);
-                _successLogger.Info(logMessage);
-            });
+                var metaString = string.Join(", ", metadata.Select(kv => $"{kv.Key}={kv.Value}"));
+                logMessage += $" | {metaString}";
+            }
+            
+            // Single write - NLog rules route to both main.log and success.log
+            _mainLogger.Info(logMessage);
+            return Task.CompletedTask;
         }
 
-        public async Task LogErrorAsync(string message, Exception? exception = null, OperationMode? mode = null)
+        public Task LogErrorAsync(string message, Exception? exception = null, OperationMode? mode = null)
         {
-            await Task.Run(() =>
-            {
-                var logMessage = mode.HasValue ? $"[{mode}] {message}" : message;
-                
-                _mainLogger.Error(exception, logMessage);
-                _errorLogger.Error(exception, logMessage);
-            });
+            var logMessage = mode.HasValue ? $"[{mode}] {message}" : message;
+            
+            // Single write - NLog rules route to both main.log and error.log
+            _mainLogger.Error(exception, logMessage);
+            return Task.CompletedTask;
         }
 
-        public async Task LogExecutionAsync(string storedProcedure, Dictionary<string, object> parameters, ExecutionResult result, OperationMode mode)
+        public Task LogExecutionAsync(string storedProcedure, Dictionary<string, object> parameters, ExecutionResult result, OperationMode mode)
         {
-            await Task.Run(() =>
+            var paramString = string.Join(", ", parameters.Select(kv => $"{kv.Key}={kv.Value}"));
+            var message = $"SP Execution: {storedProcedure} | Parameters: {paramString} | Success: {result.Success} | Records: {result.RecordsAffected} | Time: {result.ExecutionTime.TotalMilliseconds}ms";
+            
+            // Single write - NLog rules route to appropriate files
+            if (result.Success)
             {
-                var paramString = string.Join(", ", parameters.Select(kv => $"{kv.Key}={kv.Value}"));
-                var message = $"SP Execution: {storedProcedure} | Parameters: {paramString} | Success: {result.Success} | Records: {result.RecordsAffected} | Time: {result.ExecutionTime.TotalMilliseconds}ms";
-                
-                if (result.Success)
-                {
-                    _mainLogger.Info($"[{mode}] {message}");
-                    _successLogger.Info($"[{mode}] {message}");
-                }
-                else
-                {
-                    _mainLogger.Error($"[{mode}] {message}");
-                    _errorLogger.Error($"[{mode}] {message}");
-                }
-            });
+                _mainLogger.Info($"[{mode}] {message}");
+            }
+            else
+            {
+                _mainLogger.Error($"[{mode}] {message}");
+            }
+            return Task.CompletedTask;
         }
 
-        public async Task LogExportAsync(ExportResult exportResult, OperationMode mode)
+        public Task LogExportAsync(ExportResult exportResult, OperationMode mode)
         {
-            await Task.Run(() =>
+            var message = $"Export: {exportResult.FileName} | Format: {exportResult.Format} | Success: {exportResult.Success} | Records: {exportResult.RecordsExported} | Size: {exportResult.FileSize} bytes";
+            
+            // Single write - NLog rules route to appropriate files
+            if (exportResult.Success)
             {
-                var message = $"Export: {exportResult.FileName} | Format: {exportResult.Format} | Success: {exportResult.Success} | Records: {exportResult.RecordsExported} | Size: {exportResult.FileSize} bytes";
-                
-                if (exportResult.Success)
-                {
-                    _mainLogger.Info($"[{mode}] {message}");
-                    _successLogger.Info($"[{mode}] {message}");
-                }
-                else
-                {
-                    _mainLogger.Error($"[{mode}] {message}");
-                    _errorLogger.Error($"[{mode}] {message}");
-                }
-            });
+                _mainLogger.Info($"[{mode}] {message}");
+            }
+            else
+            {
+                _mainLogger.Error($"[{mode}] {message}");
+            }
+            return Task.CompletedTask;
         }
 
         public void Dispose()

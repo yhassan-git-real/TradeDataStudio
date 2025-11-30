@@ -119,24 +119,12 @@ public partial class MainWindowViewModel : ViewModelBase
         get => _operationMode.SelectedStoredProcedure;
         set
         {
-            Console.WriteLine($"\n>>> SelectedStoredProcedure SETTER called <<<");
-            Console.WriteLine($"    Current value: {_operationMode.SelectedStoredProcedure?.DisplayName ?? "NULL"}");
-            Console.WriteLine($"    New value: {value?.DisplayName ?? "NULL"}");
-            Console.WriteLine($"    Are they different? {_operationMode.SelectedStoredProcedure != value}");
-            
             if (_operationMode.SelectedStoredProcedure != value)
             {
-                Console.WriteLine($"    ✅ Values are different - updating...");
                 _operationMode.SelectedStoredProcedure = value;
-                Console.WriteLine($"    🔔 Raising PropertyChanged for SelectedStoredProcedure");
                 OnPropertyChanged(nameof(SelectedStoredProcedure));
-                Console.WriteLine($"    ✅ PropertyChanged raised - event handler will trigger filtering");
                 // NOTE: Filtering will be triggered by the event handler subscription at line 270
                 // DO NOT manually call OnStoredProcedureChangedAsync() here to avoid duplicate execution
-            }
-            else
-            {
-                Console.WriteLine($"    ❌ Values are the same - no update needed");
             }
         }
     }
@@ -165,21 +153,10 @@ public partial class MainWindowViewModel : ViewModelBase
         get => _tableSelection.IsTableSelectionPopupOpen;
         set
         {
-            Console.WriteLine($"\n>>> IsTableSelectionPopupOpen SETTER called <<<");
-            Console.WriteLine($"    Current value: {_tableSelection.IsTableSelectionPopupOpen}");
-            Console.WriteLine($"    New value: {value}");
-            
             if (_tableSelection.IsTableSelectionPopupOpen != value)
             {
-                Console.WriteLine($"    ✅ Values are different - updating...");
                 _tableSelection.IsTableSelectionPopupOpen = value;
-                Console.WriteLine($"    🔔 Raising PropertyChanged for IsTableSelectionPopupOpen");
                 OnPropertyChanged(nameof(IsTableSelectionPopupOpen));
-                Console.WriteLine($"    PropertyChanged raised successfully");
-            }
-            else
-            {
-                Console.WriteLine($"    ❌ Values are the same - no update needed");
             }
         }
     }
@@ -376,32 +353,20 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private async Task OnStoredProcedureChangedAsync()
     {
-        Console.WriteLine($"\n=== OnStoredProcedureChangedAsync TRIGGERED ===");
-        Console.WriteLine($"  SelectedStoredProcedure: {SelectedStoredProcedure?.DisplayName ?? "NULL"}");
-        Console.WriteLine($"  CurrentMode: {CurrentMode}");
-        
         // Validate the selected stored procedure
-        Console.WriteLine($"  Validating stored procedure...");
         await _operationMode.ValidateSelectedProcedureAsync();
         
         if (_operationMode.IsStoredProcedureValidationError)
         {
-            Console.WriteLine($"  ❌ Validation failed: {_operationMode.StoredProcedureValidationErrorMessage}");
             OnPropertyChanged(nameof(IsExportMode)); // Trigger UI update for validation display
             RefreshCommandStates();
             return;
         }
         
-        Console.WriteLine($"  ✅ Validation passed");
-        Console.WriteLine($"  Calling FilterOutputTablesForSelectedProcedureAsync...");
-        
         await _tableSelection.FilterOutputTablesForSelectedProcedureAsync(
             SelectedStoredProcedure, CurrentMode);
         
-        Console.WriteLine($"  Filtering complete. AvailableOutputTables.Count: {AvailableOutputTables.Count}");
-        Console.WriteLine($"  Refreshing command states...");
         RefreshCommandStates();
-        Console.WriteLine($"=== OnStoredProcedureChangedAsync COMPLETED ===\n");
     }
 
     partial void OnStartPeriodChanged(string value) => RefreshCommandStates();
@@ -559,43 +524,20 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void ShowTableSelectionPopup()
     {
-        Console.WriteLine($"\n=== ShowTableSelectionPopup CALLED ===");
-        Console.WriteLine($"  SelectedStoredProcedure: {SelectedStoredProcedure?.DisplayName ?? "NULL"}");
-        Console.WriteLine($"  AvailableOutputTables.Count: {AvailableOutputTables.Count}");
-        
         if (SelectedStoredProcedure == null)
         {
-            Console.WriteLine($"  ❌ No stored procedure selected - cannot show popup");
             StatusMessage = "Please select a stored procedure first";
             return;
         }
         
-        Console.WriteLine($"  ✅ Stored procedure selected: {SelectedStoredProcedure.DisplayName}");
-        Console.WriteLine($"  📊 Tables available: {AvailableOutputTables.Count}");
-        
-        // Log each available table
-        foreach (var table in AvailableOutputTables)
-        {
-            Console.WriteLine($"    - {table.DisplayName} (Selected: {table.IsSelected})");
-        }
-        
-        Console.WriteLine($"  🚀 Setting IsTableSelectionPopupOpen = true...");
         IsTableSelectionPopupOpen = true;
-        Console.WriteLine($"  ✅ IsTableSelectionPopupOpen is now: {IsTableSelectionPopupOpen}");
-        
         StatusMessage = "Table selection popup opened";
-        Console.WriteLine($"=== ShowTableSelectionPopup COMPLETED ===\n");
     }
 
     private void CloseTableSelectionPopup()
     {
-        Console.WriteLine($"\n=== CloseTableSelectionPopup CALLED ===");
-        Console.WriteLine($"  Setting IsTableSelectionPopupOpen = false...");
         IsTableSelectionPopupOpen = false;
-        Console.WriteLine($"  IsTableSelectionPopupOpen is now: {IsTableSelectionPopupOpen}");
-        
         UpdateFooterStatusMessage();
-        Console.WriteLine($"=== CloseTableSelectionPopup COMPLETED ===\n");
     }
 
     /// <summary>

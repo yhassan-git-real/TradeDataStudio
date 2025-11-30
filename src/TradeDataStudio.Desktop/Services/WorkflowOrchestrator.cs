@@ -271,10 +271,6 @@ public class WorkflowOrchestrator
     {
         var parameters = new Dictionary<string, object>();
         
-        Console.WriteLine($"Building parameters for {storedProcedure.Name}:");
-        Console.WriteLine($"  StartPeriod: {startPeriod}");
-        Console.WriteLine($"  EndPeriod: {endPeriod}");
-        
         if (storedProcedure.Parameters != null && storedProcedure.Parameters.Count >= 1)
         {
             var firstParam = storedProcedure.Parameters[0];

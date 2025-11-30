@@ -129,13 +129,7 @@ namespace TradeDataStudio.Core.Services
                     
                     cancellationToken.ThrowIfCancellationRequested();
                     
-                    // Log progress for large datasets (throttled to every 25% completion)
-                    if (totalRows > 100000)
-                    {
-                        await _loggingService.LogMainAsync($"Bulk data loaded, applying column formatting...");
-                    }
-
-                    await _loggingService.LogMainAsync($"Writing Excel file to disk: {fileName}");
+                    // Save Excel file to disk
                     await package.SaveAsAsync(new FileInfo(fullPath));
                 });
 
