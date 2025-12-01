@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using TradeDataStudio.Core.Models;
+using TradeDataStudio.Core.Interfaces;
 using TradeDataStudio.Desktop.Services;
 using System;
 
@@ -10,11 +11,13 @@ namespace TradeDataStudio.Desktop.Views.Components;
 
 /// <summary>
 /// Intelligently composes and layers multiple background effects with performance optimization
+/// and responsive design support
 /// </summary>
 public partial class BackgroundEffectsComposer : UserControl
 {
     private readonly AnimationConfiguration _config;
     private readonly AnimationPerformanceManager _performanceManager;
+    private readonly IResponsiveUIService? _responsiveUIService;
     
     // Effect components
     private Grid _layeredGrid = null!;
@@ -25,17 +28,20 @@ public partial class BackgroundEffectsComposer : UserControl
     private PerformanceOverlay? _performanceOverlay;
     
     private bool _isDisposed = false;
+    private ScreenSizeCategory _currentScreenCategory = ScreenSizeCategory.Large;
 
     // Parameterless constructor required for XAML instantiation
-    public BackgroundEffectsComposer() : this(null) { }
+    public BackgroundEffectsComposer() : this(null, null) { }
 
-    public BackgroundEffectsComposer(AnimationConfiguration? config = null)
+    public BackgroundEffectsComposer(AnimationConfiguration? config = null, IResponsiveUIService? responsiveUIService = null)
     {
         _config = config ?? new AnimationConfiguration();
         _performanceManager = new AnimationPerformanceManager(_config);
+        _responsiveUIService = responsiveUIService;
         
         InitializeComponent();
         SetupEffectLayers();
+        InitializeResponsiveAnimations();
         
         _config.PropertyChanged += OnConfigurationChanged;
         _performanceManager.PerformanceChanged += OnPerformanceChanged;
@@ -127,6 +133,195 @@ public partial class BackgroundEffectsComposer : UserControl
         });
     }
 
+    /// <summary>
+    /// Initialize responsive animations based on screen size
+    /// </summary>
+    private void InitializeResponsiveAnimations()
+    {
+        try
+        {
+            if (_responsiveUIService != null)
+            {
+                // Subscribe to screen size changes
+                _responsiveUIService.ScreenSizeChanged += OnScreenSizeChanged;
+                
+                // Apply initial responsive configuration
+                ApplyResponsiveAnimationSettings(_responsiveUIService.CurrentScreenCategory);
+            }
+        }
+        catch (Exception)
+        {
+            // Use default settings if responsive service is not available
+            ApplyResponsiveAnimationSettings(ScreenSizeCategory.Large);
+        }
+    }
+
+    /// <summary>
+    /// Handle screen size changes for animation optimization
+    /// </summary>
+    private async void OnScreenSizeChanged(object? sender, ScreenSizeChangedEventArgs e)
+    {
+        if (_isDisposed) return;
+
+        try
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                ApplyResponsiveAnimationSettings(e.NewCategory);
+            });
+        }
+        catch (Exception)
+        {
+            // Ignore errors during screen size change handling
+        }
+    }
+
+    /// <summary>
+    /// Apply animation settings based on screen size category
+    /// </summary>
+    private void ApplyResponsiveAnimationSettings(ScreenSizeCategory category)
+    {
+        if (_isDisposed) return;
+
+        try
+        {
+            _currentScreenCategory = category;
+            var settings = ResponsiveAnimationSettings.CreateForCategory(category);
+            
+            // Update configuration based on screen size
+            var oldAdaptivePerformance = _config.AdaptivePerformance;
+            _config.AdaptivePerformance = true; // Always enable for responsive design
+            
+            // Update enabled effects based on screen size
+            UpdateEffectsForScreenSize(settings);
+            
+            // Update performance targets
+            UpdatePerformanceTargets(settings);
+            
+            // Refresh effect layers if significant changes were made
+            if (ShouldRefreshEffects(settings))
+            {
+                SetupEffectLayers();
+            }
+        }
+        catch (Exception)
+        {
+            // Use safe defaults if responsive configuration fails
+        }
+    }
+
+    /// <summary>
+    /// Update enabled effects based on responsive animation settings
+    /// </summary>
+    private void UpdateEffectsForScreenSize(ResponsiveAnimationSettings settings)
+    {
+        // Disable expensive effects on smaller screens
+        if (!settings.EnableParticleSystem && _particleSystem != null)
+        {
+            _layeredGrid.Children.Remove(_particleSystem);
+            _particleSystem?.Dispose();
+            _particleSystem = null;
+        }
+
+        if (!settings.EnableFlowingLights && _flowingLights != null)
+        {
+            _layeredGrid.Children.Remove(_flowingLights);
+            _flowingLights?.Dispose();
+            _flowingLights = null;
+        }
+
+        // Keep twinkling stars as they're lightweight
+        if (!settings.EnableTwinklingStars && _twinklingStars != null)
+        {
+            _layeredGrid.Children.Remove(_twinklingStars);
+            _twinklingStars?.Dispose();
+            _twinklingStars = null;
+        }
+
+        // Update particle count for existing systems
+        if (_particleSystem != null && settings.EnableParticleSystem)
+        {
+            // Update particle count if the system supports it
+            UpdateParticleCount(settings.ParticleCount);
+        }
+    }
+
+    /// <summary>
+    /// Update performance targets based on screen size
+    /// </summary>
+    private void UpdatePerformanceTargets(ResponsiveAnimationSettings settings)
+    {
+        // Store target frame rate for future use
+        // _performanceManager.SetTargetFrameRate(settings.FrameRate);
+        
+        // Update animation speed multiplier
+        if (Math.Abs(settings.AnimationSpeed - 1.0) > 0.01)
+        {
+            UpdateAnimationSpeed(settings.AnimationSpeed);
+        }
+    }
+
+    /// <summary>
+    /// Determine if effect layers need to be refreshed
+    /// </summary>
+    private bool ShouldRefreshEffects(ResponsiveAnimationSettings settings)
+    {
+        // Check if major effects need to be added or removed
+        var needsParticles = settings.EnableParticleSystem && _particleSystem == null;
+        var needsFlowingLights = settings.EnableFlowingLights && _flowingLights == null;
+        var needsStars = settings.EnableTwinklingStars && _twinklingStars == null;
+        
+        return needsParticles || needsFlowingLights || needsStars;
+    }
+
+    /// <summary>
+    /// Update particle count for particle system
+    /// </summary>
+    private void UpdateParticleCount(int particleCount)
+    {
+        // This would need to be implemented in the ParticleSystemBackground class
+        // For now, we'll just store the target count
+        try
+        {
+            if (_particleSystem != null)
+            {
+                // Implementation would depend on ParticleSystemBackground API
+                // _particleSystem.SetParticleCount(particleCount);
+            }
+        }
+        catch
+        {
+            // Ignore particle count update errors
+        }
+    }
+
+    /// <summary>
+    /// Update animation speed for all effects
+    /// </summary>
+    private void UpdateAnimationSpeed(double speedMultiplier)
+    {
+        try
+        {
+            // Update speed for all active animations - would need to be implemented in background classes
+            // _pulsingGlows?.SetAnimationSpeed(speedMultiplier);
+            // _twinklingStars?.SetAnimationSpeed(speedMultiplier);
+            // _flowingLights?.SetAnimationSpeed(speedMultiplier);
+            // _particleSystem?.SetAnimationSpeed(speedMultiplier);
+        }
+        catch
+        {
+            // Ignore animation speed update errors
+        }
+    }
+
+    /// <summary>
+    /// Get current responsive animation settings
+    /// </summary>
+    public ResponsiveAnimationSettings GetCurrentAnimationSettings()
+    {
+        return ResponsiveAnimationSettings.CreateForCategory(_currentScreenCategory);
+    }
+
     private void OnPerformanceChanged(object? sender, PerformanceEventArgs e)
     {
         // Performance monitoring is handled by individual components
@@ -188,9 +383,16 @@ public partial class BackgroundEffectsComposer : UserControl
         if (_isDisposed) return;
         _isDisposed = true;
 
+        // Unsubscribe from all events
         _config.PropertyChanged -= OnConfigurationChanged;
         _performanceManager.PerformanceChanged -= OnPerformanceChanged;
         _performanceManager.PerformanceWarning -= OnPerformanceWarning;
+        
+        // Unsubscribe from responsive service events
+        if (_responsiveUIService != null)
+        {
+            _responsiveUIService.ScreenSizeChanged -= OnScreenSizeChanged;
+        }
         
         DisposeEffects();
         _performanceManager.Dispose();

@@ -54,6 +54,18 @@ public interface IStoredProcedureValidator
     Task<StoredProcedureValidationResult> ValidateStoredProcedureAsync(string storedProcedureName);
 }
 
+public interface IResponsiveUIService
+{
+    ScreenSizeCategory CurrentScreenCategory { get; }
+    event EventHandler<ScreenSizeChangedEventArgs>? ScreenSizeChanged;
+    
+    Task<ScreenSizeCategory> DetectScreenSizeAsync();
+    ResponsiveLayoutDefinition GetOptimalLayout(ScreenSizeCategory category);
+    double GetScaledFontSize(double baseFontSize, ScreenSizeCategory category);
+    ResponsiveSpacing GetResponsiveSpacing(ScreenSizeCategory category);
+    void ApplyResponsiveConfiguration(ResponsiveConfiguration config);
+}
+
 public enum LogLevel
 {
     Information,
