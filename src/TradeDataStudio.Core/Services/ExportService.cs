@@ -94,16 +94,17 @@ namespace TradeDataStudio.Core.Services
                     
                     cancellationToken.ThrowIfCancellationRequested();
                     
-                    // Format header row
+                    // Format header row with MS Sans Serif font
                     using (var headerRange = worksheet.Cells[1, 1, 1, data.Columns.Count])
                     {
-                        headerRange.Style.Font.Bold = true;
-                        headerRange.Style.Font.Size = 11;
+                        headerRange.Style.Font.Bold = false;
+                        headerRange.Style.Font.Name = "MS Sans Serif";
+                        headerRange.Style.Font.Size = 10;
                     }
                     
                     cancellationToken.ThrowIfCancellationRequested();
                     
-                    // Apply column-level formatting based on data types (much faster than per-cell)
+                    // Apply column-level formatting with MS Sans Serif font and preserve exact data values
                     for (int col = 0; col < data.Columns.Count; col++)
                     {
                         var dataType = data.Columns[col].DataType;
@@ -114,15 +115,20 @@ namespace TradeDataStudio.Core.Services
                         {
                             using (var columnRange = worksheet.Cells[2, excelCol, totalRows + 1, excelCol])
                             {
+                                // Set MS Sans Serif font for all data cells
+                                columnRange.Style.Font.Name = "MS Sans Serif";
+                                
                                 if (dataType == typeof(DateTime))
                                 {
-                                    columnRange.Style.Numberformat.Format = "yyyy-mm-dd hh:mm:ss";
+                                    columnRange.Style.Numberformat.Format = "yyyy-mm-dd";
                                 }
                                 else if (dataType == typeof(decimal) || dataType == typeof(double) || dataType == typeof(float))
                                 {
-                                    columnRange.Style.Numberformat.Format = "#,##0.00";
+                                    // Use General format to preserve exact values without rounding
+                                    // This ensures whatever precision exists in source data is maintained
+                                    columnRange.Style.Numberformat.Format = "General";
                                 }
-                                // Integer and other types use default formatting
+                                // Integer and other types use default formatting with MS Sans Serif font
                             }
                         }
                     }

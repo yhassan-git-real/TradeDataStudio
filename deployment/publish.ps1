@@ -4,21 +4,35 @@
 Write-Host "TradeData Studio - Deployment Build Script" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
 
+# Check and handle PowerShell execution policy
+$currentPolicy = Get-ExecutionPolicy -Scope CurrentUser
+if ($currentPolicy -eq "Restricted" -or $currentPolicy -eq "Undefined") {
+    Write-Host "[INFO] Current execution policy: $currentPolicy" -ForegroundColor Yellow
+    Write-Host "[INFO] Attempting to set execution policy for current user..." -ForegroundColor Yellow
+    try {
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+        Write-Host "[SUCCESS] Execution policy updated to RemoteSigned for current user" -ForegroundColor Green
+    } catch {
+        Write-Host "[WARNING] Could not update execution policy: $($_.Exception.Message)" -ForegroundColor Yellow
+        Write-Host "[INFO] You may need to run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser" -ForegroundColor Yellow
+    }
+}
+
 # Set error action preference
 $ErrorActionPreference = "Stop"
 
 # Load deployment configuration
 $configPath = Join-Path $PSScriptRoot "deployment.json"
 if (-not (Test-Path $configPath)) {
-    Write-Host "✗ Deployment configuration not found: $configPath" -ForegroundColor Red
+    Write-Host "[ERROR] Deployment configuration not found: $configPath" -ForegroundColor Red
     exit 1
 }
 
 try {
     $deploymentConfig = Get-Content $configPath | ConvertFrom-Json
-    Write-Host "✓ Loaded deployment configuration" -ForegroundColor Green
+    Write-Host "[SUCCESS] Loaded deployment configuration" -ForegroundColor Green
 } catch {
-    Write-Host "✗ Failed to parse deployment configuration: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "[ERROR] Failed to parse deployment configuration: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 
@@ -47,11 +61,11 @@ if (Test-Path $outputPath) {
             # Remove the directory
             Remove-Item $outputPath -Recurse -Force -ErrorAction Stop
             $success = $true
-            Write-Host "✓ Output directory cleaned successfully" -ForegroundColor Green
+            Write-Host "[SUCCESS] Output directory cleaned successfully" -ForegroundColor Green
         }
         catch {
             $retryCount++
-            Write-Host "⚠ Attempt $retryCount failed: $($_.Exception.Message)" -ForegroundColor Yellow
+            Write-Host "[WARNING] Attempt $retryCount failed: $($_.Exception.Message)" -ForegroundColor Yellow
             
             if ($retryCount -lt $maxRetries) {
                 Write-Host "Retrying in 3 seconds..." -ForegroundColor Yellow
@@ -61,7 +75,7 @@ if (Test-Path $outputPath) {
     }
     
     if (-not $success) {
-        Write-Host "✗ Could not clean output directory after $maxRetries attempts." -ForegroundColor Red
+        Write-Host "[ERROR] Could not clean output directory after $maxRetries attempts." -ForegroundColor Red
         Write-Host "Please close any running applications and antivirus scanners, then try again." -ForegroundColor Red
         exit 1
     }
@@ -94,7 +108,7 @@ foreach ($config in $configurations) {
     # Execute publish command
     try {
         & dotnet $publishArgs
-        Write-Host "✓ $($config.name) build completed successfully" -ForegroundColor Green
+        Write-Host "[SUCCESS] $($config.name) build completed successfully" -ForegroundColor Green
         
         # Copy configuration files (contents only, not the folder itself)
         $configSource = Join-Path $rootPath $deploymentConfig.paths.configSource
@@ -104,7 +118,7 @@ foreach ($config in $configurations) {
             Get-ChildItem -Path $configSource -File | ForEach-Object {
                 Copy-Item $_.FullName -Destination $configDest -Force
             }
-            Write-Host "✓ Configuration files copied" -ForegroundColor Green
+            Write-Host "[SUCCESS] Configuration files copied" -ForegroundColor Green
         }
         
         # Create logs directory
@@ -119,7 +133,7 @@ foreach ($config in $configurations) {
         }
         
     } catch {
-        Write-Host "✗ Failed to build $($config.name): $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "[ERROR] Failed to build $($config.name): $($_.Exception.Message)" -ForegroundColor Red
         continue
     }
 }
@@ -148,12 +162,12 @@ if (Test-Path $exePath) {
         $Shortcut.Description = $deploymentConfig.executable.description
         $Shortcut.IconLocation = $exePath
         $Shortcut.Save()
-        Write-Host "✓ Shortcut created for $($preferredConfig.name): $($deploymentConfig.deployment.shortcutName)" -ForegroundColor Green
+        Write-Host "[SUCCESS] Shortcut created for $($preferredConfig.name): $($deploymentConfig.deployment.shortcutName)" -ForegroundColor Green
     } catch {
-        Write-Host "✗ Failed to create shortcut: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "[ERROR] Failed to create shortcut: $($_.Exception.Message)" -ForegroundColor Red
     }
 } else {
-    Write-Host "✗ $($preferredConfig.name) executable not found for shortcut creation: $exePath" -ForegroundColor Red
+    Write-Host "[ERROR] $($preferredConfig.name) executable not found for shortcut creation: $exePath" -ForegroundColor Red
 }
 
 # Display build summary
