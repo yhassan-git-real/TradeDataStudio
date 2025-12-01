@@ -80,6 +80,7 @@ public class ApplicationSettings
 public class PathSettings
 {
     public string Exports { get; set; } = "./exports/";
+    public string Imports { get; set; } = "./imports/";
     public string Logs { get; set; } = "./logs/";
     public string Config { get; set; } = "./config/";
 }

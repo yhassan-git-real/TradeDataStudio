@@ -47,6 +47,8 @@ public class ConfigurationService : IConfigurationService
                     _applicationSettings.Paths = new PathSettings();
                     if (pathsSection.TryGetProperty("exports", out var exports))
                         _applicationSettings.Paths.Exports = exports.GetString() ?? "./exports/";
+                    if (pathsSection.TryGetProperty("imports", out var imports))
+                        _applicationSettings.Paths.Imports = imports.GetString() ?? "./imports/";
                     if (pathsSection.TryGetProperty("logs", out var logs))
                         _applicationSettings.Paths.Logs = logs.GetString() ?? "./logs/";
                     if (pathsSection.TryGetProperty("config", out var configPath))

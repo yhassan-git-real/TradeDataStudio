@@ -18,6 +18,7 @@ public static class AppConstants
     public const string ConfigDirectory = "config";
     public const string LogsDirectory = "logs";
     public const string ExportsDirectory = "exports";
+    public const string ImportsDirectory = "imports";
     
     // Log file patterns
     public const string MainLogPattern = "tradedataStudio_{0:yyyyMMdd}.log";

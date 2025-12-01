@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,7 +79,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _selectTablesButtonTooltip = "Click to select which output tables to include in the export";
 
-    // ... existing code ...
     public ObservableCollection<string> AvailableExportFormats { get; } = new() { "Excel", "CSV", "TXT" };
 
     // Delegated properties (expose sub-viewmodel properties for XAML bindings)
@@ -326,6 +326,9 @@ public partial class MainWindowViewModel : ViewModelBase
             IsExportMode = appSettings.DefaultMode == OperationMode.Export;
             IsImportMode = !IsExportMode;
             
+            // Ensure export and import directories exist
+            await EnsureOutputDirectoriesExistAsync(appSettings);
+            
             await _loggingService.LogMainAsync("MainWindowViewModel initialized successfully.");
         }
         catch (Exception ex)
@@ -382,8 +385,6 @@ public partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(StopButtonOpacity));
     }
     
-    // ... existing code ...
-
     private bool CanExecute()
     {
         return !IsOperationInProgress && 
@@ -654,6 +655,49 @@ public partial class MainWindowViewModel : ViewModelBase
         ((AsyncRelayCommand)ExportCommand).NotifyCanExecuteChanged();
         ((AsyncRelayCommand)StartCommand).NotifyCanExecuteChanged();
         ((RelayCommand)StopCommand).NotifyCanExecuteChanged();
+    }
+
+    private async Task EnsureOutputDirectoriesExistAsync(ApplicationSettings appSettings)
+    {
+        try
+        {
+            // Create exports directory
+            var exportsPath = appSettings.Paths.Exports;
+            if (!Path.IsPathRooted(exportsPath))
+            {
+                exportsPath = Path.GetFullPath(Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "..", "..", "..", "..", "..",
+                    exportsPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
+            }
+            else
+            {
+                exportsPath = exportsPath.Replace("/", Path.DirectorySeparatorChar.ToString());
+            }
+            Directory.CreateDirectory(exportsPath);
+                
+            // Create imports directory
+            var importsPath = appSettings.Paths.Imports;
+            if (!Path.IsPathRooted(importsPath))
+            {
+                importsPath = Path.GetFullPath(Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "..", "..", "..", "..", "..",
+                    importsPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
+            }
+            else
+            {
+                importsPath = importsPath.Replace("/", Path.DirectorySeparatorChar.ToString());
+            }
+            Directory.CreateDirectory(importsPath);
+                
+            await _loggingService.LogMainAsync($"Ensured export directory exists: {exportsPath}");
+            await _loggingService.LogMainAsync($"Ensured import directory exists: {importsPath}");
+        }
+        catch (Exception ex)
+        {
+            await _loggingService.LogErrorAsync("Failed to create output directories", ex);
+        }
     }
 }
 

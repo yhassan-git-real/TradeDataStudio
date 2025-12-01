@@ -1,49 +1,50 @@
-# TradeData Studio v1.0.0 - Release Notes
+# TradeData Studio Release Notes
 
 ## Overview
 TradeData Studio is a modern desktop application for managing trade data exports and database operations. Built with AvaloniaUI and .NET 8.0, it provides a user-friendly interface for SQL Server data management.
 
-## What's New in v1.0.0
+## Version 1.0.0 - Initial Release
 
-### Core Features
-- **Modern UI**: Clean, responsive interface built with AvaloniaUI
-- **Database Integration**: Robust SQL Server connectivity with connection pooling
-- **Export Capabilities**: Export data to Excel and CSV formats
-- **Stored Procedure Support**: Execute and manage stored procedures
-- **Configuration Management**: JSON-based configuration system
-- **Comprehensive Logging**: Three-tier logging system (Info, Error, Debug)
-
-### Performance Enhancements
-- **Connection Pooling**: Optimized database connections for better performance
-- **Async Operations**: Non-blocking UI with asynchronous database operations
+### Key Features
+- **Dual Operation Modes**: Switch between Export and Import modes for different data operations
+- **Stored Procedure Integration**: Execute predefined stored procedures with parameter validation
+- **Multi-Format Export**: Export data to Excel, CSV, and TXT formats
 - **Memory Efficiency**: Streaming data export for large datasets
-- **Batch Processing**: Efficient bulk operations
+- **Real-Time Logging**: Comprehensive activity logging with execution details
+- **Intuitive UI**: Modern interface with keyboard shortcuts and responsive design
 
-### User Experience
-- **Keyboard Shortcuts**: Quick access to common functions
-- **Tooltips**: Helpful guidance throughout the interface
-- **Error Handling**: User-friendly error messages with suggested actions
-- **Settings Management**: Easy configuration through settings window
+### Technical Highlights
+- **Cross-Platform Compatibility**: Runs on Windows 10/11 (x64/x86)
+- **Self-Contained Deployment**: No external runtime dependencies
+- **Secure Database Connections**: Support for both Windows Authentication and SQL Authentication
+- **Configurable Workflows**: JSON-based configuration for procedures and tables
+- **Error Handling**: Robust error detection and user-friendly messaging
+- **Performance Monitoring**: Execution time tracking and progress indicators
 
-## Technical Specifications
+### Directory Structure
+- **Exports**: Dedicated folder for exported data files (Excel, CSV, TXT)
+- **Imports**: Dedicated folder for imported data files
+- **Logs**: Comprehensive application logging with rotation
+- **Config**: JSON-based configuration files for easy customization
 
-### Architecture
-- **Framework**: .NET 8.0
-- **UI Framework**: AvaloniaUI 11.3.6
-- **MVVM Pattern**: ReactiveUI with CommunityToolkit.Mvvm
-- **Database**: Microsoft SQL Server (2017+)
-- **Data Access**: Microsoft.Data.SqlClient
+### Planned Enhancements
+- Additional export formats
+- Scheduled exports
+- Advanced filtering options
+- Data visualization features
+- Enhanced import capabilities
 
-### Dependencies
-- **Export Libraries**: EPPlus (Excel), CsvHelper (CSV)
-- **Logging**: NLog 6.0.6
-- **Configuration**: System.Text.Json
-- **Dependency Injection**: Microsoft.Extensions.DependencyInjection
+### Known Limitations
+- Excel export limited to ~1 million rows per sheet
+- Single database connection at a time
+- Windows-only platform support
 
-### Security Features
-- **Secure Connections**: SSL/TLS support for database connections
-- **Configuration Protection**: Secure storage of connection strings
-- **Error Sanitization**: Safe error messages without sensitive data exposure
+### Support
+For issues or feature requests, please check the application logs and contact support with:
+- Application version
+- Operating system details
+- Error messages from log files
+- Steps to reproduce the issue
 
 ## Installation Packages
 

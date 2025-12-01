@@ -39,23 +39,22 @@ public class OutputPathResolver
         {
             // Read from appsettings.json
             var appSettings = await _configurationService.GetApplicationSettingsAsync();
-            var configuredExportPath = appSettings.Paths.Exports;
+            var configuredPath = currentMode == Core.Models.OperationMode.Export 
+                ? appSettings.Paths.Exports 
+                : appSettings.Paths.Imports;
             
             // Convert to absolute path if needed
-            if (!Path.IsPathRooted(configuredExportPath))
+            if (!Path.IsPathRooted(configuredPath))
             {
                 outputPath = Path.GetFullPath(Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
                     "..", "..", "..", "..", "..",
-                    configuredExportPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
+                    configuredPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
             }
             else
             {
-                outputPath = configuredExportPath.Replace("/", Path.DirectorySeparatorChar.ToString());
+                outputPath = configuredPath.Replace("/", Path.DirectorySeparatorChar.ToString());
             }
-            
-            // Add mode subdirectory
-            outputPath = Path.Combine(outputPath, currentMode.ToString().ToLower());
         }
         
         // Ensure directory exists
@@ -81,5 +80,24 @@ public class OutputPathResolver
         }
         
         return configuredExportPath.Replace("/", Path.DirectorySeparatorChar.ToString());
+    }
+    
+    /// <summary>
+    /// Gets the default import path from configuration.
+    /// </summary>
+    public async Task<string> GetDefaultImportPathAsync()
+    {
+        var appSettings = await _configurationService.GetApplicationSettingsAsync();
+        var configuredImportPath = appSettings.Paths.Imports;
+        
+        if (!Path.IsPathRooted(configuredImportPath))
+        {
+            return Path.GetFullPath(Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "..", "..", "..", "..", "..",
+                configuredImportPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
+        }
+        
+        return configuredImportPath.Replace("/", Path.DirectorySeparatorChar.ToString());
     }
 }
