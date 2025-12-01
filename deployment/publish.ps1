@@ -63,11 +63,14 @@ foreach ($config in $configurations) {
         & dotnet $publishArgs
         Write-Host "✓ $($config.Name) build completed successfully" -ForegroundColor Green
         
-        # Copy additional files
+        # Copy configuration files (contents only, not the folder itself)
         $configSource = Join-Path $rootPath "config"
         $configDest = Join-Path $outputDir "config"
         if (Test-Path $configSource) {
-            Copy-Item $configSource -Destination $configDest -Recurse -Force
+            New-Item -ItemType Directory -Path $configDest -Force | Out-Null
+            Get-ChildItem -Path $configSource -File | ForEach-Object {
+                Copy-Item $_.FullName -Destination $configDest -Force
+            }
             Write-Host "✓ Configuration files copied" -ForegroundColor Green
         }
         
