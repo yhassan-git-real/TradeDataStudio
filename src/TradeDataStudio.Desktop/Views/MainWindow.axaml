@@ -22,7 +22,6 @@
         <StyleInclude Source="/Views/Styles/AppStyles.axaml"/>
         <StyleInclude Source="/Views/Styles/ButtonStyles.axaml"/>
         <StyleInclude Source="/Views/Styles/FormStyles.axaml"/>
-        <StyleInclude Source="/Views/Styles/AnimationStyles.axaml"/>
     </Window.Styles>
 
     <Grid>
@@ -114,11 +113,11 @@
             <!-- Layer 1: Background Gradient -->
             <Border Background="{DynamicResource BackgroundGradientDark}"/>
             
-            <!-- Layer 2: Star Pattern Overlay -->
+            <!-- Layer 2: Star Pattern Overlay (Static) -->
             <Border Background="{DynamicResource StarPatternBrush}" IsHitTestVisible="False"/>
             
-            <!-- Layer 3: Animated Glow Background -->
-            <components:AnimatedBackground IsHitTestVisible="False"/>
+            <!-- Layer 3: Advanced Animated Background Effects -->
+            <components:BackgroundEffectsComposer IsHitTestVisible="False"/>
             
             <!-- Layer 4: Content -->
             <ScrollViewer ClipToBounds="False">

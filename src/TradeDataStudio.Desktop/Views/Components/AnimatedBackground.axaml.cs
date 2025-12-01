@@ -9,7 +9,7 @@ using System.Timers;
 
 namespace TradeDataStudio.Desktop.Views.Components;
 
-public partial class AnimatedBackground : UserControl
+public partial class AnimatedBackground : UserControl, IDisposable
 {
     private DispatcherTimer? _animationTimer;
     private double _elapsedSeconds = 0;
@@ -70,6 +70,11 @@ public partial class AnimatedBackground : UserControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        Dispose();
+    }
+
+    public void Dispose()
+    {
         _animationTimer?.Stop();
         _animationTimer = null;
     }

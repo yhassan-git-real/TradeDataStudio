@@ -10,6 +10,7 @@ public class ConfigurationService : IConfigurationService
     private readonly string _baseConfigPath;
     private ApplicationSettings? _applicationSettings;
     private DatabaseConfiguration? _databaseConfiguration;
+    private AnimationConfiguration? _animationConfiguration;
 
     public ConfigurationService()
     {
@@ -346,5 +347,113 @@ public class ConfigurationService : IConfigurationService
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Get animation configuration with defaults
+    /// </summary>
+    public async Task<AnimationConfiguration> GetAnimationConfigurationAsync()
+    {
+        if (_animationConfiguration == null)
+        {
+            await LoadAnimationConfigurationAsync();
+        }
+        return _animationConfiguration!;
+    }
+
+    /// <summary>
+    /// Save animation configuration
+    /// </summary>
+    public async Task SaveAnimationConfigurationAsync(AnimationConfiguration config)
+    {
+        _animationConfiguration = config ?? throw new ArgumentNullException(nameof(config));
+        
+        var animationConfigPath = Path.Combine(_baseConfigPath, "animations.json");
+        
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        var configData = new
+        {
+            quality = config.Quality.ToString(),
+            enabledEffects = config.EnabledEffects.ToString(),
+            particleDensity = config.ParticleDensity,
+            animationSpeed = config.AnimationSpeed,
+            effectIntensity = config.EffectIntensity,
+            adaptivePerformance = config.AdaptivePerformance,
+            targetFrameRate = config.TargetFrameRate,
+            showPerformanceMetrics = config.ShowPerformanceMetrics
+        };
+
+        var json = JsonSerializer.Serialize(configData, options);
+        await File.WriteAllTextAsync(animationConfigPath, json);
+    }
+
+    /// <summary>
+    /// Load animation configuration from file or create defaults
+    /// </summary>
+    private async Task LoadAnimationConfigurationAsync()
+    {
+        var animationConfigPath = Path.Combine(_baseConfigPath, "animations.json");
+        
+        _animationConfiguration = new AnimationConfiguration(); // Start with defaults
+
+        if (File.Exists(animationConfigPath))
+        {
+            try
+            {
+                var json = await File.ReadAllTextAsync(animationConfigPath);
+                var config = JsonSerializer.Deserialize<JsonElement>(json);
+
+                if (config.TryGetProperty("quality", out var quality) && 
+                    Enum.TryParse<AnimationQuality>(quality.GetString(), out var qualityValue))
+                {
+                    _animationConfiguration.Quality = qualityValue;
+                }
+
+                if (config.TryGetProperty("enabledEffects", out var effects) && 
+                    Enum.TryParse<BackgroundEffects>(effects.GetString(), out var effectsValue))
+                {
+                    _animationConfiguration.EnabledEffects = effectsValue;
+                }
+
+                if (config.TryGetProperty("particleDensity", out var density))
+                {
+                    _animationConfiguration.ParticleDensity = density.GetDouble();
+                }
+
+                if (config.TryGetProperty("animationSpeed", out var speed))
+                {
+                    _animationConfiguration.AnimationSpeed = speed.GetDouble();
+                }
+
+                if (config.TryGetProperty("effectIntensity", out var intensity))
+                {
+                    _animationConfiguration.EffectIntensity = intensity.GetDouble();
+                }
+
+                if (config.TryGetProperty("adaptivePerformance", out var adaptive))
+                {
+                    _animationConfiguration.AdaptivePerformance = adaptive.GetBoolean();
+                }
+
+                if (config.TryGetProperty("targetFrameRate", out var frameRate))
+                {
+                    _animationConfiguration.TargetFrameRate = frameRate.GetInt32();
+                }
+
+                if (config.TryGetProperty("showPerformanceMetrics", out var showMetrics))
+                {
+                    _animationConfiguration.ShowPerformanceMetrics = showMetrics.GetBoolean();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AnimationConfig] Error loading configuration, using defaults: {ex.Message}");
+            }
+        }
     }
 }

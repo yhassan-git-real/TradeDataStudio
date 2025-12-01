@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -42,6 +43,42 @@ public partial class SettingsViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isAuthenticationExpanded = true;
+
+    // Animation properties
+    [ObservableProperty]
+    private AnimationQuality _animationQuality = AnimationQuality.High;
+
+    [ObservableProperty]
+    private bool _enableParticles = true;
+
+    [ObservableProperty]
+    private bool _enableFlowingLights = true;
+
+    [ObservableProperty]
+    private bool _enableTwinklingStars = true;
+
+    [ObservableProperty]
+    private bool _enablePulsingGlows = true;
+
+    [ObservableProperty]
+    private double _effectIntensity = 0.75;
+
+    [ObservableProperty]
+    private double _particleDensity = 0.5;
+
+    [ObservableProperty]
+    private bool _adaptivePerformance = true;
+
+    [ObservableProperty]
+    private bool _showPerformanceMetrics = false;
+
+    public List<AnimationQuality> AvailableAnimationQualities { get; } = new()
+    {
+        AnimationQuality.Off,
+        AnimationQuality.Low, 
+        AnimationQuality.Medium,
+        AnimationQuality.High
+    };
 
     public string AuthenticationChevron => IsAuthenticationExpanded ? "▼" : "▶";
 
