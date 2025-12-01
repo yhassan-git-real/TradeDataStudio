@@ -1,0 +1,38 @@
+{
+  "deployment": {
+    "applicationName": "TradeData Studio",
+    "version": "1.0.0",
+    "shortcutName": "TradeData Studio.lnk"
+  },
+  "build": {
+    "configurations": [
+      {
+        "name": "Windows-x64",
+        "runtime": "win-x64",
+        "selfContained": true,
+        "preferredForShortcut": false
+      },
+      {
+        "name": "Portable",
+        "runtime": null,
+        "selfContained": false,
+        "preferredForShortcut": true
+      }
+    ]
+  },
+  "paths": {
+    "output": "output",
+    "project": "src\\TradeDataStudio.Desktop\\TradeDataStudio.Desktop.csproj",
+    "configSource": "config",
+    "directories": {
+      "config": "config",
+      "logs": "logs", 
+      "exports": "exports",
+      "exports_subdirs": ["export", "import"]
+    }
+  },
+  "executable": {
+    "name": "TradeDataStudio.Desktop.exe",
+    "description": "TradeData Studio - Database Management Tool"
+  }
+}

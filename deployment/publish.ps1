@@ -7,10 +7,25 @@ Write-Host "=========================================" -ForegroundColor Green
 # Set error action preference
 $ErrorActionPreference = "Stop"
 
-# Define paths
+# Load deployment configuration
+$configPath = Join-Path $PSScriptRoot "deployment.json"
+if (-not (Test-Path $configPath)) {
+    Write-Host "✗ Deployment configuration not found: $configPath" -ForegroundColor Red
+    exit 1
+}
+
+try {
+    $deploymentConfig = Get-Content $configPath | ConvertFrom-Json
+    Write-Host "✓ Loaded deployment configuration" -ForegroundColor Green
+} catch {
+    Write-Host "✗ Failed to parse deployment configuration: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+# Define paths from configuration
 $rootPath = Split-Path $PSScriptRoot -Parent
-$projectPath = Join-Path $rootPath "src\TradeDataStudio.Desktop\TradeDataStudio.Desktop.csproj"
-$outputPath = Join-Path $PSScriptRoot "output"
+$projectPath = Join-Path $rootPath $deploymentConfig.paths.project
+$outputPath = Join-Path $PSScriptRoot $deploymentConfig.paths.output
 
 # Create output directory
 if (Test-Path $outputPath) {
@@ -53,29 +68,13 @@ if (Test-Path $outputPath) {
 }
 New-Item -ItemType Directory -Path $outputPath | Out-Null
 
-# Build configurations
-$configurations = @(
-    @{
-        Name = "Windows-x64"
-        Runtime = "win-x64"
-        SelfContained = $true
-    },
-    @{
-        Name = "Windows-x86"
-        Runtime = "win-x86"
-        SelfContained = $true
-    },
-    @{
-        Name = "Portable"
-        Runtime = $null
-        SelfContained = $false
-    }
-)
+# Build configurations from deployment config
+$configurations = $deploymentConfig.build.configurations
 
 foreach ($config in $configurations) {
-    Write-Host "`nBuilding $($config.Name) configuration..." -ForegroundColor Cyan
+    Write-Host "`nBuilding $($config.name) configuration..." -ForegroundColor Cyan
     
-    $outputDir = Join-Path $outputPath $config.Name
+    $outputDir = Join-Path $outputPath $config.name
     
     # Base dotnet publish command
     $publishArgs = @(
@@ -87,19 +86,19 @@ foreach ($config in $configurations) {
     )
     
     # Add runtime-specific arguments
-    if ($config.Runtime) {
-        $publishArgs += "--runtime", $config.Runtime
-        $publishArgs += "--self-contained", $config.SelfContained.ToString().ToLower()
+    if ($config.runtime) {
+        $publishArgs += "--runtime", $config.runtime
+        $publishArgs += "--self-contained", $config.selfContained.ToString().ToLower()
     }
     
     # Execute publish command
     try {
         & dotnet $publishArgs
-        Write-Host "✓ $($config.Name) build completed successfully" -ForegroundColor Green
+        Write-Host "✓ $($config.name) build completed successfully" -ForegroundColor Green
         
         # Copy configuration files (contents only, not the folder itself)
-        $configSource = Join-Path $rootPath "config"
-        $configDest = Join-Path $outputDir "config"
+        $configSource = Join-Path $rootPath $deploymentConfig.paths.configSource
+        $configDest = Join-Path $outputDir $deploymentConfig.paths.directories.config
         if (Test-Path $configSource) {
             New-Item -ItemType Directory -Path $configDest -Force | Out-Null
             Get-ChildItem -Path $configSource -File | ForEach-Object {
@@ -109,17 +108,18 @@ foreach ($config in $configurations) {
         }
         
         # Create logs directory
-        $logsDir = Join-Path $outputDir "logs"
+        $logsDir = Join-Path $outputDir $deploymentConfig.paths.directories.logs
         New-Item -ItemType Directory -Path $logsDir -Force | Out-Null
         
         # Create exports directory
-        $exportsDir = Join-Path $outputDir "exports"
+        $exportsDir = Join-Path $outputDir $deploymentConfig.paths.directories.exports
         New-Item -ItemType Directory -Path $exportsDir -Force | Out-Null
-        New-Item -ItemType Directory -Path (Join-Path $exportsDir "export") -Force | Out-Null
-        New-Item -ItemType Directory -Path (Join-Path $exportsDir "import") -Force | Out-Null
+        foreach ($subdir in $deploymentConfig.paths.directories.exports_subdirs) {
+            New-Item -ItemType Directory -Path (Join-Path $exportsDir $subdir) -Force | Out-Null
+        }
         
     } catch {
-        Write-Host "✗ Failed to build $($config.Name): $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "✗ Failed to build $($config.name): $($_.Exception.Message)" -ForegroundColor Red
         continue
     }
 }
@@ -127,10 +127,17 @@ foreach ($config in $configurations) {
 Write-Host "`nDeployment builds completed!" -ForegroundColor Green
 Write-Host "Output location: $outputPath" -ForegroundColor Yellow
 
-# Create desktop shortcut in root directory
+# Create desktop shortcut using configuration
 Write-Host "`nCreating application shortcut..." -ForegroundColor Cyan
-$shortcutPath = Join-Path $rootPath "TradeData Studio.lnk"
-$exePath = Join-Path $outputPath "Windows-x64\TradeDataStudio.Desktop.exe"
+
+# Find the preferred configuration for shortcut
+$preferredConfig = $configurations | Where-Object { $_.preferredForShortcut -eq $true } | Select-Object -First 1
+if (-not $preferredConfig) {
+    $preferredConfig = $configurations[0]  # fallback to first config
+}
+
+$shortcutPath = Join-Path $rootPath $deploymentConfig.deployment.shortcutName
+$exePath = Join-Path $outputPath "$($preferredConfig.name)\$($deploymentConfig.executable.name)"
 
 if (Test-Path $exePath) {
     try {
@@ -138,15 +145,15 @@ if (Test-Path $exePath) {
         $Shortcut = $WshShell.CreateShortcut($shortcutPath)
         $Shortcut.TargetPath = $exePath
         $Shortcut.WorkingDirectory = Split-Path $exePath -Parent
-        $Shortcut.Description = "TradeData Studio - Database Management Tool"
+        $Shortcut.Description = $deploymentConfig.executable.description
         $Shortcut.IconLocation = $exePath
         $Shortcut.Save()
-        Write-Host "✓ Shortcut created: TradeData Studio.lnk" -ForegroundColor Green
+        Write-Host "✓ Shortcut created for $($preferredConfig.name): $($deploymentConfig.deployment.shortcutName)" -ForegroundColor Green
     } catch {
         Write-Host "✗ Failed to create shortcut: $($_.Exception.Message)" -ForegroundColor Red
     }
 } else {
-    Write-Host "✗ Windows-x64 executable not found for shortcut creation" -ForegroundColor Red
+    Write-Host "✗ $($preferredConfig.name) executable not found for shortcut creation: $exePath" -ForegroundColor Red
 }
 
 # Display build summary
