@@ -8,15 +8,14 @@
             Background="#CC000000"
             ZIndex="1000">
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Border Background="#0F1D35"
+            <Border Background="#052633"
                     CornerRadius="8"
-                    BorderBrush="#2D4366"
+                    BorderBrush="{DynamicResource DefaultBorder}"
                     BorderThickness="1"
                     Padding="20"
                     MinWidth="450"
                     MaxWidth="550"
-                    MaxHeight="400"
-                    BoxShadow="0 8 24 0 #00000080">
+                    MaxHeight="400">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -27,15 +26,14 @@
                     
                     <!-- Header -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
-                        <TextBlock Text="📋" FontSize="24" Margin="0,0,12,0" VerticalAlignment="Center"/>
                         <StackPanel>
                             <TextBlock Text="Select Output Tables" 
                                        FontSize="18" 
                                        FontWeight="Bold" 
-                                       Foreground="#F1F5F9"/>
+                                       Foreground="{DynamicResource PrimaryText}"/>
                             <TextBlock Text="{Binding SelectedStoredProcedure.DisplayName, StringFormat='Tables for: {0}'}" 
                                        FontSize="12" 
-                                       Foreground="#94A3B8"/>
+                                       Foreground="{DynamicResource SecondaryText}"/>
                         </StackPanel>
                     </StackPanel>
                     
@@ -44,15 +42,15 @@
                                Text="Select the tables you want to export. Only tables associated with the selected stored procedure are shown."
                                TextWrapping="Wrap"
                                FontSize="12"
-                               Foreground="#94A3B8"
+                               Foreground="{DynamicResource SecondaryText}"
                                Margin="0,0,0,16"/>
                     
                     <!-- Table List -->
                     <Border Grid.Row="2" 
                             CornerRadius="8" 
-                            BorderBrush="#2D4366" 
+                            BorderBrush="{DynamicResource DefaultBorder}" 
                             BorderThickness="1" 
-                            Background="#162642">
+                            Background="#0A052633">
                         <ScrollViewer MaxHeight="250">
                             <ItemsControl ItemsSource="{Binding AvailableOutputTables}">
                                 <ItemsControl.ItemTemplate>
@@ -62,14 +60,15 @@
                                                 Margin="4,2">
                                             <Border.Styles>
                                                 <Style Selector="Border:pointerover">
-                                                    <Setter Property="Background" Value="#1E3456"/>
+                                                    <Setter Property="Background" Value="#15083D4F"/>
                                                     <Setter Property="CornerRadius" Value="6"/>
                                                 </Style>
                                             </Border.Styles>
                                             <CheckBox Content="{Binding DisplayName}" 
                                                       IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                       FontSize="13"
-                                                      FontWeight="Medium"/>
+                                                      FontWeight="Medium"
+                                                      Foreground="{DynamicResource PrimaryText}"/>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -85,11 +84,25 @@
                                 Margin="0,16,0,0">
                         <Button Content="Cancel"
                                 Command="{Binding CancelTableSelectionCommand}"
-                                Classes="secondary-button"
+                                Background="#20EF4444"
+                                BorderBrush="#EF4444"
+                                BorderThickness="1"
+                                Foreground="{DynamicResource PrimaryText}"
+                                FontWeight="SemiBold"
+                                FontSize="13"
+                                Padding="16,10"
+                                CornerRadius="6"
                                 MinWidth="100"/>
-                        <Button Content="✓ Done"
+                        <Button Content="Done"
                                 Command="{Binding CloseTableSelectionPopupCommand}"
-                                Classes="primary-button"
+                                Background="#2010B981"
+                                BorderBrush="#10B981"
+                                BorderThickness="1"
+                                Foreground="{DynamicResource PrimaryText}"
+                                FontWeight="SemiBold"
+                                FontSize="13"
+                                Padding="16,10"
+                                CornerRadius="6"
                                 MinWidth="100"/>
                     </StackPanel>
                 </Grid>

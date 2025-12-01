@@ -4,30 +4,24 @@
              x:Class="TradeDataStudio.Desktop.Views.Components.ConfigurationPanel"
              x:DataType="vm:MainWindowViewModel">
     
-    <Border Background="#0F1D35"
-            BorderBrush="#2D4366"
-            BorderThickness="1"
-            CornerRadius="8"
-            Padding="10"
-            Margin="4"
-            BoxShadow="0 4 12 0 #00000050">
+    <Border Classes="section">
         <StackPanel Spacing="8">
             <!-- Header - Reduced Size -->
             <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Center" Spacing="6">
-                <Border Width="24" Height="24" CornerRadius="12" Background="#1E3456" VerticalAlignment="Center" Padding="2">
-                    <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="#60A5FA" Margin="0"/>
+                <Border Width="24" Height="24" CornerRadius="12" Background="{DynamicResource MidnightBlue}" VerticalAlignment="Center" Padding="2">
+                    <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource ElectricBlue}" Margin="0"/>
                 </Border>
                 <StackPanel>
                     <TextBlock Text="Configuration" 
                                FontSize="14" 
                                FontWeight="SemiBold" 
-                               Foreground="#F1F5F9"/>
+                               Foreground="{DynamicResource BrightText}"/>
                     <TextBlock Text="Set up the operation, output, and export details." 
                                FontSize="10" 
-                               Foreground="#CBD5E1"/>
+                               Foreground="{DynamicResource SecondaryText}"/>
                 </StackPanel>
             </StackPanel>
-            <Border Height="1" Background="#2D4366" Margin="0,0,0,4"/>
+            <Border Height="1" Background="{DynamicResource DefaultBorder}" Margin="0,0,0,4"/>
             
             <!-- Operation Mode -->
             <StackPanel Spacing="4">

@@ -17,50 +17,66 @@
         <Style>
             <Style.Resources>
                 <!-- Primary Backgrounds -->
-                <SolidColorBrush x:Key="DeepNavyBase">#0A1628</SolidColorBrush>
-                <SolidColorBrush x:Key="RichDarkBlue">#0F1D35</SolidColorBrush>
-                <SolidColorBrush x:Key="MidnightBlue">#162642</SolidColorBrush>
-                <SolidColorBrush x:Key="SlateBlue">#1E3456</SolidColorBrush>
-                
+                <SolidColorBrush x:Key="DeepNavyBase">#02111B</SolidColorBrush>
+                <SolidColorBrush x:Key="RichDarkBlue">#052633</SolidColorBrush>
+                <SolidColorBrush x:Key="MidnightBlue">#083D4F</SolidColorBrush>
+                <SolidColorBrush x:Key="SlateBlue">#13566B</SolidColorBrush>
+
                 <!-- Gradient Accents -->
-                <SolidColorBrush x:Key="ElectricBlue">#2563EB</SolidColorBrush>
-                <SolidColorBrush x:Key="AzureBlue">#3B82F6</SolidColorBrush>
-                <SolidColorBrush x:Key="SkyBlue">#60A5FA</SolidColorBrush>
-                <SolidColorBrush x:Key="CyanAccent">#06B6D4</SolidColorBrush>
-                
+                <SolidColorBrush x:Key="ElectricBlue">#00E5FF</SolidColorBrush>
+                <SolidColorBrush x:Key="AzureBlue">#26C6DA</SolidColorBrush>
+                <SolidColorBrush x:Key="SkyBlue">#00B8D4</SolidColorBrush>
+                <SolidColorBrush x:Key="CyanAccent">#84FFFF</SolidColorBrush>
+
                 <!-- Text Colors -->
-                <SolidColorBrush x:Key="PrimaryText">#E2E8F0</SolidColorBrush>
-                <SolidColorBrush x:Key="SecondaryText">#94A3B8</SolidColorBrush>
-                <SolidColorBrush x:Key="MutedText">#64748B</SolidColorBrush>
-                <SolidColorBrush x:Key="BrightText">#F1F5F9</SolidColorBrush>
-                
+                <SolidColorBrush x:Key="PrimaryText">#E0F7FA</SolidColorBrush>
+                <SolidColorBrush x:Key="SecondaryText">#B2EBF2</SolidColorBrush>
+                <SolidColorBrush x:Key="MutedText">#4DD0E1</SolidColorBrush>
+                <SolidColorBrush x:Key="BrightText">#FFFFFF</SolidColorBrush>
+
                 <!-- UI Elements -->
-                <SolidColorBrush x:Key="DefaultBorder">#2D4366</SolidColorBrush>
-                <SolidColorBrush x:Key="FocusBorder">#3B82F6</SolidColorBrush>
-                <SolidColorBrush x:Key="DisabledColor">#475569</SolidColorBrush>
-                
+                <SolidColorBrush x:Key="DefaultBorder">#4D00BCD4</SolidColorBrush>
+                <SolidColorBrush x:Key="FocusBorder">#00E5FF</SolidColorBrush>
+                <SolidColorBrush x:Key="DisabledColor">#2C3E50</SolidColorBrush>
+
+                <!-- Star Pattern Brush -->
+                <DrawingBrush x:Key="StarPatternBrush" TileMode="Tile" DestinationRect="0,0,120,120" Stretch="None" Opacity="0.15">
+                    <DrawingBrush.Drawing>
+                        <GeometryDrawing Brush="#00E5FF">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <EllipseGeometry Center="60,30" RadiusX="2" RadiusY="2" />
+                                    <EllipseGeometry Center="30,70" RadiusX="1.5" RadiusY="1.5" />
+                                    <EllipseGeometry Center="90,70" RadiusX="1.5" RadiusY="1.5" />
+                                    <EllipseGeometry Center="15,15" RadiusX="1" RadiusY="1" />
+                                    <EllipseGeometry Center="105,105" RadiusX="1" RadiusY="1" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+
                 <!-- Dual-Tone Gradient Brushes -->
                 <!-- Background Gradients -->
                 <LinearGradientBrush x:Key="BackgroundGradientDark" StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#0A1628" Offset="0"/>
-                    <GradientStop Color="#0F1D35" Offset="1"/>
+                    <GradientStop Color="#02111B" Offset="0"/>
+                    <GradientStop Color="#064E5E" Offset="1"/>
                 </LinearGradientBrush>
-                <LinearGradientBrush x:Key="BackgroundGradientMed" StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#0F1D35" Offset="0"/>
-                    <GradientStop Color="#162642" Offset="1"/>
+
+                <LinearGradientBrush x:Key="CardGradientDual" StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#cc052633" Offset="0"/>
+                    <GradientStop Color="#99083D4F" Offset="1"/>
                 </LinearGradientBrush>
-                <LinearGradientBrush x:Key="CardGradientDual" StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#162642" Offset="0"/>
-                    <GradientStop Color="#1E3456" Offset="1"/>
-                </LinearGradientBrush>
+
                 <!-- Accent Gradients -->
-                <LinearGradientBrush x:Key="BlueAccentGradient" StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#1E40AF" Offset="0"/>
-                    <GradientStop Color="#2563EB" Offset="1"/>
+                <LinearGradientBrush x:Key="BlueAccentGradient" StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#0097A7" Offset="0"/>
+                    <GradientStop Color="#00E5FF" Offset="1"/>
                 </LinearGradientBrush>
-                <LinearGradientBrush x:Key="BlueAccentGradientLight" StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#2563EB" Offset="0"/>
-                    <GradientStop Color="#3B82F6" Offset="1"/>
+
+                <LinearGradientBrush x:Key="BlueAccentGradientLight" StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#00B8D4" Offset="0"/>
+                    <GradientStop Color="#84FFFF" Offset="1"/>
                 </LinearGradientBrush>
             </Style.Resources>
         </Style>

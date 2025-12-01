@@ -28,14 +28,16 @@ public class DialogService
             Height = 200,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = false,
-            ShowInTaskbar = false
+            ShowInTaskbar = false,
+            Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#052633"))
         };
 
         var result = false;
         var stackPanel = new StackPanel
         {
             Margin = new Thickness(20),
-            Spacing = 15
+            Spacing = 15,
+            Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#052633"))
         };
 
         stackPanel.Children.Add(new TextBlock
@@ -43,13 +45,15 @@ public class DialogService
             Text = $"Selected table '{tableName}' has zero records.",
             FontSize = 14,
             FontWeight = Avalonia.Media.FontWeight.SemiBold,
-            Margin = new Thickness(0, 0, 0, 10)
+            Margin = new Thickness(0, 0, 0, 10),
+            Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#E2E8F0"))
         });
 
         stackPanel.Children.Add(new TextBlock
         {
             Text = "How would you like to proceed?",
-            FontSize = 13
+            FontSize = 13,
+            Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#94A3B8"))
         });
 
         var buttonPanel = new StackPanel
@@ -66,8 +70,10 @@ public class DialogService
             Width = 140,
             Height = 35,
             Padding = new Thickness(15, 8),
-            Background = Avalonia.Media.Brushes.DodgerBlue,
-            Foreground = Avalonia.Media.Brushes.White
+            Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#2010B981")),
+            BorderBrush = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#10B981")),
+            BorderThickness = new Thickness(1),
+            Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#E2E8F0"))
         };
         generateButton.Click += (s, e) =>
         {
@@ -81,8 +87,10 @@ public class DialogService
             Width = 140,
             Height = 35,
             Padding = new Thickness(15, 8),
-            Background = Avalonia.Media.Brushes.Gray,
-            Foreground = Avalonia.Media.Brushes.White
+            Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#20FBBF24")),
+            BorderBrush = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#FBBF24")),
+            BorderThickness = new Thickness(1),
+            Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#FFFFFF"))
         };
         skipButton.Click += (s, e) =>
         {

@@ -5,18 +5,10 @@
     <Style Selector="Border.form-card">
         <Setter Property="Padding" Value="14"/>
         <Setter Property="Margin" Value="0,0,12,12"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#162642" Offset="0"/>
-                    <GradientStop Color="#1E3456" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush" Value="#2D4366"/>
+        <Setter Property="Background" Value="#20052633"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="BoxShadow" Value="0 4 12 0 #00000040"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="MaxWidth" Value="340"/>
         <Setter Property="MinWidth" Value="240"/>
@@ -28,15 +20,8 @@
         </Setter>
     </Style>
     <Style Selector="Border.form-card:pointerover">
-        <Setter Property="BorderBrush" Value="#3B82F6"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#1E3456" Offset="0"/>
-                    <GradientStop Color="#2D4366" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource ElectricBlue}"/>
+        <Setter Property="Background" Value="#30064E5E"/>
     </Style>
     <Style Selector="Border.form-card-wide">
         <Setter Property="MaxWidth" Value="760"/>

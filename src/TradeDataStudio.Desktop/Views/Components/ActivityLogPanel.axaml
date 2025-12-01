@@ -4,13 +4,7 @@
              x:Class="TradeDataStudio.Desktop.Views.Components.ActivityLogPanel"
              x:DataType="vm:MainWindowViewModel">
     
-    <Border Background="#0F1D35"
-            BorderBrush="#2D4366"
-            BorderThickness="1"
-            CornerRadius="8"
-            Padding="14"
-            Margin="4"
-            BoxShadow="0 4 12 0 #00000050">
+    <Border Classes="section">
         <StackPanel>
             <!-- Header with Clear button and Live Operation Status -->
             <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,0" VerticalAlignment="Center">
@@ -18,7 +12,7 @@
                            Text="Recent Activity" 
                            FontSize="14" 
                            FontWeight="SemiBold" 
-                           Foreground="#E2E8F0"
+                           Foreground="{DynamicResource PrimaryText}"
                            VerticalAlignment="Center"/>
                 
                 <!-- Live Operation Status Indicator (beside header) -->
@@ -63,40 +57,37 @@
                         Content="Clear Activity"
                         Command="{Binding ClearActivityLogsCommand}"
                         ToolTip.Tip="Clear all activity log entries"
-                        Background="#EA580C"
-                        BorderBrush="#C2410C"
-                        Foreground="#F1F5F9"
+                        Classes="danger"
                         Padding="10,6"
                         MinWidth="80"
                         Height="28"
-                        CornerRadius="5"
                         FontSize="11"
                         FontWeight="Medium"/>
             </Grid>
             <!-- Separator line below header -->
-            <Border Height="1" Background="#2D4366" Margin="0,6,0,8"/>
+            <Border Height="1" Background="{DynamicResource DefaultBorder}" Margin="0,6,0,8"/>
             
             <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <Border CornerRadius="6" Background="#162642" BorderBrush="#2D4366" BorderThickness="1.5">
+                <Border CornerRadius="6" Background="#0A052633" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="1">
                     <StackPanel>
                         <!-- Table Header - Always Visible -->
-                        <Border Background="#1E3456" BorderBrush="#2D4366" BorderThickness="0,0,0,1" Padding="0">
+                        <Border Background="#15083D4F" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,0,1" Padding="0">
                             <Grid ColumnDefinitions="110,75,90,*" MinHeight="32">
                                 <!-- Time Header -->
-                                <Border Grid.Column="0" BorderBrush="#3B82F6" BorderThickness="0,0,1,0" Padding="10,8">
-                                    <TextBlock Text="Time" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="#F1F5F9" VerticalAlignment="Center"/>
+                                <Border Grid.Column="0" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,1,0" Padding="10,8">
+                                    <TextBlock Text="Time" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center"/>
                                 </Border>
                                 <!-- Mode Header -->
-                                <Border Grid.Column="1" BorderBrush="#3B82F6" BorderThickness="0,0,1,0" Padding="10,8">
-                                    <TextBlock Text="Mode" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="#F1F5F9" VerticalAlignment="Center"/>
+                                <Border Grid.Column="1" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,1,0" Padding="10,8">
+                                    <TextBlock Text="Mode" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center"/>
                                 </Border>
                                 <!-- Status Header -->
-                                <Border Grid.Column="2" BorderBrush="#3B82F6" BorderThickness="0,0,1,0" Padding="10,8">
-                                    <TextBlock Text="Status" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="#F1F5F9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <Border Grid.Column="2" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,1,0" Padding="10,8">
+                                    <TextBlock Text="Status" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </Border>
                                 <!-- Details Header -->
                                 <Border Grid.Column="3" Padding="10,8">
-                                    <TextBlock Text="Operation Details" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="#F1F5F9" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Operation Details" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center"/>
                                 </Border>
                             </Grid>
                         </Border>
@@ -105,23 +96,23 @@
                         <ItemsControl ItemsSource="{Binding ActivityLogs}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="#2D4366" BorderThickness="0,0,0,1" Padding="0" Background="#162642">
+                                    <Border BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,0,1" Padding="0" Background="#0A052633">
                                         <Grid ColumnDefinitions="110,75,90,*" MinHeight="32">
                                             <!-- Time Cell -->
-                                            <Border Grid.Column="0" BorderBrush="#2D4366" BorderThickness="0,0,1,0" Padding="10,6">
-                                                <TextBlock Text="{Binding Time}" FontFamily="Consolas" FontSize="11" FontWeight="Medium" Foreground="#E2E8F0" VerticalAlignment="Center" LineHeight="14"/>
+                                            <Border Grid.Column="0" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,1,0" Padding="10,6">
+                                                <TextBlock Text="{Binding Time}" FontFamily="Consolas" FontSize="11" FontWeight="Medium" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center" LineHeight="14"/>
                                             </Border>
                                             <!-- Mode Cell -->
-                                            <Border Grid.Column="1" BorderBrush="#2D4366" BorderThickness="0,0,1,0" Padding="10,6">
-                                                <TextBlock Text="{Binding Mode}" FontFamily="Consolas" FontSize="11" FontWeight="SemiBold" Foreground="#60A5FA" VerticalAlignment="Center" HorizontalAlignment="Center" LineHeight="14"/>
+                                            <Border Grid.Column="1" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,1,0" Padding="10,6">
+                                                <TextBlock Text="{Binding Mode}" FontFamily="Consolas" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ElectricBlue}" VerticalAlignment="Center" HorizontalAlignment="Center" LineHeight="14"/>
                                             </Border>
                                             <!-- Status Cell -->
-                                            <Border Grid.Column="2" BorderBrush="#2D4366" BorderThickness="0,0,1,0" Padding="10,6">
-                                                <TextBlock Text="{Binding Status}" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FFFFFF" LineHeight="14" TextWrapping="NoWrap"/>
+                                            <Border Grid.Column="2" BorderBrush="{DynamicResource DefaultBorder}" BorderThickness="0,0,1,0" Padding="10,6">
+                                                <TextBlock Text="{Binding Status}" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource BrightText}" LineHeight="14" TextWrapping="NoWrap"/>
                                             </Border>
                                             <!-- Details Cell -->
                                             <Border Grid.Column="3" Padding="10,6">
-                                                <TextBlock Text="{Binding Details}" FontFamily="Consolas" FontSize="11" Foreground="#A8B8D1" TextWrapping="Wrap" VerticalAlignment="Center" LineHeight="14"/>
+                                                <TextBlock Text="{Binding Details}" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource PrimaryText}" TextWrapping="Wrap" VerticalAlignment="Center" LineHeight="14"/>
                                             </Border>
                                         </Grid>
                                     </Border>

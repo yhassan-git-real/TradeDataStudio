@@ -5,33 +5,33 @@
     <Style Selector="TextBlock">
         <Setter Property="Margin" Value="8,5,12,5"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
     </Style>
     <Style Selector="TextBlock.input-label">
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrightText}"/>
         <Setter Property="Margin" Value="0,0,0,8"/>
     </Style>
     <Style Selector="TextBlock.input-hint">
         <Setter Property="FontSize" Value="11"/>
-        <Setter Property="Foreground" Value="#A8B8D1"/>
+        <Setter Property="Foreground" Value="{DynamicResource SecondaryText}"/>
         <Setter Property="Margin" Value="0,6,0,0"/>
     </Style>
     <Style Selector="TextBlock.section-header">
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
         <Setter Property="Margin" Value="0,0,0,8"/>
     </Style>
     <Style Selector="TextBlock.app-title">
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrightText}"/>
     </Style>
     <Style Selector="TextBlock.app-subtitle">
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="Foreground" Value="{DynamicResource SecondaryText}"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.version-badge">
@@ -49,21 +49,14 @@
     
     <!-- ComboBox Styling -->
     <Style Selector="ComboBox">
-        <Setter Property="Margin" Value="8"/>
+        <Setter Property="Margin" Value="0"/>
         <Setter Property="MinWidth" Value="220"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#162642" Offset="0"/>
-                    <GradientStop Color="#1E3456" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush" Value="#2D4366"/>
+        <Setter Property="Background" Value="#15052633"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.2"/>
@@ -72,68 +65,47 @@
         </Setter>
     </Style>
     <Style Selector="ComboBox:pointerover">
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#1E3456" Offset="0"/>
-                    <GradientStop Color="#2D4366" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush" Value="#3B82F6"/>
+        <Setter Property="Background" Value="#25064E5E"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AzureBlue}"/>
     </Style>
     <Style Selector="ComboBox:focus">
-        <Setter Property="BorderBrush" Value="#3B82F6"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#1E3456" Offset="0"/>
-                    <GradientStop Color="#2D4366" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource ElectricBlue}"/>
+        <Setter Property="Background" Value="#25064E5E"/>
     </Style>
     
     <!-- ComboBoxItem Styling -->
     <Style Selector="ComboBoxItem">
-        <Setter Property="Background" Value="#162642"/>
-        <Setter Property="Foreground" Value="#E2E8F0"/>
-        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="Background" Value="#083D4F"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
+        <Setter Property="Padding" Value="10,8"/>
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="ComboBoxItem:pointerover">
-        <Setter Property="Background" Value="#1E3456"/>
-        <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Background" Value="#13566B"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrightText}"/>
     </Style>
     <Style Selector="ComboBoxItem:selected">
-        <Setter Property="Background" Value="#2563EB"/>
-        <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Background" Value="#2000E5FF"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrightText}"/>
     </Style>
     <Style Selector="ComboBoxItem:selected:pointerover">
-        <Setter Property="Background" Value="#3B82F6"/>
+        <Setter Property="Background" Value="#4000E5FF"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
     </Style>
     
     <!-- TextBox Styling -->
     <Style Selector="TextBox">
-        <Setter Property="Margin" Value="8"/>
+        <Setter Property="Margin" Value="0"/>
         <Setter Property="MinWidth" Value="180"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#162642" Offset="0"/>
-                    <GradientStop Color="#1E3456" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush" Value="#2D4366"/>
+        <Setter Property="Background" Value="#15052633"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Foreground" Value="#E2E8F0"/>
-        <Setter Property="CaretBrush" Value="#60A5FA"/>
-        <Setter Property="SelectionBrush" Value="#2563EB"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource ElectricBlue}"/>
+        <Setter Property="SelectionBrush" Value="#4000E5FF"/>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.2"/>
@@ -142,18 +114,11 @@
         </Setter>
     </Style>
     <Style Selector="TextBox:focus">
-        <Setter Property="BorderBrush" Value="#3B82F6"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#1E3456" Offset="0"/>
-                    <GradientStop Color="#2D4366" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource ElectricBlue}"/>
+        <Setter Property="Background" Value="#25064E5E"/>
     </Style>
     <Style Selector="TextBox:pointerover">
-        <Setter Property="BorderBrush" Value="#3B82F6"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AzureBlue}"/>
     </Style>
     
     <!-- RadioButton Styling -->
@@ -185,13 +150,13 @@
     
     <!-- Tooltip Styling -->
     <Style Selector="ToolTip">
-        <Setter Property="Background" Value="#0F1D35"/>
-        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Background" Value="#052633"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
         <Setter Property="Padding" Value="8,6"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="MaxWidth" Value="300"/>
-        <Setter Property="BorderBrush" Value="#2D4366"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
     
@@ -199,17 +164,11 @@
     <Style Selector="Border.section">
         <Setter Property="Margin" Value="8"/>
         <Setter Property="Padding" Value="12"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#162642" Offset="0"/>
-                    <GradientStop Color="#1E3456" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush" Value="#2D4366"/>
+        <Setter Property="Background" Value="{DynamicResource CardGradientDual}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BoxShadow" Value="0 4 20 0 #40000000, 0 0 10 0 #2000E5FF"/>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.25"/>
@@ -225,8 +184,8 @@
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
     <Style Selector="Border.footer">
-        <Setter Property="Background" Value="#0F1D35"/>
-        <Setter Property="BorderBrush" Value="#2D4366"/>
+        <Setter Property="Background" Value="#052633"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
         <Setter Property="BorderThickness" Value="0,1,0,0"/>
         <Setter Property="Height" Value="50"/>
     </Style>
@@ -254,21 +213,21 @@
     
     <!-- Menu Styling -->
     <Style Selector="Menu">
-        <Setter Property="Background" Value="#0F1D35"/>
-        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Background" Value="#052633"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
     </Style>
     
     <Style Selector="MenuItem">
-        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
         <Setter Property="FontSize" Value="13"/>
     </Style>
     
     <Style Selector="MenuItem:selected /template/ ContentPresenter">
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background" Value="#083D4F"/>
     </Style>
     
     <Style Selector="MenuItem:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#1E3456"/>
+        <Setter Property="Background" Value="#083D4F"/>
     </Style>
     
 </Styles>

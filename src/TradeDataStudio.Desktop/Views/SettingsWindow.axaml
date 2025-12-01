@@ -16,37 +16,36 @@
         MaxHeight="450"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
-        Background="#0A1628">
+        Background="#02111B">
 
     <Window.Styles>
         <Style Selector="Border.card">
-            <Setter Property="Background" Value="#162642"/>
-            <Setter Property="BorderBrush" Value="#2D4366"/>
+            <Setter Property="Background" Value="#15052633"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="Padding" Value="12"/>
-            <Setter Property="BoxShadow" Value="0 4 8 0 #00000040"/>
         </Style>
         
         <Style Selector="TextBlock.header">
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="#F1F5F9"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
         
         <Style Selector="TextBlock.label">
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="FontSize" Value="11"/>
-            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="Foreground" Value="{DynamicResource SecondaryText}"/>
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
         
         <Style Selector="TextBox.input">
             <Setter Property="Padding" Value="8"/>
-            <Setter Property="BorderBrush" Value="#2D4366"/>
-            <Setter Property="Background" Value="#1E3456"/>
-            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
+            <Setter Property="Background" Value="#15052633"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="12"/>
@@ -54,20 +53,14 @@
         </Style>
         
         <Style Selector="TextBox.input:focus /template/ Border#PART_BorderElement">
-            <Setter Property="BorderBrush" Value="#3B82F6"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ElectricBlue}"/>
         </Style>
         
         <Style Selector="Button.primary">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                        <GradientStop Color="#2563EB" Offset="0"/>
-                        <GradientStop Color="#1E40AF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="#F1F5F9"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#20064E5E"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ElectricBlue}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="12,8"/>
             <Setter Property="FontWeight" Value="Medium"/>
@@ -75,21 +68,14 @@
             <Setter Property="Height" Value="32"/>
         </Style>
         
-        <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                        <GradientStop Color="#1E40AF" Offset="0"/>
-                        <GradientStop Color="#1E3A8A" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
+        <Style Selector="Button.primary:pointerover">
+            <Setter Property="Background" Value="#30083D4F"/>
         </Style>
         
         <Style Selector="Button.secondary">
-            <Setter Property="Background" Value="#1E3456"/>
-            <Setter Property="Foreground" Value="#94A3B8"/>
-            <Setter Property="BorderBrush" Value="#2D4366"/>
+            <Setter Property="Background" Value="#15052633"/>
+            <Setter Property="Foreground" Value="{DynamicResource SecondaryText}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -99,16 +85,10 @@
         </Style>
         
         <Style Selector="Button.success">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                        <GradientStop Color="#10B981" Offset="0"/>
-                        <GradientStop Color="#059669" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="#F1F5F9"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#20064E5E"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AzureBlue}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="12,8"/>
             <Setter Property="FontWeight" Value="Medium"/>
@@ -117,7 +97,7 @@
         </Style>
         
         <Style Selector="CheckBox.compact">
-            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="Margin" Value="0,4"/>
@@ -125,8 +105,8 @@
         
         <!-- Status Message Styles -->
         <Style Selector="Border.status-message">
-            <Setter Property="Background" Value="#1E3456"/>
-            <Setter Property="BorderBrush" Value="#3B82F6"/>
+            <Setter Property="Background" Value="#15052633"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ElectricBlue}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="10"/>
@@ -136,7 +116,7 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
             <Setter Property="LineHeight" Value="18"/>
         </Style>
     </Window.Styles>
@@ -153,7 +133,7 @@
             <TextBlock Text="Database Settings" 
                        FontSize="16" 
                        FontWeight="Bold" 
-                       Foreground="#F1F5F9"/>
+                       Foreground="{DynamicResource PrimaryText}"/>
         </StackPanel>
 
         <!-- Main Content -->
@@ -188,9 +168,9 @@
                                                Increment="5"
                                                ShowButtonSpinner="True"
                                                FormatString="0 seconds"
-                                               Background="#1E3456"
-                                               BorderBrush="#2D4366"
-                                               Foreground="#E2E8F0"
+                                               Background="#15052633"
+                                               BorderBrush="{DynamicResource DefaultBorder}"
+                                               Foreground="{DynamicResource PrimaryText}"
                                                CornerRadius="4"
                                                Height="32"
                                                FontSize="12"/>
@@ -221,7 +201,7 @@
                                 <TextBlock FontSize="14"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
-                                          Foreground="#94A3B8"
+                                          Foreground="{DynamicResource SecondaryText}"
                                           Text="{Binding AuthenticationChevron}"/>
                             </Button>
                         </Grid>
