@@ -25,9 +25,9 @@ public partial class TwinklingStarsBackground : UserControl
     // Star pattern settings
     private const int STARS_PER_TILE = 8; // Based on existing StarPatternBrush
     private const double TILE_SIZE = 120; // Based on existing DestinationRect
-    private const double STAR_MIN_SIZE = 0.5;
-    private const double STAR_MAX_SIZE = 2.5;
-    private const double TWINKLE_SPEED_BASE = 1.0; // cycles per second
+    private const double STAR_MIN_SIZE = 0.8; // Increased for better visibility
+    private const double STAR_MAX_SIZE = 3.5; // Increased for better visibility
+    private const double TWINKLE_SPEED_BASE = 2.5; // Increased frequency for more blinking
     
     public TwinklingStarsBackground(AnimationConfiguration? config = null)
     {
@@ -141,9 +141,9 @@ public partial class TwinklingStarsBackground : UserControl
 
         // Random star properties for natural variation
         var size = STAR_MIN_SIZE + _random.NextDouble() * (STAR_MAX_SIZE - STAR_MIN_SIZE);
-        var twinkleSpeed = TWINKLE_SPEED_BASE * (0.5 + _random.NextDouble()) * _config.AnimationSpeed;
+        var twinkleSpeed = TWINKLE_SPEED_BASE * (0.3 + _random.NextDouble() * 0.7) * _config.AnimationSpeed; // Slower range
         var twinklePhase = _random.NextDouble() * Math.PI * 2; // Random starting phase
-        var baseOpacity = 0.2 + _random.NextDouble() * 0.4; // Vary base brightness
+        var baseOpacity = 0.4 + _random.NextDouble() * 0.5; // Higher base brightness for visibility
         
         // Create star visual element
         var starElement = new Ellipse
@@ -164,7 +164,7 @@ public partial class TwinklingStarsBackground : UserControl
             TwinkleSpeed = twinkleSpeed,
             TwinklePhase = twinklePhase,
             BaseOpacity = baseOpacity,
-            TwinkleIntensity = 0.3 + _random.NextDouble() * 0.4 // How much the star twinkles
+            TwinkleIntensity = 0.5 + _random.NextDouble() * 0.4 // Stronger twinkle effect
         };
 
         _stars.Add(star);
@@ -181,8 +181,9 @@ public partial class TwinklingStarsBackground : UserControl
         var colorString = colors[_random.Next(colors.Length)];
         var color = Color.Parse(colorString);
         
-        // Apply effect intensity to alpha
-        var adjustedAlpha = (byte)(color.A * _config.EffectIntensity);
+        // Apply effect intensity to alpha with minimum visibility
+        var minAlpha = (byte)(color.A * 0.6); // Ensure minimum 60% visibility
+        var adjustedAlpha = (byte)Math.Max(minAlpha, color.A * _config.EffectIntensity);
         var adjustedColor = Color.FromArgb(adjustedAlpha, color.R, color.G, color.B);
         
         return new SolidColorBrush(adjustedColor);
@@ -192,9 +193,11 @@ public partial class TwinklingStarsBackground : UserControl
     {
         if (_animationTimer != null) return;
 
+        // Use a faster update interval for smoother animation
+        var smoothInterval = TimeSpan.FromMilliseconds(33); // ~30fps for smooth motion
         _animationTimer = new DispatcherTimer
         {
-            Interval = _config.GetUpdateInterval()
+            Interval = smoothInterval
         };
         _animationTimer.Tick += OnAnimationTick;
         _animationTimer.Start();
@@ -206,7 +209,8 @@ public partial class TwinklingStarsBackground : UserControl
 
         _performanceManager.StartFrame();
 
-        var deltaTime = _config.GetUpdateInterval().TotalSeconds;
+        // Use consistent deltaTime for smooth animation
+        var deltaTime = 0.033; // 30fps consistent timing
         _elapsedTime += deltaTime;
 
         UpdateStars(deltaTime);
@@ -222,19 +226,27 @@ public partial class TwinklingStarsBackground : UserControl
         {
             var star = _stars[i];
             
-            // Update twinkle phase
-            star.TwinklePhase += star.TwinkleSpeed * deltaTime * Math.PI * 2;
+            // Update twinkle phase with slower motion
+            star.TwinklePhase += star.TwinkleSpeed * deltaTime * Math.PI * 1.5; // Slower phase increment
             
-            // Calculate twinkling opacity using sine wave
-            var twinkle = Math.Sin(star.TwinklePhase) * 0.5 + 0.5; // Normalize to 0-1
+            // Calculate twinkling opacity using sine wave with enhanced visibility
+            var twinkle = Math.Sin(star.TwinklePhase) * 0.6 + 0.4; // More pronounced twinkle range (0.4-1.0)
             var twinkleOpacity = star.BaseOpacity + (twinkle * star.TwinkleIntensity);
             
             // Apply global effect intensity
             var finalOpacity = twinkleOpacity * _config.EffectIntensity;
             
-            // Add subtle breathing effect for groups of stars
-            var groupBreathing = Math.Sin(_elapsedTime * 0.3 + i * 0.1) * 0.1 + 1.0; // Gentle group pulsing
+            // Add subtle breathing effect for groups of stars (slower and more gentle)
+            var groupBreathing = Math.Sin(_elapsedTime * 0.15 + i * 0.05) * 0.08 + 1.0; // Slower group pulsing
             finalOpacity *= groupBreathing;
+            
+            // Add individual slow drift motion for more organic feel
+            var driftX = Math.Sin(_elapsedTime * 0.1 + i * 0.3) * 0.5; // Very slow horizontal drift
+            var driftY = Math.Cos(_elapsedTime * 0.08 + i * 0.4) * 0.3; // Very slow vertical drift
+            
+            // Apply position with drift (very subtle)
+            Canvas.SetLeft(star.Element, star.X - star.Size / 2 + driftX);
+            Canvas.SetTop(star.Element, star.Y - star.Size / 2 + driftY);
             
             // Clamp opacity
             finalOpacity = Math.Clamp(finalOpacity, 0.0, 1.0);

@@ -33,9 +33,9 @@ public enum BackgroundEffects
 public class AnimationConfiguration : INotifyPropertyChanged
 {
     private AnimationQuality _quality = AnimationQuality.Medium;
-    private BackgroundEffects _enabledEffects = BackgroundEffects.All;
+    private BackgroundEffects _enabledEffects = BackgroundEffects.TwinklingStars;
     private double _particleDensity = 0.5;
-    private double _animationSpeed = 1.0;
+    private double _animationSpeed = 0.9;
     private double _effectIntensity = 0.7;
     private bool _adaptivePerformance = true;
     private int _targetFrameRate = 60;
