@@ -1,6 +1,44 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
+    <!-- ============================================ -->
+    <!-- Ambient Background Animations -->
+    <!-- ============================================ -->
+    
+    <!-- Subtle Floating Glow Animation (slow, continuous) -->
+    <Style Selector="Border.ambient-glow">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:4"/>
+            </Transitions>
+        </Setter>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TransformGroup>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Pulsing Glow for Status Indicators -->
+    <Style Selector="Ellipse.pulse-glow">
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:2"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    
+    <!-- ============================================ -->
+    <!-- UI Element Animations -->
+    <!-- ============================================ -->
+    
     <!-- Smooth Color Transitions for Button -->
     <Style Selector="Button">
         <Setter Property="Transitions">

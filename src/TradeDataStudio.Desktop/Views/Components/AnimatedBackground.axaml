@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="TradeDataStudio.Desktop.Views.Components.AnimatedBackground">
+    
+    <Canvas Name="AnimationCanvas" Background="Transparent" IsHitTestVisible="False">
+        <!-- Upper Left Pulsing Glow -->
+        <Ellipse Canvas.Left="0" Canvas.Top="0"
+                 Width="300" Height="300"
+                 Fill="#0800E5FF"
+                 Opacity="0.08"
+                 IsHitTestVisible="False"/>
+        
+        <!-- Lower Right Pulsing Glow -->
+        <Ellipse Canvas.Right="0" Canvas.Bottom="0"
+                 Width="350" Height="350"
+                 Fill="#0826C6DA"
+                 Opacity="0.06"
+                 IsHitTestVisible="False"/>
+    </Canvas>
+    
+</UserControl>

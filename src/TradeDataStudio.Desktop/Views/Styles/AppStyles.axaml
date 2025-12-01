@@ -80,10 +80,15 @@
         <Setter Property="Padding" Value="10,8"/>
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="ComboBoxItem:pointerover">
-        <Setter Property="Background" Value="#13566B"/>
-        <Setter Property="Foreground" Value="{DynamicResource BrightText}"/>
+        <Setter Property="Background" Value="#1A5A7A"/>
+        <Setter Property="Foreground" Value="{DynamicResource ElectricBlue}"/>
     </Style>
     <Style Selector="ComboBoxItem:selected">
         <Setter Property="Background" Value="#2000E5FF"/>
@@ -124,28 +129,72 @@
     <!-- RadioButton Styling -->
     <Style Selector="RadioButton">
         <Setter Property="Margin" Value="8"/>
-        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="RadioButton:pointerover">
-        <Setter Property="Foreground" Value="#60A5FA"/>
+        <Setter Property="Foreground" Value="{DynamicResource ElectricBlue}"/>
     </Style>
     <Style Selector="RadioButton:checked">
-        <Setter Property="Foreground" Value="#3B82F6"/>
+        <Setter Property="Foreground" Value="{DynamicResource ElectricBlue}"/>
     </Style>
     
     <!-- CheckBox Styling -->
     <Style Selector="CheckBox">
-        <Setter Property="Foreground" Value="#E2E8F0"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="CheckBox:pointerover">
-        <Setter Property="Foreground" Value="#60A5FA"/>
+        <Setter Property="Foreground" Value="{DynamicResource ElectricBlue}"/>
     </Style>
     <Style Selector="CheckBox:checked">
-        <Setter Property="Foreground" Value="#3B82F6"/>
+        <Setter Property="Foreground" Value="{DynamicResource ElectricBlue}"/>
+    </Style>
+    
+    <!-- Menu Styling -->
+    <Style Selector="Menu">
+        <Setter Property="Background" Value="#052633"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Menu:pointerover">
+        <Setter Property="Background" Value="#083D4F"/>
+    </Style>
+    
+    <!-- MenuItem Styling -->
+    <Style Selector="MenuItem">
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="MenuItem:pointerover">
+        <Setter Property="Background" Value="#20064E5E"/>
+        <Setter Property="Foreground" Value="{DynamicResource ElectricBlue}"/>
+    </Style>
+    <Style Selector="MenuItem:selected">
+        <Setter Property="Background" Value="#30083D4F"/>
+        <Setter Property="Foreground" Value="{DynamicResource ElectricBlue}"/>
     </Style>
     
     <!-- Tooltip Styling -->
