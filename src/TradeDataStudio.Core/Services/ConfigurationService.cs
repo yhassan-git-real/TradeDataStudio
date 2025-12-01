@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Linq;
+using TradeDataStudio.Core.Exceptions;
 using TradeDataStudio.Core.Interfaces;
 using TradeDataStudio.Core.Models;
 
@@ -42,19 +43,37 @@ public class ConfigurationService : IConfigurationService
                         _applicationSettings.Version = version.GetString() ?? "1.0.0";
                 }
                 
-                // Parse paths section
-                if (config.TryGetProperty("paths", out var pathsSection))
+                // Parse and validate paths section
+                if (!config.TryGetProperty("paths", out var pathsSection))
                 {
-                    _applicationSettings.Paths = new PathSettings();
-                    if (pathsSection.TryGetProperty("exports", out var exports))
-                        _applicationSettings.Paths.Exports = exports.GetString() ?? "./exports/";
-                    if (pathsSection.TryGetProperty("imports", out var imports))
-                        _applicationSettings.Paths.Imports = imports.GetString() ?? "./imports/";
-                    if (pathsSection.TryGetProperty("logs", out var logs))
-                        _applicationSettings.Paths.Logs = logs.GetString() ?? "./logs/";
-                    if (pathsSection.TryGetProperty("config", out var configPath))
-                        _applicationSettings.Paths.Config = configPath.GetString() ?? "./config/";
+                    throw new ConfigurationValidationException("Missing 'paths' section in appsettings.json. All paths must be explicitly configured.");
                 }
+                
+                _applicationSettings.Paths = new PathSettings();
+                
+                // Validate exports path
+                if (!pathsSection.TryGetProperty("exports", out var exports) || string.IsNullOrEmpty(exports.GetString()))
+                    throw new ConfigurationValidationException("Missing or empty 'exports' path in configuration.");
+                _applicationSettings.Paths.Exports = exports.GetString()!;
+                ValidateDirectoryPath(_applicationSettings.Paths.Exports, "exports");
+                
+                // Validate imports path
+                if (!pathsSection.TryGetProperty("imports", out var imports) || string.IsNullOrEmpty(imports.GetString()))
+                    throw new ConfigurationValidationException("Missing or empty 'imports' path in configuration.");
+                _applicationSettings.Paths.Imports = imports.GetString()!;
+                ValidateDirectoryPath(_applicationSettings.Paths.Imports, "imports");
+                
+                // Validate logs path
+                if (!pathsSection.TryGetProperty("logs", out var logs) || string.IsNullOrEmpty(logs.GetString()))
+                    throw new ConfigurationValidationException("Missing or empty 'logs' path in configuration.");
+                _applicationSettings.Paths.Logs = logs.GetString()!;
+                ValidateDirectoryPath(_applicationSettings.Paths.Logs, "logs");
+                
+                // Validate config path
+                if (!pathsSection.TryGetProperty("config", out var configPath) || string.IsNullOrEmpty(configPath.GetString()))
+                    throw new ConfigurationValidationException("Missing or empty 'config' path in configuration.");
+                _applicationSettings.Paths.Config = configPath.GetString()!;
+                ValidateDirectoryPath(_applicationSettings.Paths.Config, "config");
                 
                 // Parse performance section
                 if (config.TryGetProperty("performance", out var perfSection))
@@ -302,7 +321,7 @@ public class ConfigurationService : IConfigurationService
     
     private static string ResolveConfigPath()
     {
-        // Probe from the application base directory and the current working directory.
+        // First, try to find appsettings.json in standard locations
         var probeRoots = new[]
         {
             AppDomain.CurrentDomain.BaseDirectory,
@@ -323,11 +342,8 @@ public class ConfigurationService : IConfigurationService
             }
         }
 
-        // Fall back to a config directory next to the executable.
-        var fallback = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config");
-        Console.WriteLine($"[ConfigService] Using fallback config directory: {fallback}");
-        Directory.CreateDirectory(fallback);
-        return fallback;
+        throw new ConfigurationValidationException(
+            "Unable to locate configuration directory. Please ensure appsettings.json exists in the application directory or a 'config' subdirectory.");
     }
 
     private static string? FindConfigDirectory(string startPath)
@@ -454,6 +470,56 @@ public class ConfigurationService : IConfigurationService
             {
                 Console.WriteLine($"[AnimationConfig] Error loading configuration, using defaults: {ex.Message}");
             }
+        }
+    }
+
+    /// <summary>
+    /// Validates that a directory path exists and is accessible.
+    /// </summary>
+    private static void ValidateDirectoryPath(string path, string pathName)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            throw new ConfigurationValidationException($"The {pathName} path cannot be empty or whitespace.");
+        }
+
+        try
+        {
+            // Check if directory exists
+            if (!Directory.Exists(path))
+            {
+                throw new ConfigurationValidationException(
+                    $"The {pathName} directory does not exist: '{path}'. Please create the directory or update the configuration.");
+            }
+
+            // Check if we have read/write access
+            var testFile = Path.Combine(path, $".access_test_{Guid.NewGuid()}");
+            try
+            {
+                File.WriteAllText(testFile, "test");
+                File.Delete(testFile);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw new ConfigurationValidationException(
+                    $"No write access to {pathName} directory: '{path}'. Please check permissions.");
+            }
+            catch (Exception ex)
+            {
+                throw new ConfigurationValidationException(
+                    $"Cannot access {pathName} directory: '{path}'. Error: {ex.Message}");
+            }
+
+            Console.WriteLine($"[ConfigService] ✓ {pathName} directory validated: {path}");
+        }
+        catch (ConfigurationValidationException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new ConfigurationValidationException(
+                $"Error validating {pathName} directory '{path}': {ex.Message}", ex);
         }
     }
 }

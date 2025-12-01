@@ -1,5 +1,6 @@
 using NLog;
 using System.Text.Json;
+using TradeDataStudio.Core.Exceptions;
 using TradeDataStudio.Core.Interfaces;
 using TradeDataStudio.Core.Models;
 
@@ -74,45 +75,55 @@ namespace TradeDataStudio.Core.Services
             {
                 // Find config directory
                 var configPath = FindConfigDirectory();
-                if (configPath != null)
+                if (configPath == null)
                 {
-                    var appSettingsPath = Path.Combine(configPath, "appsettings.json");
-                    if (File.Exists(appSettingsPath))
-                    {
-                        var json = File.ReadAllText(appSettingsPath);
-                        var doc = JsonSerializer.Deserialize<JsonElement>(json);
-                        
-                        if (doc.TryGetProperty("paths", out var paths) &&
-                            paths.TryGetProperty("logs", out var logsPath))
-                        {
-                            var logDir = logsPath.GetString();
-                            if (!string.IsNullOrEmpty(logDir))
-                            {
-                                // Convert relative path to absolute if needed
-                                if (!Path.IsPathRooted(logDir))
-                                {
-                                    logDir = Path.GetFullPath(Path.Combine(
-                                        AppDomain.CurrentDomain.BaseDirectory,
-                                        logDir.Replace("/", Path.DirectorySeparatorChar.ToString())));
-                                }
-                                else
-                                {
-                                    logDir = logDir.Replace("/", Path.DirectorySeparatorChar.ToString());
-                                }
-                                return logDir;
-                            }
-                        }
-                    }
+                    throw new ConfigurationValidationException("Unable to locate configuration directory for logging setup.");
                 }
+
+                var appSettingsPath = Path.Combine(configPath, "appsettings.json");
+                if (!File.Exists(appSettingsPath))
+                {
+                    throw new ConfigurationValidationException($"appsettings.json not found at: {appSettingsPath}");
+                }
+
+                var json = File.ReadAllText(appSettingsPath);
+                var doc = JsonSerializer.Deserialize<JsonElement>(json);
+                
+                if (!doc.TryGetProperty("paths", out var paths))
+                {
+                    throw new ConfigurationValidationException("Missing 'paths' section in appsettings.json");
+                }
+
+                if (!paths.TryGetProperty("logs", out var logsPath))
+                {
+                    throw new ConfigurationValidationException("Missing 'logs' path in configuration");
+                }
+
+                var logDir = logsPath.GetString();
+                if (string.IsNullOrEmpty(logDir))
+                {
+                    throw new ConfigurationValidationException("Empty 'logs' path in configuration");
+                }
+
+                // Normalize path separators
+                logDir = logDir.Replace("/", Path.DirectorySeparatorChar.ToString());
+
+                // Validate the directory exists
+                if (!Directory.Exists(logDir))
+                {
+                    throw new ConfigurationValidationException($"Logs directory does not exist: {logDir}");
+                }
+
+                return logDir;
+            }
+            catch (ConfigurationValidationException)
+            {
+                throw; // Re-throw configuration exceptions as-is
             }
             catch (Exception ex)
             {
-                // Configuration reading error - will fallback to default
+                throw new ConfigurationValidationException($"Error reading logging configuration: {ex.Message}", ex);
             }
-            
-            // Fallback to default
-            var fallbackPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
-            return fallbackPath;
         }
 
         private string? FindConfigDirectory()
