@@ -15,7 +15,41 @@ $outputPath = Join-Path $PSScriptRoot "output"
 # Create output directory
 if (Test-Path $outputPath) {
     Write-Host "Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item $outputPath -Recurse -Force
+    
+    # Try to remove with retry logic for locked files
+    $retryCount = 0
+    $maxRetries = 3
+    $success = $false
+    
+    while (-not $success -and $retryCount -lt $maxRetries) {
+        try {
+            # First try to kill any running instances of the application
+            Get-Process | Where-Object { $_.ProcessName -like "*TradeDataStudio*" } | Stop-Process -Force -ErrorAction SilentlyContinue
+            
+            # Wait a moment for processes to clean up
+            Start-Sleep -Seconds 2
+            
+            # Remove the directory
+            Remove-Item $outputPath -Recurse -Force -ErrorAction Stop
+            $success = $true
+            Write-Host "✓ Output directory cleaned successfully" -ForegroundColor Green
+        }
+        catch {
+            $retryCount++
+            Write-Host "⚠ Attempt $retryCount failed: $($_.Exception.Message)" -ForegroundColor Yellow
+            
+            if ($retryCount -lt $maxRetries) {
+                Write-Host "Retrying in 3 seconds..." -ForegroundColor Yellow
+                Start-Sleep -Seconds 3
+            }
+        }
+    }
+    
+    if (-not $success) {
+        Write-Host "✗ Could not clean output directory after $maxRetries attempts." -ForegroundColor Red
+        Write-Host "Please close any running applications and antivirus scanners, then try again." -ForegroundColor Red
+        exit 1
+    }
 }
 New-Item -ItemType Directory -Path $outputPath | Out-Null
 
@@ -92,6 +126,28 @@ foreach ($config in $configurations) {
 
 Write-Host "`nDeployment builds completed!" -ForegroundColor Green
 Write-Host "Output location: $outputPath" -ForegroundColor Yellow
+
+# Create desktop shortcut in root directory
+Write-Host "`nCreating application shortcut..." -ForegroundColor Cyan
+$shortcutPath = Join-Path $rootPath "TradeData Studio.lnk"
+$exePath = Join-Path $outputPath "Windows-x64\TradeDataStudio.Desktop.exe"
+
+if (Test-Path $exePath) {
+    try {
+        $WshShell = New-Object -comObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut($shortcutPath)
+        $Shortcut.TargetPath = $exePath
+        $Shortcut.WorkingDirectory = Split-Path $exePath -Parent
+        $Shortcut.Description = "TradeData Studio - Database Management Tool"
+        $Shortcut.IconLocation = $exePath
+        $Shortcut.Save()
+        Write-Host "✓ Shortcut created: TradeData Studio.lnk" -ForegroundColor Green
+    } catch {
+        Write-Host "✗ Failed to create shortcut: $($_.Exception.Message)" -ForegroundColor Red
+    }
+} else {
+    Write-Host "✗ Windows-x64 executable not found for shortcut creation" -ForegroundColor Red
+}
 
 # Display build summary
 Write-Host "`nBuild Summary:" -ForegroundColor Cyan
