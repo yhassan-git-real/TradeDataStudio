@@ -30,4 +30,5 @@ package-lock.json
 *.log
 *.bak
 *.*proj.user
-*.deployment/output
+deployment/output/
+deployment/output/
