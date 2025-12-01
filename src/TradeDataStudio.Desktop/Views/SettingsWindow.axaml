@@ -8,7 +8,7 @@
         x:Class="TradeDataStudio.Desktop.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
         Title="Database Settings"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/favicon_io/favicon.ico"
         Width="480"
         Height="420"
         MinWidth="460"
