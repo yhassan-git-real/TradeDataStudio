@@ -48,7 +48,6 @@ public class OutputPathResolver
             {
                 outputPath = Path.GetFullPath(Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "..", "..", "..", "..", "..",
                     configuredPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
             }
             else
@@ -75,7 +74,6 @@ public class OutputPathResolver
         {
             return Path.GetFullPath(Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
-                "..", "..", "..", "..", "..",
                 configuredExportPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
         }
         
@@ -94,7 +92,6 @@ public class OutputPathResolver
         {
             return Path.GetFullPath(Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
-                "..", "..", "..", "..", "..",
                 configuredImportPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
         }
         

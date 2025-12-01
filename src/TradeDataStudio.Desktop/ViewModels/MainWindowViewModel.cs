@@ -667,7 +667,6 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 exportsPath = Path.GetFullPath(Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "..", "..", "..", "..", "..",
                     exportsPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
             }
             else
@@ -682,7 +681,6 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 importsPath = Path.GetFullPath(Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "..", "..", "..", "..", "..",
                     importsPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
             }
             else

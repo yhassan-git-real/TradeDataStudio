@@ -177,7 +177,6 @@ public class MenuCommandHandler
             {
                 logDirectory = Path.GetFullPath(Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "..", "..", "..", "..", "..",
                     configuredLogPath.Replace("/", Path.DirectorySeparatorChar.ToString())));
             }
             else

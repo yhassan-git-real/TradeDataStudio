@@ -93,7 +93,6 @@ namespace TradeDataStudio.Core.Services
                                 {
                                     logDir = Path.GetFullPath(Path.Combine(
                                         AppDomain.CurrentDomain.BaseDirectory,
-                                        "..", "..", "..", "..", "..",
                                         logDir.Replace("/", Path.DirectorySeparatorChar.ToString())));
                                 }
                                 else
