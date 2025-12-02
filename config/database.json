@@ -4,6 +4,19 @@
   "username": "",
   "password": "",
   "useWindowsAuthentication": true,
-  "connectionTimeout": 30,
-  "trustServerCertificate": true
+  "connectionTimeout": 60,
+  "trustServerCertificate": true,
+  "pooling": {
+    "enabled": true,
+    "minPoolSize": 20,
+    "maxPoolSize": 200,
+    "connectionLifetime": 60,
+    "connectionReset": true
+  },
+  "performance": {
+    "commandTimeout": 900,
+    "enableConnectionPooling": true,
+    "multipleActiveResultSets": false,
+    "packetSize": 32768
+  }
 }

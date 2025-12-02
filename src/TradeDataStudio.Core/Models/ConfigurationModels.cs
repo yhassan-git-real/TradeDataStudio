@@ -28,16 +28,35 @@ public class DatabaseConfiguration
     
     private string BuildConnectionString()
     {
-        var trustCert = TrustServerCertificate ? "TrustServerCertificate=true;" : "";
+        var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder();
         
-        if (UseWindowsAuthentication)
+        // Basic connection settings
+        builder.DataSource = Server;
+        builder.InitialCatalog = Database;
+        builder.IntegratedSecurity = UseWindowsAuthentication;
+        builder.ConnectTimeout = ConnectionTimeout;
+        builder.TrustServerCertificate = TrustServerCertificate;
+        
+        // Performance optimizations
+        builder.Pooling = true;
+        builder.MinPoolSize = 20;  // Increased for better concurrency
+        builder.MaxPoolSize = 200; // Increased pool size for high-load scenarios
+        builder.LoadBalanceTimeout = 60; // Faster connection failover
+        builder.CommandTimeout = 900; // 15 minutes for very large operations
+        builder.PacketSize = 32768; // Larger packet size for bulk data
+        builder.ApplicationName = "TradeDataStudio";
+        builder.MultipleActiveResultSets = false; // Better for single large operations
+        builder.ConnectRetryCount = 3;
+        builder.ConnectRetryInterval = 5;
+        
+        // Set credentials if not using Windows Auth
+        if (!UseWindowsAuthentication)
         {
-            return $"Server={Server};Database={Database};Integrated Security=true;Connection Timeout={ConnectionTimeout};{trustCert}";
+            builder.UserID = Username;
+            builder.Password = Password;
         }
-        else
-        {
-            return $"Server={Server};Database={Database};User Id={Username};Password={Password};Connection Timeout={ConnectionTimeout};{trustCert}";
-        }
+        
+        return builder.ToString();
     }
 }
 

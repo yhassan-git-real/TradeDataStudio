@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using TradeDataStudio.Core.Interfaces;
 using TradeDataStudio.Core.Models;
+using System.Linq;
 
 namespace TradeDataStudio.Core.Services
 {
     /// <summary>
     /// Enhanced database service with performance optimizations:
-    /// - Connection pooling
+    /// - Built-in SQL Server connection pooling
     /// - Async batch operations
     /// - Memory-efficient data streaming
     /// - Query optimization hints
@@ -21,20 +22,14 @@ namespace TradeDataStudio.Core.Services
     {
         private readonly IConfigurationService _configService;
         private readonly ILoggingService _loggingService;
-        private readonly SemaphoreSlim _connectionSemaphore;
-        private readonly Dictionary<string, SqlConnection> _connectionPool;
-        private readonly object _poolLock = new();
         
-        private const int MaxPoolSize = 10;
-        private const int DefaultCommandTimeout = 300; // 5 minutes
+        private const int DefaultCommandTimeout = 600; // 10 minutes - increased for large operations
         private const int BatchSize = 10000; // Records per batch
 
         public DatabaseService(IConfigurationService configService, ILoggingService loggingService)
         {
             _configService = configService ?? throw new ArgumentNullException(nameof(configService));
             _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
-            _connectionSemaphore = new SemaphoreSlim(MaxPoolSize, MaxPoolSize);
-            _connectionPool = new Dictionary<string, SqlConnection>();
         }
 
         public async Task<bool> TestConnectionAsync()
@@ -158,19 +153,19 @@ namespace TradeDataStudio.Core.Services
         }
 
         /// <summary>
-        /// Execute stored procedure with connection pooling and performance monitoring
+        /// Execute stored procedure with optimized connection pooling and performance monitoring
         /// </summary>
         public async Task<ExecutionResult> ExecuteStoredProcedureAsync(string procedureName, Dictionary<string, object> parameters, CancellationToken cancellationToken = default)
         {
             var stopwatch = Stopwatch.StartNew();
-            SqlConnection? connection = null;
             
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await _connectionSemaphore.WaitAsync(cancellationToken);
                 
-                connection = await GetPooledConnectionAsync();
+                var dbConfig = await _configService.GetDatabaseConfigurationAsync();
+                using var connection = new SqlConnection(dbConfig.ConnectionString);
+                await connection.OpenAsync(cancellationToken);
                 
                 using var command = new SqlCommand(procedureName, connection)
                 {
@@ -185,21 +180,18 @@ namespace TradeDataStudio.Core.Services
                     sqlParam.Value = param.Value ?? DBNull.Value;
                 }
 
-                await _loggingService.LogMainAsync($"Executing {procedureName} with optimized connection pooling");
-                
+                // Skip logging during execution for performance
                 cancellationToken.ThrowIfCancellationRequested();
                 var recordsAffected = await command.ExecuteNonQueryAsync(cancellationToken);
                 stopwatch.Stop();
 
-                var result = new ExecutionResult
+                return new ExecutionResult
                 {
                     Success = true,
                     Message = $"Stored procedure '{procedureName}' executed successfully",
                     RecordsAffected = recordsAffected,
                     ExecutionTime = stopwatch.Elapsed
                 };
-
-                return result;
             }
             catch (OperationCanceledException)
             {
@@ -226,14 +218,6 @@ namespace TradeDataStudio.Core.Services
                     Exception = ex
                 };
             }
-            finally
-            {
-                if (connection != null)
-                {
-                    await ReturnConnectionToPoolAsync(connection);
-                }
-                _connectionSemaphore.Release();
-            }
         }
 
         /// <summary>
@@ -242,13 +226,14 @@ namespace TradeDataStudio.Core.Services
         public async Task<DataTable> QueryTableAsync(string tableName, CancellationToken cancellationToken = default)
         {
             var stopwatch = Stopwatch.StartNew();
-            SqlConnection? connection = null;
             
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await _connectionSemaphore.WaitAsync(cancellationToken);
-                connection = await GetPooledConnectionAsync();
+                
+                var dbConfig = await _configService.GetDatabaseConfigurationAsync();
+                using var connection = new SqlConnection(dbConfig.ConnectionString);
+                await connection.OpenAsync(cancellationToken);
 
                 // Use streaming for better memory efficiency
                 var query = $"SELECT * FROM {tableName} WITH (NOLOCK)"; // NOLOCK for read performance
@@ -284,14 +269,6 @@ namespace TradeDataStudio.Core.Services
                 await _loggingService.LogErrorAsync($"Failed to query table '{tableName}': {ex.Message}", ex);
                 throw;
             }
-            finally
-            {
-                if (connection != null)
-                {
-                    await ReturnConnectionToPoolAsync(connection);
-                }
-                _connectionSemaphore.Release();
-            }
         }
 
         /// <summary>
@@ -299,12 +276,11 @@ namespace TradeDataStudio.Core.Services
         /// </summary>
         public async Task<int> GetTableRecordCountAsync(string tableName)
         {
-            SqlConnection? connection = null;
-            
             try
             {
-                await _connectionSemaphore.WaitAsync();
-                connection = await GetPooledConnectionAsync();
+                var dbConfig = await _configService.GetDatabaseConfigurationAsync();
+                using var connection = new SqlConnection(dbConfig.ConnectionString);
+                await connection.OpenAsync();
                 
                 var query = $"SELECT COUNT_BIG(*) FROM {tableName} WITH (NOLOCK)";
                 using var command = new SqlCommand(query, connection) { CommandTimeout = 60 };
@@ -316,14 +292,6 @@ namespace TradeDataStudio.Core.Services
             {
                 await _loggingService.LogErrorAsync($"Failed to get record count for '{tableName}': {ex.Message}", ex);
                 throw;
-            }
-            finally
-            {
-                if (connection != null)
-                {
-                    await ReturnConnectionToPoolAsync(connection);
-                }
-                _connectionSemaphore.Release();
             }
         }
 
@@ -340,54 +308,6 @@ namespace TradeDataStudio.Core.Services
                 throw;
             }
         }
-
-        #region Connection Pooling
-
-        private async Task<SqlConnection> GetPooledConnectionAsync()
-        {
-            var dbConfig = await _configService.GetDatabaseConfigurationAsync();
-            var connectionString = dbConfig.ConnectionString;
-            
-            lock (_poolLock)
-            {
-                // Try to get an existing connection from the pool
-                if (_connectionPool.TryGetValue(connectionString, out var existingConnection) && 
-                    existingConnection.State == ConnectionState.Open)
-                {
-                    _connectionPool.Remove(connectionString);
-                    return existingConnection;
-                }
-            }
-            
-            // Create new connection if none available
-            var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            return connection;
-        }
-
-        private Task ReturnConnectionToPoolAsync(SqlConnection connection)
-        {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Dispose();
-                return Task.CompletedTask;
-            }
-            
-            lock (_poolLock)
-            {
-                if (_connectionPool.Count < MaxPoolSize)
-                {
-                    _connectionPool[connection.ConnectionString] = connection;
-                    return Task.CompletedTask;
-                }
-            }
-            
-            // Pool is full, dispose the connection
-            connection.Dispose();
-            return Task.CompletedTask;
-        }
-
-        #endregion
 
         #region Helper Methods
 
@@ -439,16 +359,7 @@ namespace TradeDataStudio.Core.Services
 
         public void Dispose()
         {
-            lock (_poolLock)
-            {
-                foreach (var connection in _connectionPool.Values)
-                {
-                    connection.Dispose();
-                }
-                _connectionPool.Clear();
-            }
-            
-            _connectionSemaphore.Dispose();
+            // SQL Server connection pooling handles cleanup automatically
         }
     }
 }

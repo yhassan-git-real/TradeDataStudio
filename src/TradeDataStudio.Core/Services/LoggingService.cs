@@ -245,9 +245,16 @@ namespace TradeDataStudio.Core.Services
                 _ => NLog.LogLevel.Info
             };
 
-            // Include correlation ID if available
-            var correlationId = CorrelationIdGenerator.GetCurrentCorrelationId();
-            var logMessage = string.IsNullOrEmpty(correlationId) ? message : $"[{correlationId}] {message}";
+            // OPTIMIZATION: Only get correlation ID for non-performance-critical messages
+            string logMessage = message;
+            if (!message.Contains("SP Execution") && !message.Contains("Query completed"))
+            {
+                var correlationId = CorrelationIdGenerator.GetCurrentCorrelationId();
+                if (!string.IsNullOrEmpty(correlationId))
+                {
+                    logMessage = $"[{correlationId}] {message}";
+                }
+            }
             
             _mainLogger.Log(nlogLevel, logMessage);
             return Task.CompletedTask;
@@ -281,15 +288,9 @@ namespace TradeDataStudio.Core.Services
         {
             var paramString = string.Join(", ", parameters.Select(kv => $"{kv.Key}={kv.Value}"));
             var successEmoji = result.Success ? "✓" : "✗";
-            var message = $"{successEmoji} SP Execution: {storedProcedure} | Parameters: {paramString} | Success: {result.Success} | Records: {result.RecordsAffected} | Time: {result.ExecutionTime.TotalSeconds:F2}s";
             
-            // Include correlation ID if available
-            var correlationId = CorrelationIdGenerator.GetCurrentCorrelationId();
-            var logMessage = $"[{mode}] {message}";
-            if (!string.IsNullOrEmpty(correlationId))
-            {
-                logMessage = $"[{correlationId}] {logMessage}";
-            }
+            // OPTIMIZATION: Skip correlation ID for performance-critical SP execution logs
+            var logMessage = $"[{mode}] {successEmoji} SP Execution: {storedProcedure} | Parameters: {paramString} | Success: {result.Success} | Records: {result.RecordsAffected} | Time: {result.ExecutionTime.TotalSeconds:F2}s";
             
             // Write to appropriate logs based on success status
             if (result.Success)
