@@ -33,9 +33,11 @@ public partial class App : Application
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
 
-        // Get the main window with injected dependencies
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        desktop.MainWindow = mainWindow;            // Handle application shutdown
+            // Get the main window with injected dependencies
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            desktop.MainWindow = mainWindow;
+            
+            // Handle application shutdown
             desktop.ShutdownRequested += (sender, e) =>
             {
                 _host?.Dispose();
@@ -70,22 +72,13 @@ public partial class App : Application
                 services.AddTransient<IDatabaseService, DatabaseService>();
                 services.AddTransient<IExportService, ExportService>();
                 services.AddTransient<IStoredProcedureValidator, StoredProcedureValidator>();
-                
-                // Register responsive UI service
-                services.AddSingleton<IResponsiveUIService, TradeDataStudio.Desktop.Services.DesktopResponsiveUIService>();
 
                 // Register ViewModels
                 services.AddTransient<MainWindowViewModel>();
                 services.AddTransient<SettingsViewModel>();
 
-                // Register Views - MainWindow needs special handling for responsive service injection
-                services.AddTransient<MainWindow>(provider =>
-                {
-                    var viewModel = provider.GetRequiredService<MainWindowViewModel>();
-                    var responsiveService = provider.GetRequiredService<IResponsiveUIService>();
-                    var loggingService = provider.GetRequiredService<ILoggingService>();
-                    return new MainWindow(viewModel, responsiveService, loggingService);
-                });
+                // Register Views
+                services.AddTransient<MainWindow>();
                 services.AddTransient<SettingsWindow>();
             })
             .Build();
