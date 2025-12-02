@@ -1,0 +1,145 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="using:System">
+    
+    <!-- Small Screen Resources (≤ 1366×768) -->
+    <ResourceDictionary x:Key="SmallScreenResources">
+        
+        <!-- Typography -->
+        <system:Double x:Key="TitleFontSize">17</system:Double>
+        <system:Double x:Key="SubtitleFontSize">10</system:Double>
+        <system:Double x:Key="BodyFontSize">10</system:Double>
+        <system:Double x:Key="CaptionFontSize">9</system:Double>
+        <system:Double x:Key="IconFontSize">12</system:Double>
+        <system:Double x:Key="ButtonFontSize">11</system:Double>
+        <system:Double x:Key="MenuFontSize">11</system:Double>
+        
+        <!-- Spacing -->
+        <Thickness x:Key="CardMargin">8</Thickness>
+        <Thickness x:Key="CardPadding">10</Thickness>
+        <Thickness x:Key="ElementMargin">4</Thickness>
+        <Thickness x:Key="SectionMargin">8,4</Thickness>
+        <system:Double x:Key="ElementSpacing">6</system:Double>
+        <system:Double x:Key="SectionSpacing">12</system:Double>
+        
+        <!-- Layout -->
+        <system:String x:Key="MainGridColumns">6*,4*</system:String>
+        <system:Double x:Key="MinWindowWidth">720</system:Double>
+        <system:Double x:Key="MinWindowHeight">480</system:Double>
+        <system:Double x:Key="DefaultWindowWidth">1000</system:Double>
+        <system:Double x:Key="DefaultWindowHeight">600</system:Double>
+        
+        <!-- Controls -->
+        <system:Double x:Key="ComboBoxMinWidth">160</system:Double>
+        <system:Double x:Key="TextBoxMinWidth">140</system:Double>
+        <system:Double x:Key="ButtonMinWidth">80</system:Double>
+        <system:Double x:Key="ButtonHeight">30</system:Double>
+        
+    </ResourceDictionary>
+    
+    <!-- Medium Screen Resources (1440×900 to 1600×1200) -->
+    <ResourceDictionary x:Key="MediumScreenResources">
+        
+        <!-- Typography -->
+        <system:Double x:Key="TitleFontSize">19</system:Double>
+        <system:Double x:Key="SubtitleFontSize">11</system:Double>
+        <system:Double x:Key="BodyFontSize">11</system:Double>
+        <system:Double x:Key="CaptionFontSize">10</system:Double>
+        <system:Double x:Key="IconFontSize">13</system:Double>
+        <system:Double x:Key="ButtonFontSize">12</system:Double>
+        <system:Double x:Key="MenuFontSize">12</system:Double>
+        
+        <!-- Spacing -->
+        <Thickness x:Key="CardMargin">10</Thickness>
+        <Thickness x:Key="CardPadding">12</Thickness>
+        <Thickness x:Key="ElementMargin">5</Thickness>
+        <Thickness x:Key="SectionMargin">10,5</Thickness>
+        <system:Double x:Key="ElementSpacing">7</system:Double>
+        <system:Double x:Key="SectionSpacing">14</system:Double>
+        
+        <!-- Layout -->
+        <system:String x:Key="MainGridColumns">65*,35*</system:String>
+        <system:Double x:Key="MinWindowWidth">750</system:Double>
+        <system:Double x:Key="MinWindowHeight">520</system:Double>
+        <system:Double x:Key="DefaultWindowWidth">1100</system:Double>
+        <system:Double x:Key="DefaultWindowHeight">650</system:Double>
+        
+        <!-- Controls -->
+        <system:Double x:Key="ComboBoxMinWidth">200</system:Double>
+        <system:Double x:Key="TextBoxMinWidth">180</system:Double>
+        <system:Double x:Key="ButtonMinWidth">90</system:Double>
+        <system:Double x:Key="ButtonHeight">32</system:Double>
+        
+    </ResourceDictionary>
+    
+    <!-- Large Screen Resources (1920×1080) -->
+    <ResourceDictionary x:Key="LargeScreenResources">
+        
+        <!-- Typography -->
+        <system:Double x:Key="TitleFontSize">20</system:Double>
+        <system:Double x:Key="SubtitleFontSize">12</system:Double>
+        <system:Double x:Key="BodyFontSize">12</system:Double>
+        <system:Double x:Key="CaptionFontSize">11</system:Double>
+        <system:Double x:Key="IconFontSize">14</system:Double>
+        <system:Double x:Key="ButtonFontSize">13</system:Double>
+        <system:Double x:Key="MenuFontSize">13</system:Double>
+        
+        <!-- Spacing -->
+        <Thickness x:Key="CardMargin">12</Thickness>
+        <Thickness x:Key="CardPadding">14</Thickness>
+        <Thickness x:Key="ElementMargin">6</Thickness>
+        <Thickness x:Key="SectionMargin">12,6</Thickness>
+        <system:Double x:Key="ElementSpacing">8</system:Double>
+        <system:Double x:Key="SectionSpacing">16</system:Double>
+        
+        <!-- Layout -->
+        <system:String x:Key="MainGridColumns">7*,3*</system:String>
+        <system:Double x:Key="MinWindowWidth">800</system:Double>
+        <system:Double x:Key="MinWindowHeight">550</system:Double>
+        <system:Double x:Key="DefaultWindowWidth">1200</system:Double>
+        <system:Double x:Key="DefaultWindowHeight">700</system:Double>
+        
+        <!-- Controls -->
+        <system:Double x:Key="ComboBoxMinWidth">220</system:Double>
+        <system:Double x:Key="TextBoxMinWidth">200</system:Double>
+        <system:Double x:Key="ButtonMinWidth">100</system:Double>
+        <system:Double x:Key="ButtonHeight">34</system:Double>
+        
+    </ResourceDictionary>
+    
+    <!-- Extra Large Screen Resources (≥ 2560×1440) -->
+    <ResourceDictionary x:Key="ExtraLargeScreenResources">
+        
+        <!-- Typography -->
+        <system:Double x:Key="TitleFontSize">23</system:Double>
+        <system:Double x:Key="SubtitleFontSize">14</system:Double>
+        <system:Double x:Key="BodyFontSize">14</system:Double>
+        <system:Double x:Key="CaptionFontSize">12</system:Double>
+        <system:Double x:Key="IconFontSize">16</system:Double>
+        <system:Double x:Key="ButtonFontSize">15</system:Double>
+        <system:Double x:Key="MenuFontSize">14</system:Double>
+        
+        <!-- Spacing -->
+        <Thickness x:Key="CardMargin">16</Thickness>
+        <Thickness x:Key="CardPadding">18</Thickness>
+        <Thickness x:Key="ElementMargin">8</Thickness>
+        <Thickness x:Key="SectionMargin">16,8</Thickness>
+        <system:Double x:Key="ElementSpacing">10</system:Double>
+        <system:Double x:Key="SectionSpacing">20</system:Double>
+        
+        <!-- Layout -->
+        <system:String x:Key="MainGridColumns">75*,25*</system:String>
+        <system:Double x:Key="MinWindowWidth">900</system:Double>
+        <system:Double x:Key="MinWindowHeight">600</system:Double>
+        <system:Double x:Key="DefaultWindowWidth">1400</system:Double>
+        <system:Double x:Key="DefaultWindowHeight">800</system:Double>
+        
+        <!-- Controls -->
+        <system:Double x:Key="ComboBoxMinWidth">260</system:Double>
+        <system:Double x:Key="TextBoxMinWidth">240</system:Double>
+        <system:Double x:Key="ButtonMinWidth">120</system:Double>
+        <system:Double x:Key="ButtonHeight">38</system:Double>
+        
+    </ResourceDictionary>
+    
+</ResourceDictionary>

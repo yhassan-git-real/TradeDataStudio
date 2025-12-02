@@ -9,8 +9,8 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/favicon_io/favicon.ico"
         Title="TradeData Studio"
-        Width="1200" Height="700"
-        MinWidth="800" MinHeight="550">
+        Width="{DynamicResource DefaultWindowWidth}" Height="{DynamicResource DefaultWindowHeight}"
+        MinWidth="{DynamicResource MinWindowWidth}" MinHeight="{DynamicResource MinWindowHeight}">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -18,6 +18,14 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Views/Styles/ResponsiveResources.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
     <Window.Styles>
         <StyleInclude Source="/Views/Styles/AppStyles.axaml"/>
         <StyleInclude Source="/Views/Styles/ButtonStyles.axaml"/>
@@ -121,14 +129,19 @@
             
             <!-- Layer 4: Content -->
             <ScrollViewer ClipToBounds="False">
-                <StackPanel Margin="12,6">
-                    <!-- Horizontal Grid with Configuration and Actions Cards (70:30 split) -->
-                    <Grid ColumnDefinitions="7*,3*" Margin="0,0,0,8">
-                        <!-- Configuration Card (70%) -->
-                        <components:ConfigurationPanel Grid.Column="0" Margin="0,0,6,0"/>
+                <StackPanel Margin="{DynamicResource CardMargin}">
+                    <!-- Horizontal Grid with Configuration and Actions Cards (Responsive split) -->
+                    <Grid x:Name="ResponsiveMainGrid" Margin="{DynamicResource SectionMargin}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
                         
-                        <!-- Actions Card (30%) -->
-                        <components:ActionsPanel Grid.Column="1" Margin="6,0,0,0"/>
+                        <!-- Configuration Card (Left panel) -->
+                        <components:ConfigurationPanel Grid.Column="0" Margin="{DynamicResource ElementMargin}"/>
+                        
+                        <!-- Actions Card (Right panel) -->
+                        <components:ActionsPanel Grid.Column="1" Margin="{DynamicResource ElementMargin}"/>
                     </Grid>
 
                     <!-- Activity Log Panel -->
