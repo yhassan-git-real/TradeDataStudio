@@ -53,10 +53,7 @@ public partial class MainWindow : Window
                 // Apply initial responsive configuration
                 ApplyResponsiveConfiguration(_responsiveUIService.CurrentScreenCategory);
                 
-                if (_loggingService != null)
-                {
-                    await _loggingService.LogMainAsync($"Responsive UI initialized for {_responsiveUIService.CurrentScreenCategory} screen");
-                }
+                // Responsive UI initialized silently
             }
         }
         catch (Exception ex)
@@ -138,12 +135,7 @@ public partial class MainWindow : Window
                 _ => "LargeScreenResources"
             };
             
-            // Resources will be applied automatically through the responsive AXAML
-            // Just log the current configuration
-            if (_loggingService != null)
-            {
-                _ = Task.Run(async () => await _loggingService.LogMainAsync($"Applied {resourceKey} for {category} screen"));
-            }
+            // Resources applied silently - no logging needed for internal UI operations
         }
         catch (Exception ex)
         {
